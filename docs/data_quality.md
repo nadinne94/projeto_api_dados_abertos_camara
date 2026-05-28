@@ -84,24 +84,13 @@ Campos sugeridos:
 
 A camada de Data Quality aumenta a confiabilidade do pipeline ao garantir:
 
-tabelas não vazias;
-presença de colunas obrigatórias;
-chaves não nulas;
-unicidade de dimensões;
-controle de domínios;
-monitoramento de anomalias;
-rastreabilidade de falhas.
-Evoluções Futuras
+* tabelas não vazias;
+* presença de colunas obrigatórias;
+* chaves não nulas;
+* unicidade de dimensões;
+* controle de domínios;
+* monitoramento de anomalias;
+* rastreabilidade de falhas.
 
-## Possíveis melhorias:
-
-* integração com Great Expectations;
-* integração com Deequ;
-* alertas automáticos;
-* dashboard de qualidade;
-* validação de freshness;
-* validação de schema evolution;
-* data contracts versionados;
-* lineage com Unity Catalog.
 
 
