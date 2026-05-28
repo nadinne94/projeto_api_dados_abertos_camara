@@ -24,6 +24,7 @@ def build_dim_partido(df_partidos):
     )
 
     return add_surrogate_key(
-        df_dim,
-        "sk_partido"
+        df=df_dim,
+        key_name="sk_partido",
+        natural_keys=["id_partido"]
     )

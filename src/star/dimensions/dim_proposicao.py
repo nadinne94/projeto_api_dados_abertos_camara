@@ -36,6 +36,7 @@ def build_dim_proposicao(df_proposicoes):
     )
 
     return add_surrogate_key(
-        df_dim,
-        "sk_proposicao"
+        df=df_dim,
+        key_name="sk_proposicao",
+        natural_keys=["id_proposicao"]
     )

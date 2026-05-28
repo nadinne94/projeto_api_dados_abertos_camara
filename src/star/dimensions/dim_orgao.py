@@ -42,6 +42,7 @@ def build_dim_orgao(
     )
 
     return add_surrogate_key(
-        df_orgaos,
-        "sk_orgao"
+        df=df_orgaos,
+        key_name="sk_orgao",
+        natural_keys=["orgao"]
     )

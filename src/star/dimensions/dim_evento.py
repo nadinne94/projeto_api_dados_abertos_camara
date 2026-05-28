@@ -54,6 +54,7 @@ def build_dim_evento(df_eventos):
     )
 
     return add_surrogate_key(
-        df_dim,
-        "sk_evento"
+        df=df_dim,
+        key_name="sk_evento",
+        natural_keys=["id_evento"]
     )
