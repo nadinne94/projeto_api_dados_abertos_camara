@@ -1,3 +1,6 @@
+import re
+import unicodedata
+
 from pyspark.sql.column import Column
 
 from pyspark.sql.functions import (
@@ -72,31 +75,43 @@ def limpar_espacos(
         )
     )
 
+def normalize_text(text: str) -> str:
+    """
+    Normaliza texto para uso em classificação NLP.
 
-def normalizar_texto(
-    col_texto: Column
-):
+    Args:
+        text: Texto original.
 
-    texto = lower(
-        coalesce(
-            col_texto.cast("string"),
-            lit("")
-        )
+    Returns:
+        Texto normalizado, sem acentos, em minúsculas e sem pontuação.
+    """
+
+    if text is None:
+        return ""
+
+    text = str(text).lower().strip()
+
+    text = unicodedata.normalize(
+        "NFKD",
+        text
     )
 
-    texto = remover_acentos(
-        texto
+    text = "".join(
+        char
+        for char in text
+        if not unicodedata.combining(char)
     )
 
-    texto = regexp_replace(
-
-        texto,
-
+    text = re.sub(
         r"[^a-z0-9\s]",
-
-        " "
+        " ",
+        text
     )
 
-    return limpar_espacos(
-        texto
-    )
+    text = re.sub(
+        r"\s+",
+        " ",
+        text
+    ).strip()
+
+    return text

@@ -1,100 +1,126 @@
-"""
-Utilitários para análise de qualidade de dados.
-
-Fornece métricas eficientes de completude
-para DataFrames Spark.
-"""
+from typing import Iterable
 
 from pyspark.sql import DataFrame
-from pyspark.sql.functions import (
-    col,
-    count,
-    lit,
-    sum,
-    when,
-)
+from pyspark.sql.functions import col
 
 
-def null_ratio(
-    df: DataFrame
-) -> DataFrame:
+def assert_not_empty(
+    df: DataFrame,
+    dataset_name: str = "dataset"
+) -> None:
     """
-    Calcula percentual de nulos por coluna.
+    Valida se o DataFrame possui registros.
+
+    Args:
+        df: DataFrame a ser validado.
+        dataset_name: Nome lógico do dataset.
+
+    Raises:
+        ValueError: Se o DataFrame estiver vazio.
     """
 
-    spark = df.sparkSession
-
-    if not df.columns:
-
-        return spark.createDataFrame(
-            [],
-            schema="""
-                coluna STRING,
-                qtd_nulos LONG,
-                pct_nulos DOUBLE
-            """
+    if df.limit(1).count() == 0:
+        raise ValueError(
+            f"O dataset '{dataset_name}' está vazio."
         )
 
-    total = df.count()
 
-    if total == 0:
+def assert_required_columns(
+    df: DataFrame,
+    required_columns: Iterable[str],
+    dataset_name: str = "dataset"
+) -> None:
+    """
+    Valida se todas as colunas obrigatórias existem no DataFrame.
 
-        return spark.createDataFrame(
-            [],
-            schema="""
-                coluna STRING,
-                qtd_nulos LONG,
-                pct_nulos DOUBLE
-            """
-        )
+    Args:
+        df: DataFrame a ser validado.
+        required_columns: Lista de colunas obrigatórias.
+        dataset_name: Nome lógico do dataset.
 
-    null_counts = (
+    Raises:
+        ValueError: Se alguma coluna obrigatória estiver ausente.
+    """
 
-        df.select([
-
-            sum(
-                when(
-                    col(c).isNull(),
-                    lit(1)
-                ).otherwise(lit(0))
-            ).alias(c)
-
-            for c in df.columns
-
-        ])
-
-        .first()
-
-    )
-
-    rows = [
-
-        (
-            column,
-            int(null_counts[column]),
-            round(
-                int(null_counts[column]) / total,
-                4
-            )
-        )
-
-        for column in df.columns
-
+    missing_columns = [
+        column
+        for column in required_columns
+        if column not in df.columns
     ]
 
-    return (
-
-        spark.createDataFrame(
-            rows,
-            schema=[
-                "coluna",
-                "qtd_nulos",
-                "pct_nulos"
-            ]
+    if missing_columns:
+        raise ValueError(
+            f"O dataset '{dataset_name}' não possui as colunas obrigatórias: "
+            f"{missing_columns}"
         )
 
-        .orderBy(
-            col("pct_nulos").desc()
+
+def assert_no_nulls(
+    df: DataFrame,
+    columns: Iterable[str],
+    dataset_name: str = "dataset"
+) -> None:
+    """
+    Valida se as colunas informadas não possuem valores nulos.
+
+    Args:
+        df: DataFrame a ser validado.
+        columns: Colunas que não devem conter nulos.
+        dataset_name: Nome lógico do dataset.
+
+    Raises:
+        ValueError: Se houver valores nulos nas colunas informadas.
+    """
+
+    for column in columns:
+        null_count = (
+            df
+            .filter(
+                col(column).isNull()
+            )
+            .limit(1)
+            .count()
         )
 
+        if null_count > 0:
+            raise ValueError(
+                f"O dataset '{dataset_name}' possui valores nulos na coluna "
+                f"'{column}'."
+            )
+
+
+def assert_unique_key(
+    df: DataFrame,
+    key_columns: Iterable[str],
+    dataset_name: str = "dataset"
+) -> None:
+    """
+    Valida se uma chave é única no DataFrame.
+
+    Args:
+        df: DataFrame a ser validado.
+        key_columns: Colunas que compõem a chave.
+        dataset_name: Nome lógico do dataset.
+
+    Raises:
+        ValueError: Se houver duplicidade na chave.
+    """
+
+    key_columns = list(key_columns)
+
+    duplicated_count = (
+        df
+        .groupBy(*key_columns)
+        .count()
+        .filter(
+            col("count") > 1
+        )
+        .limit(1)
+        .count()
     )
+
+    if duplicated_count > 0:
+        raise ValueError(
+            f"O dataset '{dataset_name}' possui duplicidades na chave: "
+            f"{key_columns}"
+        )
