@@ -24,9 +24,15 @@ def run_silver(dataset_name="all"):
         else [dataset_name]
     )
 
+    print(f"\nDatasets selecionados: {list(datasets)}")
+
     for dataset in datasets:
 
+        print(f"\n========== {dataset} ==========")
+
         if dataset not in DATASETS_CONFIG:
+
+            print(f"[WARNING] Dataset não configurado: {dataset}")
 
             logger.log_warning(
                 "silver",
@@ -37,6 +43,8 @@ def run_silver(dataset_name="all"):
 
         if dataset not in TRANSFORMS:
 
+            print(f"[WARNING] Transformação ausente: {dataset}")
+
             logger.log_warning(
                 "silver",
                 dataset,
@@ -46,14 +54,9 @@ def run_silver(dataset_name="all"):
 
         try:
 
-            logger.log_start(
-                "silver",
-                dataset
-            )
+            print("[READ] Bronze")
 
             cfg = DATASETS_CONFIG[dataset]
-
-            transform_cfg = TRANSFORMS[dataset]
 
             df_bronze = read_table(
                 spark,
@@ -62,21 +65,23 @@ def run_silver(dataset_name="all"):
                 cfg["table"]
             )
 
+            print("[TRANSFORM]")
+
+            transform_cfg = TRANSFORMS[dataset]
+
             df_silver = transform_cfg["fn"](df_bronze)
 
             if df_silver.limit(1).count() == 0:
 
-                logger.log_warning(
-                    "silver",
-                    dataset,
-                    "DataFrame vazio"
-                )
+                print("[WARNING] DataFrame vazio")
 
                 continue
 
             df_silver.cache()
 
             record_count = df_silver.count()
+
+            print(f"[MERGE] {record_count} registros")
 
             merge_table(
                 spark=spark,
@@ -86,6 +91,8 @@ def run_silver(dataset_name="all"):
                 table_name=cfg["table"],
                 merge_keys=transform_cfg["merge_keys"]
             )
+
+            print("[SUCCESS]")
 
             logger.log_success(
                 "silver",
@@ -97,6 +104,8 @@ def run_silver(dataset_name="all"):
 
         except Exception as e:
 
+            print(f"[ERROR] {e}")
+
             logger.log_error(
                 "silver",
                 dataset,
@@ -104,3 +113,5 @@ def run_silver(dataset_name="all"):
             )
 
             raise
+
+run_silver()
