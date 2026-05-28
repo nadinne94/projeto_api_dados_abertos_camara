@@ -4,7 +4,7 @@ Projeto completo de Engenharia de Dados para ingestão, tratamento, enriquecimen
 
 O projeto transforma dados brutos da API pública da Câmara em um produto analítico estruturado, utilizando arquitetura medalhão, Delta Lake, PySpark, classificação híbrida com NLP/ML, modelo dimensional em star schema e camada de serving para consumo em Power BI.
 
----
+
 
 ## Visão Geral
 
@@ -23,7 +23,7 @@ Este projeto foi desenvolvido com o objetivo de simular um pipeline moderno de d
 
 O domínio escolhido foi o legislativo brasileiro, com dados públicos disponibilizados pela Câmara dos Deputados.
 
----
+
 
 ## Problema de Negócio
 
@@ -40,7 +40,7 @@ Este projeto organiza esses dados para responder perguntas como:
 
 A proposta é transformar dados públicos dispersos em uma base analítica confiável, organizada e pronta para exploração.
 
----
+
 
 ## Arquitetura do Projeto
 
@@ -62,77 +62,8 @@ Star Schema - Fatos e dimensões
 Serving SQL
         ↓
 Power BI
+```
 
-Claro. Abaixo está um **README.md completo**, pronto para copiar e colar no GitHub.
-
-````markdown
-# Pipeline Lakehouse de Dados Abertos da Câmara dos Deputados
-
-Projeto completo de Engenharia de Dados para ingestão, tratamento, enriquecimento, classificação e modelagem analítica de dados públicos da Câmara dos Deputados.
-
-O projeto transforma dados brutos da API pública da Câmara em um produto analítico estruturado, utilizando arquitetura medalhão, Delta Lake, PySpark, classificação híbrida com NLP/ML, modelo dimensional em star schema e camada de serving para consumo em Power BI.
-
----
-
-## Visão Geral
-
-Este projeto foi desenvolvido com o objetivo de simular um pipeline moderno de dados legislativos, cobrindo etapas essenciais de um fluxo real de Engenharia de Dados:
-
-- ingestão de dados via API pública;
-- armazenamento em Delta Lake;
-- arquitetura medalhão com camadas Bronze, Silver e Gold;
-- tratamento e padronização com PySpark;
-- enriquecimento analítico dos dados;
-- classificação temática e jurídica de proposições legislativas;
-- uso de MLflow para rastreamento e versionamento de modelos;
-- construção de modelo dimensional em star schema;
-- publicação de tabelas analíticas para consumo em Power BI;
-- logs estruturados e rastreabilidade de execução.
-
-O domínio escolhido foi o legislativo brasileiro, com dados públicos disponibilizados pela Câmara dos Deputados.
-
----
-
-## Problema de Negócio
-
-Os dados legislativos públicos são ricos, mas estão distribuídos em múltiplos endpoints, possuem estruturas diferentes e exigem tratamento antes de serem usados em análises.
-
-Este projeto organiza esses dados para responder perguntas como:
-
-- Quais temas legislativos aparecem com maior frequência?
-- Quais deputados e partidos estão mais associados às proposições?
-- Como proposições tramitam ao longo do tempo?
-- Como ocorrem votações e votos parlamentares?
-- Quais órgãos participam dos eventos legislativos?
-- Como transformar dados brutos da API em tabelas analíticas para BI?
-
-A proposta é transformar dados públicos dispersos em uma base analítica confiável, organizada e pronta para exploração.
-
----
-
-## Arquitetura do Projeto
-
-O pipeline segue uma arquitetura lakehouse em camadas.
-
-```text
-API Dados Abertos Câmara
-        ↓
-Bronze - Ingestão bruta
-        ↓
-Silver - Padronização e limpeza
-        ↓
-Gold - Enriquecimento analítico e classificação
-        ↓
-ML/NLP - Classificação temática e jurídica
-        ↓
-Star Schema - Fatos e dimensões
-        ↓
-Serving SQL
-        ↓
-Power BI
-````
-
----
 
 ## Arquitetura Medalhão
 
@@ -164,7 +95,7 @@ Exemplos de entidades ingeridas:
 * eventos;
 * presença em eventos.
 
----
+
 
 ### Silver
 
@@ -182,7 +113,7 @@ Principais responsabilidades:
 
 Essa camada transforma os dados brutos em dados confiáveis e consistentes para uso analítico.
 
----
+
 
 ### Gold
 
@@ -199,7 +130,7 @@ Principais responsabilidades:
 
 Nesta camada também ocorre a integração com a lógica de classificação temática e jurídica.
 
----
+
 
 ### Star Schema
 
@@ -207,12 +138,12 @@ A camada Star transforma os dados enriquecidos em um modelo dimensional voltado 
 
 O objetivo é facilitar consultas, análises e construção de dashboards no Power BI.
 
----
+
 
 ## Tecnologias Utilizadas
 
 | Categoria                 | Tecnologia                             |
-| ------------------------- | -------------------------------------- |
+| - | -- |
 | Linguagem                 | Python                                 |
 | Processamento distribuído | PySpark                                |
 | Armazenamento             | Delta Lake                             |
@@ -225,7 +156,7 @@ O objetivo é facilitar consultas, análises e construção de dashboards no Pow
 | Observabilidade           | Logs estruturados                      |
 | Fonte de dados            | API Dados Abertos Câmara dos Deputados |
 
----
+
 
 ## Estrutura de Pastas
 
@@ -272,7 +203,7 @@ src/
     helpers/
 ```
 
----
+
 
 ## Organização do Código
 
@@ -336,7 +267,7 @@ Contém a construção das dimensões e fatos do modelo analítico.
 
 Contém a publicação das tabelas finais para consumo analítico.
 
----
+
 
 ## Fonte de Dados
 
@@ -357,7 +288,7 @@ Os dados utilizados incluem informações sobre:
 
 A documentação oficial da API pode ser consultada no portal de Dados Abertos da Câmara dos Deputados.
 
----
+
 
 ## Pipeline de Ingestão
 
@@ -399,7 +330,7 @@ Exemplos:
 
 Essa abordagem permite navegar por relações hierárquicas da API.
 
----
+
 
 ## Delta Lake
 
@@ -416,7 +347,7 @@ Principais benefícios:
 
 As operações de leitura, escrita e merge foram centralizadas em utilitários reutilizáveis.
 
----
+
 
 ## Observabilidade e Logs
 
@@ -438,11 +369,11 @@ Exemplo conceitual de log:
 
 ```text
 execution_id | layer  | dataset      | status  | records | timestamp
--------------|--------|--------------|---------|---------|-------------------
+-|--|--|||-
 abc123       | bronze | proposicoes  | success | 10000   | 2026-05-28 10:00
 ```
 
----
+
 
 ## Classificação NLP/ML
 
@@ -456,7 +387,7 @@ A solução utiliza uma estratégia híbrida:
 4. **MLflow**, para rastrear experimentos e registrar modelos;
 5. **Fallback**, para evitar classificações forçadas em textos ambíguos.
 
----
+
 
 ## Classificação Temática
 
@@ -477,7 +408,7 @@ Exemplos de temas possíveis:
 
 A classificação considera textos como ementa, descrição e demais campos relevantes.
 
----
+
 
 ## Classificação de Natureza Jurídica
 
@@ -496,7 +427,7 @@ Exemplos de categorias:
 
 Essa etapa ajuda a diferenciar o assunto da proposição de sua finalidade legislativa.
 
----
+
 
 ## MLflow
 
@@ -512,7 +443,7 @@ Principais usos:
 
 Essa abordagem aproxima o projeto de práticas de MLOps.
 
----
+
 
 ## Modelo Dimensional
 
@@ -521,7 +452,7 @@ O projeto cria um modelo em star schema para facilitar análises em ferramentas 
 ### Dimensões
 
 | Dimensão         | Descrição                                     |
-| ---------------- | --------------------------------------------- |
+| - | - |
 | `dim_tempo`      | Calendário analítico para cruzamento temporal |
 | `dim_deputado`   | Informações dos deputados                     |
 | `dim_partido`    | Informações dos partidos                      |
@@ -532,7 +463,7 @@ O projeto cria um modelo em star schema para facilitar análises em ferramentas 
 ### Fatos
 
 | Fato              | Granularidade                         |
-| ----------------- | ------------------------------------- |
+| -- | - |
 | `fato_proposicao` | Uma linha por proposição              |
 | `fato_autoria`    | Relação entre proposição e autor      |
 | `fato_tramitacao` | Uma linha por movimentação/tramitação |
@@ -541,7 +472,7 @@ O projeto cria um modelo em star schema para facilitar análises em ferramentas 
 | `fato_evento`     | Uma linha por evento                  |
 | `fato_presenca`   | Uma linha por presença em evento      |
 
----
+
 
 ## Modelo Analítico
 
@@ -556,7 +487,7 @@ O modelo dimensional permite responder perguntas como:
 * Quais órgãos concentram mais eventos?
 * Qual a participação dos deputados em eventos?
 
----
+
 
 ## Serving Analítico
 
@@ -570,7 +501,7 @@ Essa etapa prepara os dados para uso em:
 * painéis executivos;
 * análises legislativas.
 
----
+
 
 ## Power BI
 
@@ -614,7 +545,7 @@ Sugestões de páginas para o dashboard:
 * presença parlamentar;
 * evolução temporal dos eventos.
 
----
+
 
 ## Como Executar
 
@@ -633,7 +564,7 @@ python -m src.serving.publish_tables
 
 Em ambientes Databricks, os módulos podem ser executados como notebooks ou jobs, respeitando a ordem das camadas.
 
----
+
 
 ## Configuração
 
@@ -652,7 +583,7 @@ Principais configurações:
 
 Recomenda-se utilizar variáveis de ambiente para parametrizar caminhos e credenciais em ambientes produtivos.
 
----
+
 
 ## Exemplo de Fluxo
 
@@ -668,7 +599,7 @@ Exemplo simplificado do fluxo de proposições:
 7. Publicação para consumo no Power BI
 ```
 
----
+
 
 ## Decisões Técnicas
 
@@ -703,212 +634,9 @@ O star schema facilita o consumo por ferramentas de BI, melhora a clareza analí
 
 No domínio legislativo, muitas categorias possuem padrões textuais explícitos. Regex captura bem esses padrões. O ML complementa a classificação ao generalizar textos menos diretos.
 
----
 
-## Diferenciais do Projeto
-
-* Pipeline completo ponta a ponta;
-* uso de dados públicos reais;
-* arquitetura medalhão;
-* Delta Lake;
-* PySpark;
-* ingestão incremental;
-* ingestão de endpoints dependentes;
-* classificação NLP/ML aplicada a um problema real;
-* MLflow;
-* star schema;
-* serving analítico;
-* integração com Power BI;
-* logs estruturados;
-* organização modular.
-
----
-
-## Limitações Conhecidas
-
-O projeto possui pontos que podem evoluir:
-
-* necessidade de ampliar testes automatizados;
-* melhoria da geração de surrogate keys para garantir estabilidade em reprocessamentos;
-* formalização de validações de qualidade de dados;
-* criação de CI/CD;
-* documentação mais detalhada de linhagem;
-* validação manual mais robusta das classificações NLP;
-* parametrização de caminhos de storage por ambiente;
-* evolução para monitoramento mais completo.
-
----
-
-## Roadmap
-
-### Curto Prazo
-
-* Criar documentação detalhada do projeto;
-* adicionar testes unitários;
-* melhorar o arquivo `pyproject.toml`;
-* criar `.env.example`;
-* corrigir surrogate keys para geração determinística;
-* documentar o modelo dimensional;
-* adicionar prints do dashboard Power BI;
-* remover arquivos temporários ou movê-los para `tests/` ou `examples/`.
-
-### Médio Prazo
-
-* Criar validações formais de Data Quality;
-* adicionar GitHub Actions para lint e testes;
-* criar documentação de linhagem;
-* adicionar métricas de duração por etapa;
-* criar tabela de auditoria das classificações;
-* melhorar avaliação do modelo NLP;
-* incluir matriz de confusão e métricas por classe;
-* documentar contratos de dados por dataset.
-
-### Longo Prazo
-
-* Implementar SCD Tipo 2 em dimensões relevantes;
-* usar embeddings para classificação semântica;
-* avaliar uso de LLMs para sumarização e classificação assistida;
-* integrar com Unity Catalog;
-* criar lineage automatizado;
-* evoluir para orquestração enterprise;
-* criar monitoramento de freshness;
-* implementar alertas de falha;
-* avaliar Feature Store para atributos de ML.
-
----
-
-## Melhorias Futuras em ML/NLP
-
-Possíveis evoluções da classificação:
-
-* criação de base rotulada manualmente;
-* comparação entre regex, ML e abordagem híbrida;
-* uso de embeddings semânticos;
-* clusterização de proposições;
-* análise de similaridade entre proposições;
-* sumarização automática de ementas;
-* explicabilidade das classificações;
-* auditoria de confiança por predição;
-* versionamento de dicionários e regras.
-
----
-
-## Melhorias Futuras em Engenharia de Dados
-
-Possíveis evoluções técnicas:
-
-* particionamento físico das tabelas Delta;
-* otimização de merges;
-* controle formal de schema evolution;
-* retries com backoff na ingestão da API;
-* versionamento de contratos de dados;
-* testes com dados sintéticos;
-* validação de chaves primárias;
-* validação de duplicidades;
-* monitoramento de volume e freshness;
-* documentação de SLA/SLO do pipeline.
-
----
-
-## Qualidade de Dados
-
-Exemplos de validações recomendadas:
-
-| Validação               | Exemplo                                       |
-| ----------------------- | --------------------------------------------- |
-| Chave primária não nula | `id_proposicao` não pode ser nulo             |
-| Duplicidade             | não deve haver duplicidade por chave natural  |
-| Tipos esperados         | datas devem ser convertidas corretamente      |
-| Domínio de valores      | votos devem pertencer a categorias conhecidas |
-| Freshness               | dados incrementais devem estar atualizados    |
-| Volume mínimo           | tabelas críticas não devem ser geradas vazias |
-
----
-
-## Aprendizados
-
-Este projeto consolida conhecimentos em:
-
-* consumo de APIs públicas;
-* modelagem de pipelines em camadas;
-* PySpark;
-* Delta Lake;
-* arquitetura lakehouse;
-* modelagem dimensional;
-* classificação textual;
-* MLflow;
-* observabilidade;
-* Power BI;
-* organização de projeto de dados;
-* boas práticas de engenharia.
-
----
-
-## Possíveis Perguntas para Entrevista
-
-Este projeto pode ser usado para responder perguntas como:
-
-### Por que você escolheu arquitetura medalhão?
-
-Porque ela separa dados brutos, limpos e enriquecidos, facilitando manutenção, rastreabilidade e evolução do pipeline.
-
-### Como você tratou endpoints dependentes?
-
-Utilizando uma estratégia de ingestão nested, em que IDs da entidade pai são usados para consultar endpoints filhos.
-
-### Por que usar Delta Lake?
-
-Para ter maior confiabilidade no armazenamento, suporte a merge/upsert e estrutura adequada para lakehouse.
-
-### Como funciona a classificação das proposições?
-
-A classificação combina regras regex, dicionários temáticos e modelo ML para identificar tema e natureza jurídica das proposições.
-
-### O que você melhoraria em produção?
-
-Eu adicionaria testes automatizados, CI/CD, Data Quality formal, lineage, monitoramento, alertas, controle de schema e governança.
-
----
-
-## Status do Projeto
-
-Projeto funcional e estruturado como peça principal de portfólio para Engenharia de Dados Júnior.
-
-Principais entregas já contempladas:
-
-* ingestão de API pública;
-* arquitetura medalhão;
-* Delta Lake;
-* PySpark;
-* classificação NLP/ML;
-* MLflow;
-* modelo dimensional;
-* Power BI;
-* serving analítico;
-* logs estruturados.
-
-Principais próximos passos:
-
-* fortalecer documentação;
-* adicionar testes;
-* melhorar qualidade de dados;
-* evoluir monitoramento;
-* refinar ML/NLP;
-* preparar apresentação final para portfólio.
-
----
-
-## Licença
+## Fonte
 
 Este projeto utiliza dados públicos disponibilizados pela Câmara dos Deputados.
 
-Consulte os termos de uso da fonte oficial para detalhes sobre uso, redistribuição e limitações dos dados.
-
----
-
-## Autora
-
-Desenvolvido por Nadinne Cavalcante como projeto de portfólio em Engenharia de Dados.
-
-Objetivo: demonstrar domínio prático em pipelines de dados, arquitetura lakehouse, PySpark, Delta Lake, modelagem dimensional, ML/NLP e visualização analítica.
-
+[Dados Abertos da Câmara dos Deputados](https://dadosabertos.camara.leg.br/swagger/api.html)
