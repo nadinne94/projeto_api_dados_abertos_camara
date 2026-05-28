@@ -545,7 +545,22 @@ Sugestões de páginas para o dashboard:
 * presença parlamentar;
 * evolução temporal dos eventos.
 
+## Data Quality
 
+O projeto possui uma camada formal de Data Quality baseada em contratos declarativos por tabela e camada.
+
+As validações incluem:
+
+- dataset não vazio;
+- colunas obrigatórias;
+- chaves não nulas;
+- unicidade de chaves;
+- percentual máximo de nulos;
+- domínio de valores permitidos.
+
+As regras podem ser classificadas como `error`, quando bloqueiam o pipeline, ou `warning`, quando apenas registram alertas.
+
+Os resultados podem ser persistidos em uma tabela Delta de monitoramento para auditoria e rastreabilidade.
 
 ## Como Executar
 
