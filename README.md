@@ -500,49 +500,11 @@ Essa etapa prepara os dados para uso em:
 * painéis executivos;
 * análises legislativas.
 
+## Resultado Analítico
 
+As tabelas finais do Star Schema foram publicadas em uma camada SQL e consumidas em um dashboard Power BI.
 
-## Power BI
-
-O projeto foi pensado para ser consumido em Power BI a partir das tabelas finais do star schema.
-
-Sugestões de páginas para o dashboard:
-
-### Visão Geral
-
-* total de proposições;
-* total de deputados;
-* total de votações;
-* total de eventos;
-* evolução temporal.
-
-### Proposições
-
-* proposições por tema;
-* proposições por tipo;
-* proposições por ano;
-* proposições por partido;
-* principais autores.
-
-### Votações
-
-* votações por período;
-* votos por partido;
-* distribuição de votos;
-* análise por proposição.
-
-### Deputados
-
-* autores mais frequentes;
-* presença em eventos;
-* participação em votações;
-* distribuição por partido e UF.
-
-### Eventos
-
-* eventos por órgão;
-* presença parlamentar;
-* evolução temporal dos eventos.
+[Ver dashboard publicado](https://app.powerbi.com/view?r=eyJrIjoiZGIxYTA5MTMtZjIxNy00ZTlkLWJlMjEtMWZmODA1NTlhZWRmIiwidCI6Ijk2NDEzODNiLWQ0N2MtNDQyMy05OTA4LTU5MGYyYTRmNzgwZCJ9)
 
 ## Data Quality
 
@@ -596,24 +558,6 @@ Principais configurações:
 * configurações Spark.
 
 Recomenda-se utilizar variáveis de ambiente para parametrizar caminhos e credenciais em ambientes produtivos.
-
-
-
-## Exemplo de Fluxo
-
-Exemplo simplificado do fluxo de proposições:
-
-```text
-1. Ingestão das proposições via API
-2. Armazenamento bruto na Bronze
-3. Padronização de campos na Silver
-4. Classificação temática e jurídica na Gold
-5. Criação de dimensão `dim_proposicao`
-6. Criação de fatos relacionados
-7. Publicação para consumo no Power BI
-```
-
-
 
 ## Decisões Técnicas
 
