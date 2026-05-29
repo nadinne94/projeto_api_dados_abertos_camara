@@ -367,11 +367,10 @@ Essa abordagem facilita auditoria, rastreabilidade e investigação de falhas.
 
 Exemplo conceitual de log:
 
-```text
+
 execution_id | layer  | dataset      | status  | records | timestamp
--|--|--|||-
+---|---|---|---|---|---
 abc123       | bronze | proposicoes  | success | 10000   | 2026-05-28 10:00
-```
 
 
 
@@ -652,6 +651,7 @@ No domínio legislativo, muitas categorias possuem padrões textuais explícitos
 
 ## Evoluções Futuras
 
+* Padronizar nomes das funções para um único idioma
 * Criação CI/CD;
 * Melhorar avaliação do modelo NLP;
 
