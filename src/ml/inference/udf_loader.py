@@ -15,6 +15,16 @@ def carregar_modelo(
     model_alias: str = "champion",
     registry_uri: str = "databricks-uc"
 ):
+    """Load and cache an MLflow model by name and alias.
+
+    Args:
+        model_name: Registered model name.
+        model_alias: Model alias used for inference.
+        registry_uri: MLflow registry URI.
+
+    Returns:
+        Loaded scikit-learn compatible model.
+    """
     mlflow.set_registry_uri(
         registry_uri
     )
@@ -40,6 +50,17 @@ def criar_udf_classificacao(
     fallback: str = "Não Classificado",
     registry_uri: str = "databricks-uc"
 ):
+    """Create a pandas UDF for Spark batch inference.
+
+    Args:
+        model_name: Registered model name.
+        model_alias: Model alias used for inference.
+        fallback: Value returned when a prediction is missing.
+        registry_uri: MLflow registry URI.
+
+    Returns:
+        pandas UDF that receives text values and returns predicted labels.
+    """
 
     @pandas_udf(StringType())
     def classificar_ml(

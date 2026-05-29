@@ -1,17 +1,18 @@
-"""
-Global project configuration.
+"""Global project configuration for storage paths."""
 
-Centraliza paths de storage
-da arquitetura medallion.
-"""
+import os
+
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # =========================================================
 # BASE PATHS
 # =========================================================
 
-BASE_STORAGE_PATH = (
-    "abfss://conteiner@"
-    "arqmedallion.dfs.core.windows.net"
+BASE_STORAGE_PATH = os.getenv(
+    "BASE_STORAGE_PATH",
+    "file:/tmp/dados_abertos_camara"
 )
 
 MEDALLION_PATH = (

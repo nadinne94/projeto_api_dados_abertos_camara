@@ -27,8 +27,15 @@ def get_path(
     layer: str,
     table_name: str
 ) -> str:
-    """
-    Retorna path físico.
+    """Return the physical Delta path for a table.
+
+    Args:
+        storage_config: Mapping with base paths by layer.
+        layer: Logical layer name, such as bronze, silver, gold or star.
+        table_name: Table name inside the layer.
+
+    Returns:
+        Full storage path for the Delta table.
     """
 
     return (
@@ -44,8 +51,17 @@ def read_table(
     table_name: str,
     validate: bool = True
 ) -> DataFrame:
-    """
-    Lê tabela Delta.
+    """Read a Delta table from the configured storage path.
+
+    Args:
+        spark: Active SparkSession.
+        storage_config: Mapping with base paths by layer.
+        layer: Logical layer name.
+        table_name: Table to read.
+        validate: If True, checks whether the path is a Delta table.
+
+    Returns:
+        DataFrame loaded from Delta.
     """
 
     path = get_path(
@@ -86,8 +102,14 @@ def write_table(
     layer: str,
     table_name: str
 ) -> None:
-    """
-    Escreve tabela Delta.
+    """Write a DataFrame as a Delta table using overwrite mode.
+
+    Args:
+        spark: Active SparkSession.
+        df: DataFrame to persist.
+        storage_config: Mapping with base paths by layer.
+        layer: Logical layer name.
+        table_name: Target table name.
     """
 
     path = get_path(
@@ -97,10 +119,9 @@ def write_table(
     )
 
     logger.info(
-        "[WRITE] %s.%s rows=%s",
+        "[WRITE] %s.%s",
         layer,
-        table_name,
-        df.count()
+        table_name
     )
 
     (
@@ -127,8 +148,18 @@ def merge_table(
     table_name: str,
     merge_keys: List[str]
 ) -> None:
-    """
-    Executa merge/upsert Delta.
+    """Merge a DataFrame into a Delta table using the provided keys.
+
+    If the target table does not exist yet, the function creates it with
+    the same write behavior used by `write_table`.
+
+    Args:
+        spark: Active SparkSession.
+        df: Source DataFrame.
+        storage_config: Mapping with base paths by layer.
+        layer: Logical layer name.
+        table_name: Target table name.
+        merge_keys: Columns used to match source and target records.
     """
 
     if not merge_keys:

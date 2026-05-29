@@ -15,6 +15,10 @@ from src.utils.monitoring.pipeline_logger import (
     PipelineLogger
 )
 
+from src.utils.quality.runner import (
+    run_quality_checks
+)
+
 from src.gold.registry.registry import (
     TRANSFORMS
 )
@@ -23,7 +27,7 @@ from src.gold.registry.registry import (
 LAYER = "gold"
 
 
-def _now():
+def _now() -> str:
     return datetime.now().strftime(
         "%Y-%m-%d %H:%M:%S"
     )
@@ -32,7 +36,8 @@ def _now():
 def _print_step(
     dataset: str,
     message: str
-):
+) -> None:
+    """Print a simple execution message for the Gold pipeline."""
     print(
         f"[{_now()}] [GOLD] [{dataset}] {message}",
         flush=True
@@ -82,8 +87,9 @@ def _validar_dataset(
 
 
 def _resolver_datasets(
-    dataset_name
-):
+    dataset_name: str | list[str]
+) -> list[str]:
+    """Resolve the Gold datasets that should be processed."""
 
     if dataset_name == "all":
 
@@ -106,8 +112,9 @@ def _resolver_datasets(
 
 
 def run_gold(
-    dataset_name="all"
-):
+    dataset_name: str | list[str] = "all"
+) -> None:
+    """Run the Gold pipeline for one dataset, a list of datasets or all datasets."""
 
     spark = SparkSession.builder.getOrCreate()
 
@@ -287,6 +294,33 @@ def run_gold(
                 records=gold_count
             )
 
+            quality_results = run_quality_checks(
+                df=df_gold,
+                layer=LAYER,
+                table_name=table_name,
+                fail_on_error=True
+            )
+
+            if quality_results:
+
+                failed_quality_checks = [
+                    result
+                    for result in quality_results
+                    if result["status"] == "failed"
+                ]
+
+                logger.log_event(
+                    LAYER,
+                    dataset,
+                    "DATA_QUALITY_SUCCESS",
+                    (
+                        "Validações de Data Quality executadas: "
+                        f"{len(quality_results)} regras, "
+                        f"{len(failed_quality_checks)} falhas não bloqueantes"
+                    ),
+                    records=gold_count
+                )
+
             if gold_count == 0:
 
                 message = "DataFrame gold vazio após transformação"
@@ -398,6 +432,5 @@ def run_gold(
         "==================================================\n",
         flush=True
     )
-datasets = ['eventos']
-for dataset in datasets:
-    run_gold(dataset)
+if __name__ == "__main__":
+    run_gold()

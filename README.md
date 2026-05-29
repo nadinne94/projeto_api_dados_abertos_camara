@@ -650,6 +650,12 @@ O star schema facilita o consumo por ferramentas de BI, melhora a clareza analí
 No domínio legislativo, muitas categorias possuem padrões textuais explícitos. Regex captura bem esses padrões. O ML complementa a classificação ao generalizar textos menos diretos.
 
 
+## Evoluções Futuras
+
+* Criação CI/CD;
+* Melhorar avaliação do modelo NLP;
+
+
 ## Fonte
 
 Este projeto utiliza dados públicos disponibilizados pela Câmara dos Deputados.

@@ -16,6 +16,10 @@ from src.utils.monitoring.pipeline_logger import (
     PipelineLogger
 )
 
+from src.utils.quality.runner import (
+    run_quality_checks
+)
+
 from src.star.registry.dimensions import (
     STAR_DIMENSIONS,
     DIMENSIONS_EXECUTION_ORDER
@@ -39,7 +43,7 @@ STAR_EXECUTION_ORDER = [
     *FACTS_EXECUTION_ORDER
 ]
 
-def _now():
+def _now() -> str:
     return datetime.now().strftime(
         "%Y-%m-%d %H:%M:%S"
     )
@@ -48,7 +52,8 @@ def _now():
 def _print_step(
     dataset: str,
     message: str
-):
+) -> None:
+    """Print a simple execution message for the Star pipeline."""
     print(
         f"[{_now()}] [STAR] [{dataset}] {message}",
         flush=True
@@ -56,8 +61,9 @@ def _print_step(
 
 
 def _resolver_datasets(
-    object_name="all"
-):
+    object_name: str | list[str] = "all"
+) -> list[str]:
+    """Resolve the Star objects that should be processed."""
 
     if object_name == "all":
 
@@ -106,7 +112,8 @@ def _validar_objeto(
 
 def _parse_source(
     source: str
-):
+) -> tuple[str, str]:
+    """Split a source reference into layer and table name."""
 
     if "." not in source:
 
@@ -171,8 +178,9 @@ def _executar_funcao_transform(
 
 
 def run_star(
-    object_name="all"
-):
+    object_name: str | list[str] = "all"
+) -> None:
+    """Run the Star pipeline for one object, a list of objects or all objects."""
 
     spark = SparkSession.builder.getOrCreate()
 
@@ -329,6 +337,33 @@ def run_star(
                 records=record_count
             )
 
+            quality_results = run_quality_checks(
+                df=df_star,
+                layer=LAYER,
+                table_name=target_table,
+                fail_on_error=True
+            )
+
+            if quality_results:
+
+                failed_quality_checks = [
+                    result
+                    for result in quality_results
+                    if result["status"] == "failed"
+                ]
+
+                logger.log_event(
+                    LAYER,
+                    obj,
+                    "DATA_QUALITY_SUCCESS",
+                    (
+                        "Validações de Data Quality executadas: "
+                        f"{len(quality_results)} regras, "
+                        f"{len(failed_quality_checks)} falhas não bloqueantes"
+                    ),
+                    records=record_count
+                )
+
             if record_count == 0:
 
                 message = (
@@ -448,6 +483,5 @@ def run_star(
         flush=True
     )
 
-datasets = ['fato_evento', 'fato_presenca']
-for dataset in datasets:
-    run_star(dataset)
+if __name__ == "__main__":
+    run_star()

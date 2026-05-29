@@ -91,6 +91,3 @@ A camada de Data Quality aumenta a confiabilidade do pipeline ao garantir:
 * controle de domínios;
 * monitoramento de anomalias;
 * rastreabilidade de falhas.
-
-
-
