@@ -132,11 +132,15 @@ def request_api(
                 )
 
                 return {"dados": []}
+
             if status == 400:
+
                 logger.warning(
-                    "[NESTED_SKIP] endpoint sem recurso id=%s",
-                    parent_id
+                    "[API] 400 url=%s",
+                    url
                 )
+
+                return {"dados": []}
 
             if status in {
 

@@ -87,7 +87,9 @@ STAR_FACTS = {
         ],
         "sources": [
             "gold.votos",
-            "star.dim_deputado"
+            "star.dim_deputado",
+            "gold.votacoes",
+            "star.dim_proposicao"
         ]
     },
 

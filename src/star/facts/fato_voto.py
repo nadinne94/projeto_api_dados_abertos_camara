@@ -7,7 +7,9 @@ from pyspark.sql.functions import (
 
 def build_fato_voto(
     df_votos,
-    dim_deputado
+    dim_deputado,
+    df_votacoes,
+    dim_proposicao
 ):
 
     return (
@@ -20,9 +22,22 @@ def build_fato_voto(
             "left"
         )
 
+        .join(
+            df_votacoes.select("id_votacao", "id_proposicao").alias("vt"),
+            "id_votacao",
+            "left"
+        )
+        .join(
+            dim_proposicao.alias("p"),
+            "id_proposicao",
+            "left"
+        )
+
         .select(
 
             col("v.id_votacao"),
+
+            col("p.sk_proposicao"),
 
             col("d.sk_deputado"),
 
@@ -30,7 +45,7 @@ def build_fato_voto(
                 col("v.data_voto"),
                 "yyyyMMdd"
             ).cast("int").alias(
-                "sk_tempo"
+                "sk_tempo_voto"
             ),
 
             col("v.voto"),

@@ -75,7 +75,7 @@ def limpar_espacos(
         )
     )
 
-def normalize_text(text: str) -> str:
+def normalizar_texto(text: str) -> str:
     """
     Normaliza texto para uso em classificação NLP.
 

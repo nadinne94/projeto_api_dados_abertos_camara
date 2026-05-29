@@ -9,7 +9,7 @@ from src.utils.storage.delta_io import (
 )
 
 
-DEFAULT_SCHEMA = "dados_abertos.star_schema"
+DEFAULT_SCHEMA = "api_dados_abertos.star_schema"
 
 
 def listar_tabelas_star(
@@ -179,3 +179,8 @@ def validar_delta_star(
     df.printSchema()
 
     return df
+
+if __name__ == "__main__":
+    publicar_star_schema()
+    validar_tabelas_publicadas()
+    validar_delta_star()

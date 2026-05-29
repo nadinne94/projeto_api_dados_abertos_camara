@@ -28,7 +28,7 @@ def build_fato_proposicao(
                 col("p.data_apresentacao"),
                 "yyyyMMdd"
             ).cast("int").alias(
-                "sk_tempo"
+                "sk_tempo_apresentacao"
             ),
 
             col("p.peso_regimental"),

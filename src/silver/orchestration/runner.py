@@ -6,7 +6,7 @@ from src.config.project_config import STORAGE_CONFIG
 from src.utils.storage.delta_io import read_table, merge_table
 from src.utils.monitoring.pipeline_logger import PipelineLogger
 
-from src.silver.registry import TRANSFORMS
+from src.silver.registry.registry import TRANSFORMS
 
 
 def run_silver(dataset_name="all"):
