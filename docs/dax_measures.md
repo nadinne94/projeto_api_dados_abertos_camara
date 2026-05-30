@@ -1,28 +1,20 @@
 # Medidas DAX do Dashboard
 
+## Objetivo
+
 Este documento registra as principais medidas DAX sugeridas para o dashboard Power BI do projeto `projeto_api_dados_abertos_camara`.
 
 O objetivo é documentar a lógica analítica usada ou recomendada para explorar as tabelas finais publicadas na camada Serving, principalmente a partir do modelo dimensional em Star Schema.
 
----
-
-## 1. Objetivo
-
-As medidas DAX ajudam a transformar as tabelas fato e dimensão em indicadores analíticos para responder perguntas sobre proposições, votações, deputados, partidos, temas, tramitações e eventos legislativos.
-
-Este documento serve como referência para:
-
-- manutenção do dashboard;
-- padronização das medidas;
-- explicação da lógica analítica;
-- documentação para portfólio;
-- evolução futura do modelo Power BI.
+As medidas ajudam a transformar tabelas fato e dimensão em indicadores de negócio para responder perguntas sobre proposições, deputados, partidos, temas, tramitações, votações, votos, eventos e presença parlamentar.
 
 ---
 
-## 2. Premissas do modelo
+## Contexto
 
-As medidas abaixo assumem um modelo dimensional com tabelas como:
+O dashboard Power BI representa a camada final de consumo analítico do projeto.
+
+O modelo parte de tabelas dimensionais e fatos, como:
 
 ### Dimensões
 
@@ -43,11 +35,37 @@ As medidas abaixo assumem um modelo dimensional com tabelas como:
 - `fato_evento`;
 - `fato_presenca`.
 
-Os nomes das colunas podem ser ajustados conforme o modelo final publicado no Power BI.
+As medidas documentadas aqui funcionam como referência analítica e podem ser ajustadas conforme os nomes finais das tabelas e colunas no arquivo `.pbix`.
 
 ---
 
-## 3. Organização recomendada das medidas
+## Escopo
+
+Este documento cobre:
+
+- organização recomendada das medidas;
+- medidas gerais;
+- medidas de proposições;
+- medidas de autoria;
+- medidas de tramitação;
+- medidas de votações;
+- medidas de eventos e presença;
+- medidas temporais;
+- medidas de ranking;
+- medidas de participação parlamentar;
+- medidas de qualidade analítica;
+- recomendações de formatação;
+- recomendações de uso no dashboard;
+- boas práticas para DAX;
+- próximas evoluções.
+
+Este documento não substitui o arquivo `.pbix`. Ele funciona como catálogo técnico e analítico das medidas sugeridas ou esperadas.
+
+---
+
+## Conteúdo Principal
+
+### 1. Organização recomendada das medidas
 
 No Power BI, recomenda-se organizar as medidas em pastas temáticas:
 
@@ -60,6 +78,7 @@ No Power BI, recomenda-se organizar as medidas em pastas temáticas:
 05 - Eventos e Presença
 06 - Participação Parlamentar
 07 - Indicadores Temporais
+08 - Qualidade Analítica
 ```
 
 Também é recomendado criar uma tabela exclusiva para medidas, por exemplo:
@@ -68,59 +87,39 @@ Também é recomendado criar uma tabela exclusiva para medidas, por exemplo:
 _medidas
 ```
 
----
+### 2. Medidas gerais
 
-# 4. Medidas gerais
-
-## 4.1 Total de Proposições
-
-Conta o total de proposições no contexto selecionado.
+#### Total de Proposições
 
 ```DAX
 Total de Proposições =
 DISTINCTCOUNT ( fato_proposicao[id_proposicao] )
 ```
 
----
-
-## 4.2 Total de Deputados
-
-Conta o total de deputados distintos no modelo.
+#### Total de Deputados
 
 ```DAX
 Total de Deputados =
 DISTINCTCOUNT ( dim_deputado[id_deputado] )
 ```
 
----
-
-## 4.3 Total de Partidos
-
-Conta o total de partidos distintos.
+#### Total de Partidos
 
 ```DAX
 Total de Partidos =
 DISTINCTCOUNT ( dim_partido[sigla_partido] )
 ```
 
----
-
-## 4.4 Total de Órgãos
-
-Conta o total de órgãos legislativos cadastrados no modelo.
+#### Total de Órgãos
 
 ```DAX
 Total de Órgãos =
 DISTINCTCOUNT ( dim_orgao[id_orgao] )
 ```
 
----
+### 3. Medidas de proposições
 
-# 5. Medidas de proposições
-
-## 5.1 Proposições por Tema
-
-A medida base pode ser usada em visuais segmentados por `tema_ementa`.
+#### Proposições por Tema
 
 ```DAX
 Proposições por Tema =
@@ -132,9 +131,7 @@ Uso recomendado:
 - eixo: `dim_proposicao[tema_ementa]`;
 - valor: `[Proposições por Tema]`.
 
----
-
-## 5.2 Proposições por Natureza Jurídica
+#### Proposições por Natureza Jurídica
 
 ```DAX
 Proposições por Natureza Jurídica =
@@ -146,9 +143,7 @@ Uso recomendado:
 - eixo: `dim_proposicao[natureza_juridica]`;
 - valor: `[Proposições por Natureza Jurídica]`.
 
----
-
-## 5.3 Proposições por Ano
+#### Proposições por Ano
 
 ```DAX
 Proposições por Ano =
@@ -160,11 +155,7 @@ Uso recomendado:
 - eixo: `dim_tempo[ano]`;
 - valor: `[Proposições por Ano]`.
 
----
-
-## 5.4 Proposições com Tema Classificado
-
-Conta proposições que possuem tema diferente de nulo e diferente de fallback genérico.
+#### Proposições com Tema Classificado
 
 ```DAX
 Proposições com Tema Classificado =
@@ -175,9 +166,7 @@ CALCULATE (
 )
 ```
 
----
-
-## 5.5 Proposições sem Tema Explícito
+#### Proposições sem Tema Explícito
 
 ```DAX
 Proposições sem Tema Explícito =
@@ -187,9 +176,7 @@ CALCULATE (
 )
 ```
 
----
-
-## 5.6 Percentual de Proposições Classificadas
+#### Percentual de Proposições Classificadas
 
 ```DAX
 % Proposições Classificadas =
@@ -199,15 +186,7 @@ DIVIDE (
 )
 ```
 
-Formato recomendado:
-
-```text
-Percentual
-```
-
----
-
-## 5.7 Proposições por Tipo
+#### Proposições por Tipo
 
 ```DAX
 Proposições por Tipo =
@@ -219,33 +198,23 @@ Uso recomendado:
 - eixo: `dim_proposicao[sigla_tipo]`;
 - valor: `[Proposições por Tipo]`.
 
----
+### 4. Medidas de autoria
 
-# 6. Medidas de autoria
-
-## 6.1 Total de Autorias
-
-Conta relações entre autores e proposições.
+#### Total de Autorias
 
 ```DAX
 Total de Autorias =
 COUNTROWS ( fato_autoria )
 ```
 
----
-
-## 6.2 Deputados Autores
-
-Conta deputados distintos associados a autoria de proposições.
+#### Deputados Autores
 
 ```DAX
 Deputados Autores =
 DISTINCTCOUNT ( fato_autoria[sk_deputado] )
 ```
 
----
-
-## 6.3 Média de Autores por Proposição
+#### Média de Autores por Proposição
 
 ```DAX
 Média de Autores por Proposição =
@@ -255,9 +224,7 @@ DIVIDE (
 )
 ```
 
----
-
-## 6.4 Proposições por Partido do Autor
+#### Proposições por Partido do Autor
 
 ```DAX
 Proposições por Partido do Autor =
@@ -269,29 +236,23 @@ Uso recomendado:
 - eixo: `dim_partido[sigla_partido]`;
 - valor: `[Proposições por Partido do Autor]`.
 
----
+### 5. Medidas de tramitação
 
-# 7. Medidas de tramitação
-
-## 7.1 Total de Tramitações
+#### Total de Tramitações
 
 ```DAX
 Total de Tramitações =
 COUNTROWS ( fato_tramitacao )
 ```
 
----
-
-## 7.2 Proposições com Tramitação
+#### Proposições com Tramitação
 
 ```DAX
 Proposições com Tramitação =
 DISTINCTCOUNT ( fato_tramitacao[id_proposicao] )
 ```
 
----
-
-## 7.3 Média de Tramitações por Proposição
+#### Média de Tramitações por Proposição
 
 ```DAX
 Média de Tramitações por Proposição =
@@ -301,9 +262,7 @@ DIVIDE (
 )
 ```
 
----
-
-## 7.4 Tramitações por Órgão
+#### Tramitações por Órgão
 
 ```DAX
 Tramitações por Órgão =
@@ -315,38 +274,30 @@ Uso recomendado:
 - eixo: `dim_orgao[sigla_orgao]` ou `dim_orgao[nome_orgao]`;
 - valor: `[Tramitações por Órgão]`.
 
----
+### 6. Medidas de votações
 
-# 8. Medidas de votações
-
-## 8.1 Total de Votações
+#### Total de Votações
 
 ```DAX
 Total de Votações =
 DISTINCTCOUNT ( fato_votacao[id_votacao] )
 ```
 
----
-
-## 8.2 Total de Votos
+#### Total de Votos
 
 ```DAX
 Total de Votos =
 COUNTROWS ( fato_voto )
 ```
 
----
-
-## 8.3 Deputados Votantes
+#### Deputados Votantes
 
 ```DAX
 Deputados Votantes =
 DISTINCTCOUNT ( fato_voto[sk_deputado] )
 ```
 
----
-
-## 8.4 Votos Sim
+#### Votos Sim
 
 ```DAX
 Votos Sim =
@@ -356,9 +307,7 @@ CALCULATE (
 )
 ```
 
----
-
-## 8.5 Votos Não
+#### Votos Não
 
 ```DAX
 Votos Não =
@@ -368,9 +317,7 @@ CALCULATE (
 )
 ```
 
----
-
-## 8.6 Abstenções
+#### Abstenções
 
 ```DAX
 Abstenções =
@@ -380,9 +327,7 @@ CALCULATE (
 )
 ```
 
----
-
-## 8.7 Percentual de Votos Sim
+#### Percentual de Votos Sim
 
 ```DAX
 % Votos Sim =
@@ -392,9 +337,7 @@ DIVIDE (
 )
 ```
 
----
-
-## 8.8 Percentual de Votos Não
+#### Percentual de Votos Não
 
 ```DAX
 % Votos Não =
@@ -404,38 +347,30 @@ DIVIDE (
 )
 ```
 
----
+### 7. Medidas de eventos e presença
 
-# 9. Medidas de eventos e presença
-
-## 9.1 Total de Eventos
+#### Total de Eventos
 
 ```DAX
 Total de Eventos =
 DISTINCTCOUNT ( fato_evento[id_evento] )
 ```
 
----
-
-## 9.2 Total de Presenças
+#### Total de Presenças
 
 ```DAX
 Total de Presenças =
 COUNTROWS ( fato_presenca )
 ```
 
----
-
-## 9.3 Deputados Presentes
+#### Deputados Presentes
 
 ```DAX
 Deputados Presentes =
 DISTINCTCOUNT ( fato_presenca[sk_deputado] )
 ```
 
----
-
-## 9.4 Média de Presenças por Evento
+#### Média de Presenças por Evento
 
 ```DAX
 Média de Presenças por Evento =
@@ -445,9 +380,7 @@ DIVIDE (
 )
 ```
 
----
-
-## 9.5 Eventos por Órgão
+#### Eventos por Órgão
 
 ```DAX
 Eventos por Órgão =
@@ -459,11 +392,9 @@ Uso recomendado:
 - eixo: `dim_orgao[nome_orgao]`;
 - valor: `[Eventos por Órgão]`.
 
----
+### 8. Medidas temporais
 
-# 10. Medidas temporais
-
-## 10.1 Proposições no Ano Atual
+#### Proposições no Ano Atual
 
 ```DAX
 Proposições Ano Atual =
@@ -473,9 +404,7 @@ CALCULATE (
 )
 ```
 
----
-
-## 10.2 Proposições no Ano Anterior
+#### Proposições no Ano Anterior
 
 ```DAX
 Proposições Ano Anterior =
@@ -485,18 +414,14 @@ CALCULATE (
 )
 ```
 
----
-
-## 10.3 Variação de Proposições Ano contra Ano
+#### Variação de Proposições Ano contra Ano
 
 ```DAX
 Variação Proposições YoY =
 [Proposições Ano Atual] - [Proposições Ano Anterior]
 ```
 
----
-
-## 10.4 Percentual de Variação Ano contra Ano
+#### Percentual de Variação Ano contra Ano
 
 ```DAX
 % Variação Proposições YoY =
@@ -506,9 +431,7 @@ DIVIDE (
 )
 ```
 
----
-
-## 10.5 Proposições Acumuladas
+#### Proposições Acumuladas
 
 ```DAX
 Proposições Acumuladas =
@@ -521,11 +444,9 @@ CALCULATE (
 )
 ```
 
----
+### 9. Medidas de ranking
 
-# 11. Medidas de ranking
-
-## 11.1 Ranking de Temas
+#### Ranking de Temas
 
 ```DAX
 Ranking de Temas =
@@ -538,9 +459,7 @@ RANKX (
 )
 ```
 
----
-
-## 11.2 Ranking de Partidos por Proposição
+#### Ranking de Partidos por Proposição
 
 ```DAX
 Ranking de Partidos por Proposição =
@@ -553,9 +472,7 @@ RANKX (
 )
 ```
 
----
-
-## 11.3 Ranking de Deputados Autores
+#### Ranking de Deputados Autores
 
 ```DAX
 Ranking de Deputados Autores =
@@ -568,11 +485,9 @@ RANKX (
 )
 ```
 
----
+### 10. Medidas de participação parlamentar
 
-# 12. Medidas de participação parlamentar
-
-## 12.1 Taxa de Participação em Eventos
+#### Taxa de Participação em Eventos
 
 ```DAX
 Taxa de Participação em Eventos =
@@ -584,9 +499,7 @@ DIVIDE (
 
 Observação: esta medida representa a média geral de presenças registradas por evento no contexto filtrado. Para uma taxa individual por parlamentar, é necessário ajustar o denominador conforme a regra de negócio definida no dashboard.
 
----
-
-## 12.2 Participações por Deputado
+#### Participações por Deputado
 
 ```DAX
 Participações por Deputado =
@@ -598,9 +511,7 @@ Uso recomendado:
 - eixo: `dim_deputado[nome_deputado]`;
 - valor: `[Participações por Deputado]`.
 
----
-
-## 12.3 Votos por Deputado
+#### Votos por Deputado
 
 ```DAX
 Votos por Deputado =
@@ -612,11 +523,9 @@ Uso recomendado:
 - eixo: `dim_deputado[nome_deputado]`;
 - valor: `[Votos por Deputado]`.
 
----
+### 11. Medidas de qualidade analítica
 
-# 13. Medidas de qualidade analítica
-
-## 13.1 Proposições sem Classificação
+#### Proposições sem Classificação
 
 ```DAX
 Proposições sem Classificação =
@@ -627,9 +536,7 @@ CALCULATE (
 )
 ```
 
----
-
-## 13.2 Percentual sem Classificação
+#### Percentual sem Classificação
 
 ```DAX
 % Sem Classificação =
@@ -639,9 +546,7 @@ DIVIDE (
 )
 ```
 
----
-
-## 13.3 Registros com Natureza Jurídica
+#### Registros com Natureza Jurídica
 
 ```DAX
 Registros com Natureza Jurídica =
@@ -651,9 +556,7 @@ CALCULATE (
 )
 ```
 
----
-
-## 13.4 Percentual com Natureza Jurídica
+#### Percentual com Natureza Jurídica
 
 ```DAX
 % com Natureza Jurídica =
@@ -663,23 +566,19 @@ DIVIDE (
 )
 ```
 
----
-
-# 14. Recomendações de formatação
+### 12. Recomendações de formatação
 
 | Tipo de medida | Formato recomendado |
 |---|---|
-| Contagens | Número inteiro com separador de milhar |
-| Percentuais | Percentual com 1 ou 2 casas decimais |
-| Médias | Número decimal com 1 ou 2 casas decimais |
-| Rankings | Número inteiro |
-| Variações | Número inteiro ou percentual, conforme o caso |
+| Contagens | Número inteiro com separador de milhar. |
+| Percentuais | Percentual com 1 ou 2 casas decimais. |
+| Médias | Número decimal com 1 ou 2 casas decimais. |
+| Rankings | Número inteiro. |
+| Variações | Número inteiro ou percentual, conforme o caso. |
 
----
+### 13. Recomendações de uso no dashboard
 
-# 15. Recomendações de uso no dashboard
-
-## Página de visão geral
+#### Página de visão geral
 
 Medidas recomendadas:
 
@@ -689,9 +588,7 @@ Medidas recomendadas:
 - `[Total de Votações]`;
 - `[Total de Eventos]`.
 
----
-
-## Página de proposições
+#### Página de proposições
 
 Medidas recomendadas:
 
@@ -701,9 +598,7 @@ Medidas recomendadas:
 - `[% Proposições Classificadas]`;
 - `[Ranking de Temas]`.
 
----
-
-## Página de deputados e partidos
+#### Página de deputados e partidos
 
 Medidas recomendadas:
 
@@ -713,9 +608,7 @@ Medidas recomendadas:
 - `[Ranking de Deputados Autores]`;
 - `[Ranking de Partidos por Proposição]`.
 
----
-
-## Página de votações
+#### Página de votações
 
 Medidas recomendadas:
 
@@ -726,9 +619,7 @@ Medidas recomendadas:
 - `[% Votos Sim]`;
 - `[% Votos Não]`.
 
----
-
-## Página de eventos
+#### Página de eventos
 
 Medidas recomendadas:
 
@@ -738,24 +629,63 @@ Medidas recomendadas:
 - `[Eventos por Órgão]`;
 - `[Participações por Deputado]`.
 
+### 14. Boas práticas para medidas DAX
+
+Boas práticas recomendadas:
+
+- usar nomes claros e orientados ao negócio;
+- evitar medidas com lógica duplicada;
+- criar medidas base e reutilizá-las em medidas derivadas;
+- usar `DIVIDE()` em vez de operador `/` para evitar erro de divisão por zero;
+- padronizar prefixos de percentuais com `%`;
+- separar medidas por pastas no Power BI;
+- documentar medidas críticas neste arquivo;
+- revisar nomes de colunas caso o schema final seja alterado.
+
+### 15. Cuidados e limitações
+
+Pontos de atenção:
+
+- algumas medidas dependem dos nomes finais das tabelas e colunas no Power BI;
+- medidas temporais podem precisar de uma tabela calendário marcada como tabela de datas;
+- rankings dependem do contexto de filtro do relatório;
+- medidas de participação parlamentar podem exigir regra de negócio específica para o denominador;
+- medidas documentadas aqui são referência e podem ser ajustadas no `.pbix`.
+
 ---
 
-# 16. Boas práticas para medidas DAX
+## Como este documento se conecta ao projeto
 
-- Usar nomes claros e orientados ao negócio.
-- Evitar medidas com lógica duplicada.
-- Criar medidas base e reutilizá-las em medidas derivadas.
-- Usar `DIVIDE()` em vez de operador `/` para evitar erro de divisão por zero.
-- Padronizar prefixos de percentuais com `%`.
-- Separar medidas por pastas no Power BI.
-- Documentar medidas críticas neste arquivo.
-- Revisar nomes de colunas caso o schema final seja alterado.
+Este documento é a referência principal para as medidas analíticas do dashboard Power BI.
+
+Ele se conecta diretamente a:
+
+- `README.md`, que apresenta Power BI, DAX e Power Query como tecnologias utilizadas;
+- `docs/dashboard.md`, que descreve as páginas e objetivos do dashboard;
+- `docs/star_schema.md`, que define as tabelas fato e dimensão usadas nas medidas;
+- `docs/data_quality.md`, que garante confiabilidade dos dados usados nos indicadores;
+- `docs/data_contracts.md`, que documenta colunas e regras esperadas;
+- `docs/lineage.md`, que mostra a origem das tabelas consumidas no Power BI.
 
 ---
 
-# 17. Próximas evoluções
+## Referências relacionadas
 
-Possíveis melhorias futuras:
+- [README do Projeto](../README.md)
+- [Dashboard Power BI](dashboard.md)
+- [Modelo Star Schema](star_schema.md)
+- [Qualidade de Dados](data_quality.md)
+- [Contratos de Dados](data_contracts.md)
+- [Linhagem dos Dados](lineage.md)
+- [Arquitetura do Projeto](architecture.md)
+- [Guia de Execução](execution_guide.md)
+- [Evolução do Projeto](project_evolution.md)
+
+---
+
+## Próximas evoluções
+
+Possíveis evoluções deste documento:
 
 - adicionar medidas reais exportadas do arquivo `.pbix`;
 - documentar relacionamento entre medidas e páginas do dashboard;
@@ -763,12 +693,5 @@ Possíveis melhorias futuras:
 - incluir medidas de tendência mensal e anual;
 - criar indicadores específicos por tema legislativo;
 - documentar cálculo de KPIs estratégicos;
-- versionar medidas alteradas em futuras versões do dashboard.
-
----
-
-# 18. Conclusão
-
-As medidas DAX documentadas neste arquivo servem como base para padronizar a análise no Power BI e facilitar a manutenção do dashboard.
-
-Mesmo quando uma medida precisar ser ajustada ao nome final das colunas, este documento registra a lógica analítica esperada para o projeto e fortalece a documentação do portfólio.
+- versionar medidas alteradas em futuras versões do dashboard;
+- adicionar exemplos visuais de uso de cada medida.
