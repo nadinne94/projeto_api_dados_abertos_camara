@@ -1,14 +1,53 @@
 # Contratos de Dados
 
+## Objetivo
+
 Este documento descreve os contratos de dados do projeto `projeto_api_dados_abertos_camara`.
 
-O objetivo é registrar, de forma clara, quais são as expectativas mínimas de estrutura, qualidade e integridade para as principais tabelas produzidas pelo pipeline.
+O objetivo é registrar, de forma clara, as expectativas mínimas de estrutura, qualidade e integridade para as principais tabelas produzidas pelo pipeline.
 
 Os contratos de dados ajudam a garantir que as tabelas geradas nas camadas Bronze, Silver, Gold, Star Schema e Serving estejam consistentes, rastreáveis e adequadas para consumo analítico.
 
 ---
 
-## 1. O que é um contrato de dados
+## Contexto
+
+O projeto processa dados públicos da Câmara dos Deputados a partir de múltiplos endpoints da API. Esses dados passam por etapas de ingestão, limpeza, enriquecimento, modelagem dimensional e publicação para Power BI.
+
+Como cada camada depende da anterior, é importante documentar o que cada tabela deve conter para ser considerada válida.
+
+Os contratos de dados funcionam como uma ponte entre:
+
+- modelagem de dados;
+- Data Quality;
+- documentação técnica;
+- rastreabilidade;
+- consumo analítico.
+
+---
+
+## Escopo
+
+Este documento cobre:
+
+- conceito de contrato de dados;
+- objetivos dos contratos;
+- convenção geral utilizada;
+- regras gerais por camada;
+- contratos por entidade;
+- severidade das regras;
+- exemplo de contrato declarativo;
+- integração com Data Quality;
+- boas práticas;
+- próximas evoluções.
+
+Este documento não substitui os schemas físicos finais das tabelas Delta. Ele funciona como documentação funcional e técnica das expectativas de dados.
+
+---
+
+## Conteúdo Principal
+
+### 1. O que é um contrato de dados
 
 Um contrato de dados define regras mínimas que uma tabela deve atender para ser considerada válida.
 
@@ -18,6 +57,7 @@ No contexto deste projeto, um contrato pode incluir:
 - camada do pipeline;
 - origem dos dados;
 - chave primária ou chave de negócio;
+- grão da tabela;
 - colunas obrigatórias;
 - regras de nulidade;
 - regras de unicidade;
@@ -25,9 +65,7 @@ No contexto deste projeto, um contrato pode incluir:
 - dependências com outras tabelas;
 - validações de qualidade aplicáveis.
 
----
-
-## 2. Objetivos dos contratos
+### 2. Objetivos dos contratos
 
 Os contratos de dados têm como objetivos:
 
@@ -36,11 +74,10 @@ Os contratos de dados têm como objetivos:
 - facilitar manutenção e evolução do pipeline;
 - reduzir risco de quebra entre camadas;
 - aumentar a confiabilidade das tabelas consumidas no Power BI;
-- melhorar rastreabilidade entre ingestão, transformação e serving.
+- melhorar rastreabilidade entre ingestão, transformação e Serving;
+- apoiar revisão técnica do projeto.
 
----
-
-## 3. Convenção geral
+### 3. Convenção geral
 
 Cada contrato segue a estrutura abaixo:
 
@@ -49,17 +86,15 @@ Tabela: nome_da_tabela
 Camada: Bronze | Silver | Gold | Star | Serving
 Origem: tabela ou endpoint de origem
 Grão: nível de detalhe da tabela
-Chave: chave primária ou chave de negócio
+Chave: chave primária, chave substituta ou chave de negócio
 Colunas obrigatórias: campos mínimos esperados
 Regras críticas: validações que devem bloquear a publicação
 Regras de alerta: validações que geram aviso, mas não necessariamente bloqueiam o pipeline
 ```
 
----
+### 4. Regras gerais por camada
 
-## 4. Regras gerais por camada
-
-### 4.1 Bronze
+#### 4.1 Bronze
 
 A camada Bronze preserva os dados brutos da API com metadados técnicos.
 
@@ -79,9 +114,7 @@ Validações recomendadas:
 | `required_columns` | error | Colunas mínimas da entidade devem existir. |
 | `no_nulls` | warning | Chaves principais não devem ser nulas quando fornecidas pela API. |
 
----
-
-### 4.2 Silver
+#### 4.2 Silver
 
 A camada Silver padroniza, limpa e tipa os dados da Bronze.
 
@@ -102,9 +135,7 @@ Validações recomendadas:
 | `unique_key` | error | Chaves únicas devem permanecer únicas. |
 | `max_null_ratio` | warning | Campos analíticos não devem exceder limite de nulos. |
 
----
-
-### 4.3 Gold
+#### 4.3 Gold
 
 A camada Gold adiciona enriquecimentos analíticos, regras de negócio e classificações.
 
@@ -125,9 +156,7 @@ Validações recomendadas:
 | `allowed_values` | warning | Categorias devem pertencer a domínios previstos. |
 | `max_null_ratio` | warning | Taxa de nulos deve ficar dentro do limite definido. |
 
----
-
-### 4.4 Star Schema
+#### 4.4 Star Schema
 
 A camada Star organiza os dados em dimensões e fatos.
 
@@ -148,9 +177,7 @@ Validações recomendadas:
 | `unique_key` | error | Chaves de dimensão devem ser únicas. |
 | `referential_integrity` | warning | Chaves dos fatos devem ter correspondência nas dimensões. |
 
----
-
-### 4.5 Serving
+#### 4.5 Serving
 
 A camada Serving publica as tabelas finais para consumo analítico.
 
@@ -170,24 +197,20 @@ Validações recomendadas:
 | `required_columns` | error | Campos esperados pelo BI devem existir. |
 | `schema_stability` | warning | Mudanças de schema devem ser controladas. |
 
----
-
-# 5. Contratos por entidade
+### 5. Contratos por entidade
 
 Os contratos abaixo representam uma documentação funcional das principais entidades do projeto. Os nomes podem ser ajustados conforme os nomes finais definidos nos registries e nas tabelas Delta.
 
----
+#### 5.1 Deputados
 
-## 5.1 Deputados
+##### Bronze — `deputados`
 
-### Bronze — `deputados`
-
-| Campo | Regra |
+| Item | Regra |
 |---|---|
 | Camada | Bronze |
-| Origem | Endpoint de deputados da API da Câmara |
-| Grão | Um registro por deputado retornado pela API |
-| Chave esperada | `id` ou identificador equivalente do deputado |
+| Origem | Endpoint de deputados da API da Câmara. |
+| Grão | Um registro por deputado retornado pela API. |
+| Chave esperada | `id` ou identificador equivalente do deputado. |
 
 Colunas obrigatórias recomendadas:
 
@@ -202,16 +225,14 @@ Regras críticas:
 - coluna de identificador deve existir;
 - identificador do deputado não deve ser nulo.
 
----
+##### Silver — `deputados`
 
-### Silver — `deputados`
-
-| Campo | Regra |
+| Item | Regra |
 |---|---|
 | Camada | Silver |
-| Origem | Bronze `deputados` |
-| Grão | Um registro padronizado por deputado |
-| Chave esperada | `id_deputado` |
+| Origem | Bronze `deputados`. |
+| Grão | Um registro padronizado por deputado. |
+| Chave esperada | `id_deputado`. |
 
 Colunas obrigatórias recomendadas:
 
@@ -226,17 +247,15 @@ Regras críticas:
 - `id_deputado` único;
 - tipos de dados padronizados.
 
----
+##### Star — `dim_deputado`
 
-### Star — `dim_deputado`
-
-| Campo | Regra |
+| Item | Regra |
 |---|---|
 | Camada | Star Schema |
-| Origem | Gold/Silver deputados |
-| Grão | Um registro por deputado na dimensão |
-| Chave substituta | `sk_deputado` |
-| Chave de negócio | `id_deputado` |
+| Origem | Gold/Silver deputados. |
+| Grão | Um registro por deputado na dimensão. |
+| Chave substituta | `sk_deputado`. |
+| Chave de negócio | `id_deputado`. |
 
 Colunas obrigatórias recomendadas:
 
@@ -253,18 +272,16 @@ Regras críticas:
 - `sk_deputado` único;
 - `id_deputado` único dentro da dimensão.
 
----
+#### 5.2 Partidos
 
-## 5.2 Partidos
+##### Silver — `partidos`
 
-### Silver — `partidos`
-
-| Campo | Regra |
+| Item | Regra |
 |---|---|
 | Camada | Silver |
-| Origem | Bronze `partidos` |
-| Grão | Um registro por partido |
-| Chave esperada | `id_partido` ou `sigla_partido` |
+| Origem | Bronze `partidos`. |
+| Grão | Um registro por partido. |
+| Chave esperada | `id_partido` ou `sigla_partido`. |
 
 Colunas obrigatórias recomendadas:
 
@@ -278,17 +295,15 @@ Regras críticas:
 - `sigla_partido` não nula;
 - duplicidades devem ser controladas.
 
----
+##### Star — `dim_partido`
 
-### Star — `dim_partido`
-
-| Campo | Regra |
+| Item | Regra |
 |---|---|
 | Camada | Star Schema |
-| Origem | Silver/Gold partidos |
-| Grão | Um registro por partido |
-| Chave substituta | `sk_partido` |
-| Chave de negócio | `id_partido` ou `sigla_partido` |
+| Origem | Silver/Gold partidos. |
+| Grão | Um registro por partido. |
+| Chave substituta | `sk_partido`. |
+| Chave de negócio | `id_partido` ou `sigla_partido`. |
 
 Colunas obrigatórias recomendadas:
 
@@ -303,18 +318,16 @@ Regras críticas:
 - `sigla_partido` não nula;
 - domínio de siglas deve ser consistente.
 
----
+#### 5.3 Proposições
 
-## 5.3 Proposições
+##### Bronze — `proposicoes`
 
-### Bronze — `proposicoes`
-
-| Campo | Regra |
+| Item | Regra |
 |---|---|
 | Camada | Bronze |
-| Origem | Endpoint de proposições da API da Câmara |
-| Grão | Um registro por proposição retornada pela API |
-| Chave esperada | `id` ou identificador equivalente da proposição |
+| Origem | Endpoint de proposições da API da Câmara. |
+| Grão | Um registro por proposição retornada pela API. |
+| Chave esperada | `id` ou identificador equivalente da proposição. |
 
 Colunas obrigatórias recomendadas:
 
@@ -331,16 +344,14 @@ Regras críticas:
 - identificador da proposição não nulo;
 - campos mínimos de identificação legislativa devem existir.
 
----
+##### Silver — `proposicoes`
 
-### Silver — `proposicoes`
-
-| Campo | Regra |
+| Item | Regra |
 |---|---|
 | Camada | Silver |
-| Origem | Bronze `proposicoes` |
-| Grão | Um registro padronizado por proposição |
-| Chave esperada | `id_proposicao` |
+| Origem | Bronze `proposicoes`. |
+| Grão | Um registro padronizado por proposição. |
+| Chave esperada | `id_proposicao`. |
 
 Colunas obrigatórias recomendadas:
 
@@ -358,16 +369,14 @@ Regras críticas:
 - `data_apresentacao` convertida para tipo de data ou timestamp;
 - textos relevantes normalizados quando aplicável.
 
----
+##### Gold — `proposicoes`
 
-### Gold — `proposicoes`
-
-| Campo | Regra |
+| Item | Regra |
 |---|---|
 | Camada | Gold |
-| Origem | Silver `proposicoes` + regras/ML |
-| Grão | Um registro enriquecido por proposição |
-| Chave esperada | `id_proposicao` |
+| Origem | Silver `proposicoes` + regras/ML. |
+| Grão | Um registro enriquecido por proposição. |
+| Chave esperada | `id_proposicao`. |
 
 Colunas obrigatórias recomendadas:
 
@@ -396,17 +405,15 @@ Domínios recomendados:
 - `origem_tema`: `REGRA`, `ML`, `FALLBACK`, ou valores equivalentes usados no projeto;
 - `origem_natureza_juridica`: `REGRA`, `ML`, `FALLBACK`, ou valores equivalentes usados no projeto.
 
----
+##### Star — `dim_proposicao`
 
-### Star — `dim_proposicao`
-
-| Campo | Regra |
+| Item | Regra |
 |---|---|
 | Camada | Star Schema |
-| Origem | Gold `proposicoes` |
-| Grão | Um registro por proposição |
-| Chave substituta | `sk_proposicao` |
-| Chave de negócio | `id_proposicao` |
+| Origem | Gold `proposicoes`. |
+| Grão | Um registro por proposição. |
+| Chave substituta | `sk_proposicao`. |
+| Chave de negócio | `id_proposicao`. |
 
 Colunas obrigatórias recomendadas:
 
@@ -426,16 +433,14 @@ Regras críticas:
 - `id_proposicao` único;
 - campos descritivos essenciais devem existir.
 
----
+##### Star — `fato_proposicao`
 
-### Star — `fato_proposicao`
-
-| Campo | Regra |
+| Item | Regra |
 |---|---|
 | Camada | Star Schema |
-| Origem | Gold `proposicoes` + dimensões relacionadas |
-| Grão | Uma linha por proposição |
-| Chave de fato | `id_proposicao` ou chave substituta equivalente |
+| Origem | Gold `proposicoes` + dimensões relacionadas. |
+| Grão | Uma linha por proposição. |
+| Chave de fato | `id_proposicao` ou chave substituta equivalente. |
 
 Colunas obrigatórias recomendadas:
 
@@ -451,412 +456,37 @@ Regras críticas:
 - relacionamento com `dim_proposicao` deve ser válido;
 - relacionamento com `dim_tempo` deve ser válido quando houver data de apresentação.
 
----
-
-## 5.4 Autores de proposições
-
-### Silver/Gold — `proposicoes_autores`
-
-| Campo | Regra |
-|---|---|
-| Camada | Silver/Gold |
-| Origem | Endpoint dependente de autores por proposição |
-| Grão | Um registro por relação entre proposição e autor |
-| Chave esperada | combinação entre `id_proposicao` e identificador/nome do autor |
-
-Colunas obrigatórias recomendadas:
-
-- `id_proposicao`;
-- `id_autor` ou campo equivalente;
-- `nome_autor`;
-- `tipo_autor`.
-
-Regras críticas:
-
-- `id_proposicao` não nulo;
-- autor deve possuir identificador ou nome;
-- relação duplicada deve ser controlada.
-
----
-
-### Star — `fato_autoria`
-
-| Campo | Regra |
-|---|---|
-| Camada | Star Schema |
-| Origem | Gold `proposicoes_autores` + dimensões |
-| Grão | Uma linha por relação autor-proposição |
-| Chave composta | `sk_proposicao` + `sk_deputado` ou autor equivalente |
-
-Colunas obrigatórias recomendadas:
-
-- `sk_proposicao`;
-- `sk_deputado` ou identificador de autor;
-- `id_proposicao`;
-- `nome_autor`;
-- `tipo_autor`.
-
-Regras críticas:
-
-- `sk_proposicao` não nula;
-- autor identificado por chave ou nome;
-- relação autor-proposição não deve duplicar sem motivo analítico.
-
----
-
-## 5.5 Tramitações
-
-### Silver/Gold — `tramitacoes`
-
-| Campo | Regra |
-|---|---|
-| Camada | Silver/Gold |
-| Origem | Endpoint dependente de tramitações por proposição |
-| Grão | Uma linha por movimentação de uma proposição |
-| Chave esperada | combinação entre `id_proposicao`, data/hora e sequência quando disponível |
-
-Colunas obrigatórias recomendadas:
-
-- `id_proposicao`;
-- `data_tramitacao`;
-- `descricao_tramitacao`;
-- `sigla_orgao` ou órgão equivalente;
-- `status_tramitacao`, quando enriquecido.
-
-Regras críticas:
-
-- `id_proposicao` não nulo;
-- data da tramitação deve existir quando disponível na origem;
-- status ou descrição deve estar preenchido;
-- duplicidades devem ser controladas.
-
----
-
-### Star — `fato_tramitacao`
-
-| Campo | Regra |
-|---|---|
-| Camada | Star Schema |
-| Origem | Gold `tramitacoes` + dimensões |
-| Grão | Uma linha por tramitação |
-| Chave de relacionamento | `sk_proposicao`, `sk_tempo`, `sk_orgao` quando aplicável |
-
-Colunas obrigatórias recomendadas:
-
-- `sk_proposicao`;
-- `sk_tempo`;
-- `sk_orgao` ou identificador de órgão;
-- `id_proposicao`;
-- `descricao_tramitacao`;
-- `status_tramitacao`.
-
-Regras críticas:
-
-- `sk_proposicao` não nula;
-- relacionamento com `dim_proposicao` deve ser válido;
-- o grão de uma linha por movimentação deve ser preservado.
-
----
-
-## 5.6 Votações e votos
-
-### Silver/Gold — `votacoes`
-
-| Campo | Regra |
-|---|---|
-| Camada | Silver/Gold |
-| Origem | Endpoint de votações |
-| Grão | Uma linha por votação |
-| Chave esperada | `id_votacao` |
-
-Colunas obrigatórias recomendadas:
-
-- `id_votacao`;
-- `id_proposicao`, quando aplicável;
-- `data_votacao`;
-- `descricao_votacao`;
-- `resultado_votacao`, quando disponível.
-
-Regras críticas:
-
-- `id_votacao` não nulo;
-- `id_votacao` único;
-- data ou descrição da votação deve existir.
-
----
-
-### Silver/Gold — `votos`
-
-| Campo | Regra |
-|---|---|
-| Camada | Silver/Gold |
-| Origem | Endpoint dependente de votos por votação |
-| Grão | Uma linha por voto parlamentar em uma votação |
-| Chave esperada | combinação entre `id_votacao` e deputado/parlamentar |
-
-Colunas obrigatórias recomendadas:
-
-- `id_votacao`;
-- `id_deputado` ou identificador equivalente;
-- `nome_deputado`;
-- `sigla_partido`;
-- `sigla_uf`;
-- `voto`.
-
-Regras críticas:
-
-- `id_votacao` não nulo;
-- parlamentar deve estar identificado;
-- campo `voto` deve existir;
-- domínio de voto deve ser controlado.
-
-Domínios recomendados para `voto`:
-
-- `Sim`;
-- `Não`;
-- `Abstenção`;
-- `Obstrução`;
-- `Art. 17`;
-- outros valores oficiais retornados pela API.
-
----
-
-### Star — `fato_votacao`
-
-| Campo | Regra |
-|---|---|
-| Camada | Star Schema |
-| Origem | Gold `votacoes` + dimensões |
-| Grão | Uma linha por votação |
-| Chave esperada | `id_votacao` |
-
-Colunas obrigatórias recomendadas:
-
-- `id_votacao`;
-- `sk_proposicao`;
-- `sk_tempo`;
-- `resultado_votacao`.
-
-Regras críticas:
-
-- `id_votacao` não nulo;
-- relacionamento com proposição deve ser válido quando houver proposição associada.
-
----
-
-### Star — `fato_voto`
-
-| Campo | Regra |
-|---|---|
-| Camada | Star Schema |
-| Origem | Gold `votos` + dimensões |
-| Grão | Uma linha por voto parlamentar |
-| Chave composta | `id_votacao` + `sk_deputado` |
-
-Colunas obrigatórias recomendadas:
-
-- `id_votacao`;
-- `sk_deputado`;
-- `sk_partido`;
-- `sk_tempo`;
-- `voto`.
-
-Regras críticas:
-
-- `id_votacao` não nulo;
-- `voto` não nulo;
-- domínio de voto válido;
-- relacionamento com dimensões deve ser validado.
-
----
-
-## 5.7 Órgãos
-
-### Silver — `orgaos`
-
-| Campo | Regra |
-|---|---|
-| Camada | Silver |
-| Origem | Endpoint de órgãos da API |
-| Grão | Um registro por órgão |
-| Chave esperada | `id_orgao` ou `sigla_orgao` |
-
-Colunas obrigatórias recomendadas:
-
-- `id_orgao`;
-- `sigla_orgao`;
-- `nome_orgao`.
-
-Regras críticas:
-
-- identificador ou sigla do órgão deve existir;
-- duplicidades devem ser controladas.
-
----
-
-### Star — `dim_orgao`
-
-| Campo | Regra |
-|---|---|
-| Camada | Star Schema |
-| Origem | Silver/Gold órgãos |
-| Grão | Um registro por órgão |
-| Chave substituta | `sk_orgao` |
-| Chave de negócio | `id_orgao` ou `sigla_orgao` |
-
-Colunas obrigatórias recomendadas:
-
-- `sk_orgao`;
-- `id_orgao`;
-- `sigla_orgao`;
-- `nome_orgao`.
-
-Regras críticas:
-
-- `sk_orgao` único;
-- órgão identificado por chave ou sigla.
-
----
-
-## 5.8 Eventos e presença
-
-### Silver/Gold — `eventos`
-
-| Campo | Regra |
-|---|---|
-| Camada | Silver/Gold |
-| Origem | Endpoint de eventos da API |
-| Grão | Uma linha por evento legislativo |
-| Chave esperada | `id_evento` |
-
-Colunas obrigatórias recomendadas:
-
-- `id_evento`;
-- `data_evento`;
-- `descricao_evento`;
-- `id_orgao` ou órgão relacionado;
-- `situacao_evento`, quando disponível.
-
-Regras críticas:
-
-- `id_evento` não nulo;
-- `id_evento` único;
-- data ou descrição do evento deve existir.
-
----
-
-### Silver/Gold — `presencas_eventos`
-
-| Campo | Regra |
-|---|---|
-| Camada | Silver/Gold |
-| Origem | Endpoint dependente de presença em eventos |
-| Grão | Uma linha por presença de parlamentar em evento |
-| Chave esperada | combinação entre `id_evento` e parlamentar |
-
-Colunas obrigatórias recomendadas:
-
-- `id_evento`;
-- `id_deputado` ou identificador equivalente;
-- `nome_deputado`;
-- `sigla_partido`;
-- `sigla_uf`;
-- `situacao_presenca`, quando disponível.
-
-Regras críticas:
-
-- `id_evento` não nulo;
-- parlamentar identificado por chave ou nome;
-- duplicidades devem ser controladas.
-
----
-
-### Star — `fato_evento`
-
-| Campo | Regra |
-|---|---|
-| Camada | Star Schema |
-| Origem | Gold `eventos` + dimensões |
-| Grão | Uma linha por evento |
-| Chave esperada | `id_evento` |
-
-Colunas obrigatórias recomendadas:
-
-- `id_evento`;
-- `sk_tempo`;
-- `sk_orgao`;
-- `descricao_evento`;
-- `situacao_evento`.
-
-Regras críticas:
-
-- `id_evento` não nulo;
-- relacionamento com tempo e órgão deve ser validado quando disponível.
-
----
-
-### Star — `fato_presenca`
-
-| Campo | Regra |
-|---|---|
-| Camada | Star Schema |
-| Origem | Gold `presencas_eventos` + dimensões |
-| Grão | Uma linha por presença parlamentar em evento |
-| Chave composta | `id_evento` + parlamentar |
-
-Colunas obrigatórias recomendadas:
-
-- `id_evento`;
-- `sk_deputado`;
-- `sk_partido`;
-- `sk_tempo`;
-- `situacao_presenca`.
-
-Regras críticas:
-
-- `id_evento` não nulo;
-- parlamentar identificado;
-- relacionamento com `dim_deputado` deve ser validado quando disponível.
-
----
-
-## 5.9 Tempo
-
-### Star — `dim_tempo`
-
-| Campo | Regra |
-|---|---|
-| Camada | Star Schema |
-| Origem | Datas derivadas das tabelas analíticas |
-| Grão | Uma linha por data |
-| Chave substituta | `sk_tempo` |
-| Chave de negócio | `data` |
-
-Colunas obrigatórias recomendadas:
-
-- `sk_tempo`;
-- `data`;
-- `ano`;
-- `mes`;
-- `nome_mes`;
-- `trimestre`;
-- `dia`;
-- `dia_semana`.
-
-Regras críticas:
-
-- `sk_tempo` único;
-- `data` única;
-- `ano`, `mes` e `dia` não nulos;
-- datas devem cobrir o intervalo necessário para as tabelas fato.
-
----
-
-# 6. Severidade das regras
+#### 5.4 Demais entidades
+
+Além de deputados, partidos e proposições, o projeto possui contratos recomendados para:
+
+- autores de proposições;
+- tramitações;
+- votações;
+- votos;
+- órgãos;
+- eventos;
+- presença em eventos;
+- tempo.
+
+Resumo das regras esperadas:
+
+| Entidade | Grão esperado | Regras principais |
+|---|---|---|
+| `proposicoes_autores` / `fato_autoria` | Uma linha por relação autor-proposição. | `id_proposicao` não nulo, autor identificado, duplicidades controladas. |
+| `tramitacoes` / `fato_tramitacao` | Uma linha por movimentação de proposição. | `id_proposicao` não nulo, data/descrição preenchida, grão preservado. |
+| `votacoes` / `fato_votacao` | Uma linha por votação. | `id_votacao` não nulo, votação única, data ou descrição presente. |
+| `votos` / `fato_voto` | Uma linha por voto parlamentar. | `id_votacao` não nulo, parlamentar identificado, domínio de voto controlado. |
+| `orgaos` / `dim_orgao` | Uma linha por órgão. | órgão identificado, chave ou sigla preenchida, duplicidades controladas. |
+| `eventos` / `fato_evento` | Uma linha por evento legislativo. | `id_evento` não nulo, evento único, data ou descrição presente. |
+| `presencas_eventos` / `fato_presenca` | Uma linha por presença parlamentar em evento. | `id_evento` não nulo, parlamentar identificado, duplicidades controladas. |
+| `dim_tempo` | Uma linha por data. | `sk_tempo` único, `data` única, calendário cobrindo fatos. |
+
+### 6. Severidade das regras
 
 As regras podem ser classificadas em dois níveis principais.
 
-## 6.1 Error
+#### Error
 
 Regras do tipo `error` devem bloquear a continuação do pipeline ou impedir a publicação da tabela na camada Serving.
 
@@ -868,7 +498,7 @@ Exemplos:
 - duplicidade em chave que deveria ser única;
 - schema incompatível com a camada de consumo.
 
-## 6.2 Warning
+#### Warning
 
 Regras do tipo `warning` não necessariamente bloqueiam o pipeline, mas devem gerar alerta e ser monitoradas.
 
@@ -879,9 +509,7 @@ Exemplos:
 - relacionamento ausente em pequena parcela dos registros;
 - volume processado muito diferente da execução anterior.
 
----
-
-# 7. Exemplo de contrato em formato declarativo
+### 7. Exemplo de contrato em formato declarativo
 
 Abaixo está um exemplo conceitual de como um contrato poderia ser representado em configuração Python ou YAML.
 
@@ -921,13 +549,11 @@ checks:
     severity: warning
 ```
 
----
-
-# 8. Integração com Data Quality
+### 8. Integração com Data Quality
 
 Os contratos documentados aqui devem orientar a camada de Data Quality do projeto.
 
-A relação esperada é:
+Relação esperada:
 
 ```text
 Contrato de dados
@@ -941,7 +567,7 @@ Resultado da validação
 Decisão: bloquear, alertar ou publicar
 ```
 
-Exemplo de fluxo recomendado:
+Fluxo recomendado:
 
 ```text
 1. Ler tabela produzida pela camada
@@ -952,9 +578,7 @@ Exemplo de fluxo recomendado:
 6. Permitir avanço com alerta se houver apenas warnings
 ```
 
----
-
-# 9. Boas práticas recomendadas
+### 9. Boas práticas recomendadas
 
 Para manter os contratos úteis e atualizados:
 
@@ -968,9 +592,39 @@ Para manter os contratos úteis e atualizados:
 
 ---
 
-# 10. Próximas evoluções
+## Como este documento se conecta ao projeto
 
-Possíveis evoluções deste documento:
+Este documento é a referência principal para os contratos de dados do projeto.
+
+Ele se conecta diretamente a:
+
+- `README.md`, que apresenta Data Contracts como competência demonstrada;
+- `docs/architecture.md`, que posiciona contratos e qualidade dentro da arquitetura;
+- `docs/data_quality.md`, que executa validações baseadas nos contratos;
+- `docs/star_schema.md`, que define dimensões e fatos que precisam de integridade;
+- `docs/execution_guide.md`, que recomenda validações por etapa;
+- `docs/dashboard.md`, que depende de tabelas finais confiáveis;
+- `docs/project_evolution.md`, que propõe contratos executáveis como evolução.
+
+---
+
+## Referências relacionadas
+
+- [README do Projeto](../README.md)
+- [Arquitetura do Projeto](architecture.md)
+- [Guia de Execução](execution_guide.md)
+- [Qualidade de Dados](data_quality.md)
+- [Modelo Star Schema](star_schema.md)
+- [Dashboard Power BI](dashboard.md)
+- [Medidas DAX](dax_measures.md)
+- [Linhagem dos Dados](lineage.md)
+- [Evolução do Projeto](project_evolution.md)
+
+---
+
+## Próximas evoluções
+
+Possíveis evoluções dos contratos de dados:
 
 - transformar contratos em arquivos YAML executáveis;
 - criar um registry formal de contratos por tabela;
@@ -978,12 +632,6 @@ Possíveis evoluções deste documento:
 - persistir resultados das validações em tabela Delta;
 - criar dashboard operacional de qualidade de dados;
 - aplicar bloqueio automático antes da camada Serving;
-- adicionar validação de integridade referencial entre fatos e dimensões.
-
----
-
-# 11. Conclusão
-
-Os contratos de dados ajudam a tornar o projeto mais confiável, documentado e próximo de uma solução produtiva.
-
-Mesmo sendo um projeto de portfólio, a documentação dos contratos demonstra preocupação com governança, qualidade, rastreabilidade e manutenção do pipeline de dados.
+- adicionar validação de integridade referencial entre fatos e dimensões;
+- alinhar contratos com schemas físicos finais das tabelas Delta;
+- versionar contratos por release do projeto.
