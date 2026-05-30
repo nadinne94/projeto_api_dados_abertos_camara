@@ -1,10 +1,18 @@
-# Lineage do Pipeline
+# Linhagem do Pipeline
 
-Este documento descreve a linhagem dos dados do projeto, desde a ingestão na API pública da Câmara dos Deputados até a publicação das tabelas analíticas para consumo no Power BI.
+## Objetivo
+
+Este documento descreve a linhagem dos dados do projeto `projeto_api_dados_abertos_camara`, desde a ingestão na API pública da Câmara dos Deputados até a publicação das tabelas analíticas para consumo no Power BI.
 
 O objetivo é tornar explícito o fluxo entre as camadas Bronze, Silver, Gold, Star Schema e Serving, facilitando manutenção, auditoria, explicação em entrevistas e evolução futura do projeto.
 
-## Visão Geral da Linhagem
+---
+
+## Contexto
+
+O projeto utiliza uma arquitetura lakehouse em camadas para transformar dados públicos legislativos em um produto analítico.
+
+A linhagem mostra como cada entidade percorre o pipeline:
 
 ```text
 API Dados Abertos Câmara
@@ -22,16 +30,50 @@ Serving SQL
 Power BI
 ```
 
-| Camada   | Responsabilidade                         | Tipo de dado                   |
-| -------- | ---------------------------------------- | ------------------------------ |
-| Bronze   | Ingestão dos dados brutos da API         | Dados crus, próximos da origem |
-| Silver   | Padronização, limpeza e normalização     | Dados tratados e consistentes  |
-| Gold     | Enriquecimento analítico e classificação | Dados prontos para análise     |
-| Star     | Modelagem dimensional                    | Fatos e dimensões              |
-| Serving  | Publicação para consumo                  | Tabelas SQL analíticas         |
-| Power BI | Visualização e exploração                | Dashboard e indicadores        |
+Essa documentação ajuda a responder perguntas como:
 
-## Fluxo Geral
+- De onde vem cada tabela?
+- Em qual camada uma entidade é tratada ou enriquecida?
+- Quais tabelas Gold alimentam dimensões e fatos?
+- Quais tabelas finais são usadas no Power BI?
+- Onde a classificação ML/NLP entra no pipeline?
+
+---
+
+## Escopo
+
+Este documento cobre:
+
+- visão geral da linhagem;
+- fluxo geral do pipeline;
+- linhagem por entidade;
+- linhagem das dimensões;
+- linhagem das tabelas fato;
+- linhagem da camada ML/NLP;
+- classificações geradas;
+- linhagem até o Power BI;
+- benefícios da rastreabilidade;
+- próximas evoluções.
+
+Este documento não detalha schemas completos, contratos de dados ou medidas DAX. Esses temas possuem documentos próprios na pasta `docs/`.
+
+---
+
+## Conteúdo Principal
+
+### 1. Visão geral da linhagem
+
+| Camada | Responsabilidade | Tipo de dado |
+|---|---|---|
+| Bronze | Ingestão dos dados brutos da API. | Dados crus, próximos da origem. |
+| Silver | Padronização, limpeza e normalização. | Dados tratados e consistentes. |
+| Gold | Enriquecimento analítico e classificação. | Dados prontos para análise. |
+| Star Schema | Modelagem dimensional. | Fatos e dimensões. |
+| Serving | Publicação para consumo. | Tabelas SQL analíticas. |
+| Power BI | Visualização e exploração. | Dashboard e indicadores. |
+
+### 2. Fluxo geral
+
 ```text
 /dados-abertos-camara-api
         ↓
@@ -57,8 +99,11 @@ dados_abertos.star_schema
         ↓
 Power BI
 ```
-## Linhagem por Entidade
-###Deputados
+
+### 3. Linhagem por entidade
+
+#### 3.1 Deputados
+
 ```text
 API /deputados
         ↓
@@ -78,13 +123,13 @@ star.fato_presenca
         ↓
 Power BI
 ```
-**Descrição:**
 
 Os dados de deputados são ingeridos da API, padronizados na Silver, enriquecidos na Gold e utilizados como dimensão analítica no Star Schema.
 
-A dimensão dim_deputado é utilizada para cruzar autores de proposições, votos e presença em eventos.
+A dimensão `dim_deputado` é usada para cruzar autores de proposições, votos e presença em eventos.
 
-### Partidos
+#### 3.2 Partidos
+
 ```text
 API /partidos
         ↓
@@ -98,11 +143,11 @@ star.dim_partido
         ↓
 Power BI
 ```
-**Descrição:**
 
 Os dados de partidos são usados como dimensão de análise política, permitindo segmentações por sigla, nome, espectro político, corrente ideológica e bloco ideológico.
 
-### Órgãos
+#### 3.3 Órgãos
+
 ```text
 API /orgaos
         ↓
@@ -121,11 +166,10 @@ star.fato_tramitacao
 Power BI
 ```
 
-**Descrição:**
-
 Os órgãos legislativos são usados para contextualizar eventos, tramitações e atividades parlamentares.
 
-### Proposições
+#### 3.4 Proposições
+
 ```text
 API /proposicoes
         ↓
@@ -151,7 +195,6 @@ star.fato_votacao
         ↓
 Power BI
 ```
-**Descrição:**
 
 As proposições são a entidade central do projeto.
 
@@ -164,9 +207,10 @@ Na camada Gold, elas recebem enriquecimentos analíticos e classificações rela
 - categoria regimental;
 - flags analíticas.
 
-Essas informações alimentam a dimensão dim_proposicao e os fatos relacionados.
+Essas informações alimentam a dimensão `dim_proposicao` e os fatos relacionados.
 
-### Autores de Proposições
+#### 3.5 Autores de proposições
+
 ```text
 API /proposicoes/{id}/autores
         ↓
@@ -180,18 +224,18 @@ star.fato_autoria
         ↓
 Power BI
 ```
-**Descrição:**
 
 A entidade de autores representa a relação entre proposições e seus respectivos autores.
 
-A tabela final fato_autoria permite analisar:
+A tabela final `fato_autoria` permite analisar:
 
 - quantidade de proposições por deputado;
 - quantidade de proposições por partido;
 - autoria individual ou coletiva;
 - relação entre parlamentar e tema legislativo.
 
-### Tramitações
+#### 3.6 Tramitações
+
 ```text
 API /proposicoes/{id}/tramitacoes
         ↓
@@ -206,11 +250,9 @@ star.fato_tramitacao
 Power BI
 ```
 
-**Descrição:**
-
 As tramitações registram movimentações das proposições ao longo do tempo.
 
-A tabela fato_tramitacao permite analisar:
+A tabela `fato_tramitacao` permite analisar:
 
 - evolução temporal das proposições;
 - órgãos envolvidos;
@@ -218,7 +260,8 @@ A tabela fato_tramitacao permite analisar:
 - situação da proposição;
 - tempo e fluxo legislativo.
 
-### Votações
+#### 3.7 Votações
+
 ```text
 API /proposicoes/{id}/votacoes
         ↓
@@ -233,11 +276,9 @@ star.fato_votacao
 Power BI
 ```
 
-**Descrição:**
-
 As votações registram deliberações associadas às proposições.
 
-A tabela fato_votacao permite analisar:
+A tabela `fato_votacao` permite analisar:
 
 - quantidade de votações por proposição;
 - votações por período;
@@ -245,7 +286,8 @@ A tabela fato_votacao permite analisar:
 - resultado de votações;
 - relação entre proposições e decisões legislativas.
 
-### Votos
+#### 3.8 Votos
+
 ```text
 API /votacoes/{id}/votos
         ↓
@@ -260,11 +302,9 @@ star.fato_voto
 Power BI
 ```
 
-**Descrição:**
-
 Os votos representam a manifestação individual dos parlamentares em votações.
 
-A tabela fato_voto permite analisar:
+A tabela `fato_voto` permite analisar:
 
 - voto por deputado;
 - voto por partido;
@@ -272,7 +312,8 @@ A tabela fato_voto permite analisar:
 - distribuição entre Sim, Não, Abstenção e outros valores;
 - comportamento parlamentar por tema.
 
-### Eventos
+#### 3.9 Eventos
+
 ```text
 API /eventos
         ↓
@@ -288,11 +329,10 @@ star.fato_evento
         ↓
 Power BI
 ```
-**Descrição:**
 
 Eventos representam atividades legislativas, reuniões, audiências e demais compromissos institucionais.
 
-A tabela fato_evento permite analisar:
+A tabela `fato_evento` permite analisar:
 
 - quantidade de eventos por período;
 - tipo de evento;
@@ -300,7 +340,8 @@ A tabela fato_evento permite analisar:
 - órgão responsável;
 - local de realização.
 
-### Presença em Eventos
+#### 3.10 Presença em eventos
+
 ```text
 API /eventos/{id}/deputados
         ↓
@@ -315,38 +356,40 @@ star.fato_presenca
 Power BI
 ```
 
-**Descrição:**
-
 A presença em eventos relaciona deputados aos eventos legislativos.
 
-A tabela fato_presenca permite analisar:
+A tabela `fato_presenca` permite analisar:
 
 - presença parlamentar em eventos;
 - participação por partido;
 - participação por UF;
 - relação entre deputados e órgãos/eventos.
-## Linhagem das Tabelas Dimensionais
-| Dimensão         | Fontes principais                                  | Finalidade                              |
-| ---------------- | -------------------------------------------------- | --------------------------------------- |
-| `dim_tempo`      | Calendário gerado internamente                     | Análises temporais                      |
-| `dim_deputado`   | `gold.deputados`                                   | Análise por parlamentar                 |
-| `dim_partido`    | `gold.partidos`                                    | Análise por partido                     |
-| `dim_proposicao` | `gold.proposicoes`                                 | Análise por proposição, tema e natureza |
-| `dim_evento`     | `gold.eventos`                                     | Análise por evento                      |
-| `dim_orgao`      | `gold.orgaos`, `gold.tramitacoes`, `gold.votacoes` | Análise por órgão legislativo           |
 
-## Linhagem das Tabelas Fato
-| Fato              | Fontes principais                                  | Granularidade                          |
-| ----------------- | -------------------------------------------------------------------------- | -------------------------------------- |
-| `fato_proposicao` | `gold.proposicoes`, `dim_proposicao`, `dim_tempo`                          | Uma linha por proposição               |
-| `fato_autoria`    | `gold.proposicoes_autores`, `dim_proposicao`, `dim_deputado`               | Uma linha por relação proposição-autor |
-| `fato_tramitacao` | `gold.proposicoes_tramitacoes`, `dim_proposicao`, `dim_orgao`, `dim_tempo` | Uma linha por tramitação               |
-| `fato_votacao`    | `gold.proposicoes_votacoes`, `dim_proposicao`, `dim_orgao`, `dim_tempo`    | Uma linha por votação                  |
-| `fato_voto`       | `gold.votacoes_votos`, `dim_deputado`, `dim_partido`, `dim_proposicao`     | Uma linha por voto parlamentar         |
-| `fato_evento`     | `gold.eventos`, `dim_evento`, `dim_orgao`, `dim_tempo`                     | Uma linha por evento                   |
-| `fato_presenca`   | `gold.eventos_deputados`, `dim_evento`, `dim_deputado`                     | Uma linha por presença em evento       |
+### 4. Linhagem das tabelas dimensionais
 
-## Linhagem do ML/NLP
+| Dimensão | Fontes principais | Finalidade |
+|---|---|---|
+| `dim_tempo` | Calendário gerado internamente. | Análises temporais. |
+| `dim_deputado` | `gold.deputados`. | Análise por parlamentar. |
+| `dim_partido` | `gold.partidos`. | Análise por partido. |
+| `dim_proposicao` | `gold.proposicoes`. | Análise por proposição, tema e natureza. |
+| `dim_evento` | `gold.eventos`. | Análise por evento. |
+| `dim_orgao` | `gold.orgaos`, `gold.tramitacoes`, `gold.votacoes`. | Análise por órgão legislativo. |
+
+### 5. Linhagem das tabelas fato
+
+| Fato | Fontes principais | Granularidade |
+|---|---|---|
+| `fato_proposicao` | `gold.proposicoes`, `dim_proposicao`, `dim_tempo`. | Uma linha por proposição. |
+| `fato_autoria` | `gold.proposicoes_autores`, `dim_proposicao`, `dim_deputado`. | Uma linha por relação proposição-autor. |
+| `fato_tramitacao` | `gold.proposicoes_tramitacoes`, `dim_proposicao`, `dim_orgao`, `dim_tempo`. | Uma linha por tramitação. |
+| `fato_votacao` | `gold.proposicoes_votacoes`, `dim_proposicao`, `dim_orgao`, `dim_tempo`. | Uma linha por votação. |
+| `fato_voto` | `gold.votacoes_votos`, `dim_deputado`, `dim_partido`, `dim_proposicao`. | Uma linha por voto parlamentar. |
+| `fato_evento` | `gold.eventos`, `dim_evento`, `dim_orgao`, `dim_tempo`. | Uma linha por evento. |
+| `fato_presenca` | `gold.eventos_deputados`, `dim_evento`, `dim_deputado`. | Uma linha por presença em evento. |
+
+### 6. Linhagem do ML/NLP
+
 ```text
 silver.proposicoes
         ↓
@@ -370,21 +413,22 @@ dim_proposicao
         ↓
 Power BI
 ```
-## Classificações Geradas
+
+### 7. Classificações geradas
 
 As principais classificações aplicadas às proposições são:
 
-| Classificação              | Descrição                            | Origem                |
-| -------------------------- | ------------------------------------ | --------------------- |
-| `tema_ementa`              | Tema principal da proposição         | Regex + ML            |
-| `macrotema`                | Agrupamento analítico do tema        | Regra de negócio      |
-| `natureza_juridica`        | Finalidade legislativa da proposição | Regex + ML            |
-| `tipo_documental`          | Tipo do documento legislativo        | Regra de negócio      |
-| `categoria_regimental`     | Categoria de tramitação ou impacto   | Regra de negócio      |
-| `origem_tema`              | Origem da classificação temática     | Regex, ML ou fallback |
-| `origem_natureza_juridica` | Origem da classificação jurídica     | Regex, ML ou fallback |
+| Classificação | Descrição | Origem |
+|---|---|---|
+| `tema_ementa` | Tema principal da proposição. | Regex + ML. |
+| `macrotema` | Agrupamento analítico do tema. | Regra de negócio. |
+| `natureza_juridica` | Finalidade legislativa da proposição. | Regex + ML. |
+| `tipo_documental` | Tipo do documento legislativo. | Regra de negócio. |
+| `categoria_regimental` | Categoria de tramitação ou impacto. | Regra de negócio. |
+| `origem_tema` | Origem da classificação temática. | Regex, ML ou fallback. |
+| `origem_natureza_juridica` | Origem da classificação jurídica. | Regex, ML ou fallback. |
 
-## Linhagem para Power BI
+### 8. Linhagem para Power BI
 
 ```text
 star.dim_tempo
@@ -401,102 +445,78 @@ star.fato_voto
 star.fato_evento
 star.fato_presenca
         ↓
-serving.publish_tables
-        ↓
-dados_abertos.star_schema
+serving / dados_abertos.star_schema
         ↓
 Power BI
 ```
 
-## Principais Relacionamentos Analíticos
-```text
-dim_proposicao 1 ─── * fato_proposicao
-dim_proposicao 1 ─── * fato_autoria
-dim_proposicao 1 ─── * fato_tramitacao
-dim_proposicao 1 ─── * fato_votacao
-dim_proposicao 1 ─── * fato_voto
+O Power BI deve consumir preferencialmente as tabelas publicadas pela camada Serving, e não diretamente as camadas intermediárias.
 
-dim_deputado   1 ─── * fato_autoria
-dim_deputado   1 ─── * fato_voto
-dim_deputado   1 ─── * fato_presenca
+### 9. Benefícios da linhagem
 
-dim_partido    1 ─── * fato_voto
+A documentação de linhagem ajuda em:
 
-dim_evento     1 ─── * fato_evento
-dim_evento     1 ─── * fato_presenca
+- manutenção do pipeline;
+- auditoria de transformações;
+- identificação de origem de erros;
+- explicação técnica em entrevistas;
+- evolução segura do projeto;
+- validação de dependências entre camadas;
+- rastreabilidade entre API, Delta Lake, Star Schema e Power BI.
 
-dim_orgao      1 ─── * fato_evento
-dim_orgao      1 ─── * fato_tramitacao
-dim_orgao      1 ─── * fato_votacao
+### 10. Cuidados e limitações
 
-dim_tempo      1 ─── * fatos temporais
-```
+Pontos de atenção:
 
-## Observabilidade da Linhagem
+- a nomenclatura física pode variar conforme schemas e registries finais;
+- algumas entidades dependem de endpoints filhos;
+- dados de votações, votos e presença dependem da disponibilidade da API;
+- classificações ML/NLP podem usar fallback quando o texto for insuficiente;
+- análises históricas mais amplas dependem da ampliação do período de ingestão.
 
-O projeto possui logs estruturados para rastrear execuções do pipeline.
+---
 
-As informações monitoradas incluem:
+## Como este documento se conecta ao projeto
 
-- identificador da execução;
-- camada;
-- dataset;
-- status;
-- quantidade de registros;
-- mensagem de execução;
-- timestamp.
+Este documento é a referência principal para entender o caminho dos dados entre as camadas do pipeline.
 
-Esses logs ajudam a responder:
+Ele se conecta diretamente a:
 
-- qual dataset foi processado;
-- quando foi processado;
-- quantos registros foram gerados;
-- se houve erro;
-- em qual camada o erro ocorreu.
+- `README.md`, que apresenta a arquitetura resumida do projeto;
+- `docs/architecture.md`, que descreve os componentes e camadas;
+- `docs/execution_guide.md`, que define a ordem de execução;
+- `docs/star_schema.md`, que detalha dimensões e fatos;
+- `docs/ml_nlp.md`, que explica a classificação textual;
+- `docs/data_quality.md`, que define validações por camada;
+- `docs/data_contracts.md`, que define contratos esperados para tabelas;
+- `docs/dashboard.md`, que consome os dados finais no Power BI.
 
-## Pontos de Controle de Qualidade
+---
 
-Os principais pontos onde Data Quality deve ser aplicado são:
-```text
-Bronze:
-  depois da ingestão da API
+## Referências relacionadas
 
-Silver:
-  depois da padronização
+- [README do Projeto](../README.md)
+- [Arquitetura do Projeto](architecture.md)
+- [Guia de Execução](execution_guide.md)
+- [Modelo Star Schema](star_schema.md)
+- [Classificação ML/NLP](ml_nlp.md)
+- [Qualidade de Dados](data_quality.md)
+- [Contratos de Dados](data_contracts.md)
+- [Dashboard Power BI](dashboard.md)
+- [Medidas DAX](dax_measures.md)
+- [Evolução do Projeto](project_evolution.md)
 
-Gold:
-  depois do enriquecimento e classificação
+---
 
-Star:
-  depois da criação de fatos e dimensões
+## Próximas evoluções
 
-Serving:
-  depois da publicação das tabelas finais
-```
+Possíveis evoluções da documentação de linhagem:
 
-## Evoluções Futuras de Linhagem
-
-Possíveis melhorias:
-
-- criar documentação automática de dependências entre tabelas;
-- adicionar data contracts por dataset;
-- integrar com Unity Catalog;
-- integrar com OpenLineage;
-- gerar diagrama automático do pipeline;
-- versionar contratos de schema;
-- criar dashboard de execução do pipeline;
-- criar alerta para falhas de linhagem ou tabelas vazias.
-
-##Resumo
-
-Este pipeline transforma dados públicos legislativos em um produto analítico estruturado.
-
-A linhagem principal pode ser resumida como:
-
-API pública
-  → Bronze
-  → Silver
-  → Gold + ML/NLP
-  → Star Schema
-  → Serving SQL
-  → Power BI
+- criar diagrama visual de lineage;
+- gerar lineage automaticamente a partir dos registries;
+- documentar dependências entre datasets;
+- documentar colunas-chave por transição de camada;
+- mapear transformações críticas por tabela;
+- integrar lineage com Data Quality;
+- adicionar lineage técnico dos modelos MLflow;
+- documentar diferenças entre tabelas internas e tabelas publicadas na Serving.
