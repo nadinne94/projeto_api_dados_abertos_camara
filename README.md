@@ -1,5 +1,12 @@
 # Pipeline Lakehouse de Dados Abertos da Câmara dos Deputados
 
+![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
+![PySpark](https://img.shields.io/badge/PySpark-3.5%2B-orange)
+![Delta Lake](https://img.shields.io/badge/Delta%20Lake-3.0%2B-brightgreen)
+![MLflow](https://img.shields.io/badge/MLflow-MLOps-blueviolet)
+![Power BI](https://img.shields.io/badge/Power%20BI-Dashboard-yellow)
+![Status](https://img.shields.io/badge/status-portf%C3%B3lio%20finalizado-success)
+
 Projeto de Engenharia de Dados que transforma dados públicos da Câmara dos Deputados em um produto analítico estruturado para exploração em Power BI.
 
 O pipeline cobre ingestão via API, tratamento com PySpark, arquitetura medalhão, armazenamento em Delta Lake, classificação textual com ML/NLP, modelagem dimensional em Star Schema e publicação de tabelas para consumo analítico.
@@ -14,6 +21,7 @@ O pipeline cobre ingestão via API, tratamento com PySpark, arquitetura medalhã
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
 - [Resultados do Projeto](#resultados-do-projeto)
 - [Dashboard Power BI](#dashboard-power-bi)
+- [Competências Demonstradas](#competências-demonstradas)
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Como Executar](#como-executar)
 - [Documentação Técnica](#documentação-técnica)
@@ -85,7 +93,7 @@ Resumo das camadas:
 |---|---|
 | Bronze | Ingestão dos dados brutos da API, preservando a estrutura original. |
 | Silver | Limpeza, padronização, tipagem e normalização dos dados. |
-| ML/NLP | Classificação textual de proposições por tema e natureza jurídica. |
+| ML/NLP | Treinamento dos modelos e inferência usada na camada Gold. |
 | Gold | Enriquecimento analítico e aplicação de regras de negócio. |
 | Star Schema | Organização dos dados em dimensões e fatos. |
 | Serving | Publicação das tabelas finais para consumo no Power BI. |
@@ -107,7 +115,7 @@ Para detalhes completos, consulte a [documentação de arquitetura](docs/archite
 | NLP | Regex, TF-IDF, classificação textual |
 | MLOps | MLflow |
 | BI | Power BI, DAX, Power Query |
-| Qualidade | Data Quality Checks |
+| Qualidade | Data Quality Checks, Data Contracts |
 | Observabilidade | Logs estruturados |
 | Fonte | API Dados Abertos Câmara dos Deputados |
 
@@ -134,12 +142,51 @@ Resultados principais:
 
 As tabelas finais do Star Schema foram utilizadas em um dashboard Power BI para exploração dos dados legislativos.
 
+![Prévia do Dashboard Power BI](docs/images/dashboard-preview.png)
+
 [Ver dashboard publicado](https://app.powerbi.com/view?r=eyJrIjoiZGIxYTA5MTMtZjIxNy00ZTlkLWJlMjEtMWZmODA1NTlhZWRmIiwidCI6Ijk2NDEzODNiLWQ0N2MtNDQyMy05OTA4LTU5MGYyYTRmNzgwZCJ9)
 
 Documentação complementar:
 
 - [Documentação do Dashboard](docs/dashboard.md)
 - [Modelo Star Schema](docs/star_schema.md)
+- [Medidas DAX](docs/dax_measures.md)
+
+> Observação: a imagem acima deve ser mantida em `docs/images/dashboard-preview.png`. Caso o arquivo ainda não exista no repositório, adicione um print do dashboard com esse nome para que a prévia apareça corretamente no GitHub.
+
+---
+
+## Competências Demonstradas
+
+Este projeto demonstra competências relevantes para atuação como Engenheira de Dados Júnior, Analytics Engineer ou BI Engineer.
+
+### Engenharia de Dados
+
+- Consumo de API pública com múltiplos endpoints.
+- Organização em arquitetura medalhão: Bronze, Silver e Gold.
+- Processamento de dados com PySpark.
+- Armazenamento em Delta Lake.
+- Modularização de código por camadas e responsabilidades.
+- Uso de runners, registries, configurações e utilitários reutilizáveis.
+- Modelagem dimensional com Star Schema.
+- Criação de Fact Tables e Dimension Tables.
+- Validações de qualidade e contratos de dados.
+- Documentação técnica orientada à manutenção do pipeline.
+
+### Analytics e BI
+
+- Publicação de tabelas finais para consumo analítico.
+- Construção de dashboard Power BI.
+- Uso de DAX e Power Query.
+- Estruturação de perguntas de negócio sobre dados legislativos.
+- Organização de métricas por tema, partido, parlamentar, proposição, votação e evento.
+
+### ML/NLP aplicado a dados
+
+- Classificação textual de proposições legislativas.
+- Uso de regras, regex, dicionários temáticos e modelo supervisionado.
+- Registro e versionamento de modelos com MLflow.
+- Uso de fallback para evitar classificações forçadas em textos ambíguos.
 
 ---
 
@@ -215,6 +262,8 @@ A documentação detalhada do projeto está disponível na pasta `docs/`.
 | [Arquitetura do Projeto](docs/architecture.md) | Visão técnica da arquitetura lakehouse, camadas e componentes. |
 | [Dashboard Power BI](docs/dashboard.md) | Explicação do dashboard, objetivo analítico e consumo das tabelas finais. |
 | [Qualidade de Dados](docs/data_quality.md) | Validações, contratos e regras de qualidade aplicadas ao pipeline. |
+| [Contratos de Dados](docs/data_contracts.md) | Regras de schema, chaves, qualidade e integridade das tabelas. |
+| [Medidas DAX](docs/dax_measures.md) | Catálogo das medidas analíticas utilizadas ou recomendadas no Power BI. |
 | [Guia de Execução](docs/execution_guide.md) | Passo a passo para executar Bronze, Silver, ML, Gold, Star e Serving. |
 | [Linhagem dos Dados](docs/lineage.md) | Rastreamento do fluxo dos dados entre camadas. |
 | [Classificação ML/NLP](docs/ml_nlp.md) | Estratégia de classificação textual de proposições. |
@@ -234,9 +283,13 @@ As validações incluem:
 - chaves não nulas;
 - unicidade de chaves;
 - percentual máximo de nulos;
-- domínio de valores permitidos.
+- domínio de valores permitidos;
+- contratos de dados por tabela e camada.
 
-Mais detalhes em [Qualidade de Dados](docs/data_quality.md).
+Mais detalhes em:
+
+- [Qualidade de Dados](docs/data_quality.md)
+- [Contratos de Dados](docs/data_contracts.md)
 
 ---
 
@@ -273,16 +326,37 @@ Mais detalhes em [Modelo Star Schema](docs/star_schema.md).
 
 ## Evoluções Futuras
 
-Possíveis evoluções do projeto:
+As melhorias futuras estão organizadas em dois eixos: Engenharia de Dados e Analytics.
 
-- automatizar a orquestração com Databricks Workflows, Airflow, Prefect ou Dagster;
-- configurar CI/CD com GitHub Actions;
-- ampliar testes unitários e de integração;
-- registrar métricas históricas de Data Quality;
-- melhorar avaliação do modelo ML/NLP com precisão, recall, F1-score e matriz de confusão;
-- expandir a classificação de proposições com embeddings ou modelos de linguagem;
-- documentar medidas DAX do dashboard;
-- criar monitoramento operacional do pipeline.
+### Engenharia de Dados
+
+- Padronizar nomes de funções, módulos e variáveis para manter consistência entre português e inglês.
+- Melhorar o modelo ML/NLP para classificação de proposições, incluindo avaliação por precisão, recall, F1-score e matriz de confusão.
+- Ampliar a base de treino e revisar classes com baixa representatividade.
+- Testar embeddings ou modelos de linguagem para classificação semântica de proposições.
+- Aumentar o período de análise para incluir legislaturas antigas e permitir comparações históricas.
+- Automatizar a orquestração com Databricks Workflows, Airflow, Prefect ou Dagster.
+- Configurar CI/CD com GitHub Actions.
+- Ampliar testes unitários e de integração.
+- Registrar métricas históricas de Data Quality.
+- Criar monitoramento operacional do pipeline.
+
+### Analytics
+
+Com o modelo analítico, podem ser realizadas análises sobre a atuação do Congresso, como:
+
+- evolução temporal da quantidade de proposições;
+- temas legislativos mais frequentes por ano ou legislatura;
+- distribuição de proposições por partido, UF e parlamentar;
+- deputados com maior volume de autoria;
+- partidos com maior participação em proposições;
+- análise da tramitação das proposições ao longo do tempo;
+- órgãos com maior concentração de eventos e tramitações;
+- distribuição de votações por período;
+- comportamento dos votos por partido;
+- participação parlamentar em eventos;
+- comparação entre legislaturas;
+- identificação de temas prioritários em diferentes períodos políticos.
 
 O roadmap completo está em [Evolução do Projeto](docs/project_evolution.md).
 
