@@ -1,12 +1,14 @@
 # Evolução do Projeto
 
+## Objetivo
+
 Este documento registra as limitações atuais, oportunidades de melhoria e próximos passos do projeto `projeto_api_dados_abertos_camara`.
 
 O objetivo é deixar claro que o projeto já possui uma arquitetura funcional para portfólio, mas também apresenta possibilidades reais de evolução técnica, aproximando-o de um cenário mais produtivo de Engenharia de Dados.
 
 ---
 
-## 1. Visão geral
+## Contexto
 
 O projeto implementa um pipeline de dados com dados públicos da Câmara dos Deputados, utilizando:
 
@@ -14,23 +16,78 @@ O projeto implementa um pipeline de dados com dados públicos da Câmara dos Dep
 - arquitetura medalhão;
 - processamento com PySpark;
 - armazenamento em Delta Lake;
-- camada Bronze, Silver e Gold;
+- camadas Bronze, Silver e Gold;
 - classificação textual com regras e ML/NLP;
 - modelo dimensional em Star Schema;
 - camada de Serving;
 - consumo analítico em Power BI;
 - validações de qualidade de dados;
+- contratos de dados;
 - documentação técnica na pasta `docs/`.
 
 Essa estrutura demonstra uma visão ponta a ponta de um projeto de dados, desde a coleta até a disponibilização para análise.
 
+As evoluções descritas neste documento não indicam que o projeto está incompleto. Elas mostram maturidade técnica ao reconhecer limitações, propor melhorias e indicar caminhos para aproximar o projeto de uma solução produtiva.
+
 ---
 
-## 2. Limitações atuais
+## Escopo
+
+Este documento cobre:
+
+- limitações atuais;
+- melhorias futuras de Engenharia de Dados;
+- melhorias futuras de Analytics e BI;
+- evolução da camada ML/NLP;
+- evolução de Data Quality e contratos;
+- evolução do modelo dimensional;
+- evolução da documentação;
+- roadmap sugerido;
+- competências demonstradas;
+- próximos passos recomendados.
+
+Este documento não substitui o README nem os guias técnicos específicos. Ele funciona como registro de roadmap e evolução contínua do projeto.
+
+---
+
+## Conteúdo Principal
+
+### 1. Visão geral da evolução
+
+O projeto já cobre as principais etapas de um pipeline moderno de dados:
+
+```text
+API Câmara
+   ↓
+Bronze
+   ↓
+Silver
+   ↓
+ML/NLP
+   ↓
+Gold
+   ↓
+Star Schema
+   ↓
+Serving
+   ↓
+Power BI
+```
+
+As oportunidades de evolução estão organizadas em quatro grandes dimensões:
+
+| Dimensão | Foco |
+|---|---|
+| Engenharia de Dados | Orquestração, CI/CD, logs, testes, padronização e confiabilidade. |
+| ML/NLP | Melhoria da classificação, avaliação formal e modelos mais avançados. |
+| Analytics | Novas análises, indicadores e expansão histórica. |
+| Governança | Data Quality, contratos, lineage e monitoramento operacional. |
+
+### 2. Limitações atuais
 
 As limitações abaixo não invalidam o projeto. Elas representam pontos naturais de evolução para transformar uma solução de portfólio em uma solução mais próxima de produção.
 
-### 2.1 Execução ainda parcialmente manual
+#### Execução ainda parcialmente manual
 
 Atualmente, a execução do pipeline depende da chamada manual dos runners ou notebooks equivalentes.
 
@@ -48,9 +105,7 @@ Evolução possível:
 
 - utilizar Databricks Workflows, Apache Airflow, Prefect ou Dagster para orquestrar o pipeline ponta a ponta.
 
----
-
-### 2.2 Ausência de CI/CD completo
+#### Ausência de CI/CD completo
 
 O projeto possui estrutura modular e testes, mas ainda pode evoluir para um fluxo completo de integração contínua.
 
@@ -60,17 +115,9 @@ Possível limitação:
 
 Evolução possível:
 
-- configurar pipeline de CI para executar:
-  - lint;
-  - testes unitários;
-  - testes de qualidade de dados;
-  - validação de importações;
-  - checagem de formatação;
-  - validação de documentação.
+- configurar pipeline de CI para executar lint, testes unitários, testes de qualidade, validação de importações, checagem de formatação e validação de documentação.
 
----
-
-### 2.3 Monitoramento operacional básico
+#### Monitoramento operacional básico
 
 O projeto já considera logs e rastreabilidade, mas o monitoramento pode ser ampliado.
 
@@ -85,9 +132,7 @@ Evolução possível:
 - criar painel de monitoramento técnico;
 - adicionar alertas para falhas ou queda de volume.
 
----
-
-### 2.4 Classificação ML/NLP ainda evolutiva
+#### Classificação ML/NLP ainda evolutiva
 
 O projeto utiliza classificação textual para enriquecer proposições com tema e natureza jurídica.
 
@@ -109,9 +154,7 @@ Evolução possível:
 - registrar métricas no MLflow;
 - documentar critérios de aceite do modelo.
 
----
-
-### 2.5 Validações de qualidade podem ser expandidas
+#### Validações de qualidade podem ser expandidas
 
 O projeto já possui uma camada formal de Data Quality, mas ela pode ser fortalecida.
 
@@ -121,7 +164,7 @@ Possível limitação:
 
 Evolução possível:
 
-- criar contratos de dados por tabela;
+- criar contratos de dados executáveis;
 - definir regras por camada;
 - aplicar validações de domínio;
 - validar integridade referencial entre fatos e dimensões;
@@ -129,108 +172,163 @@ Evolução possível:
 - registrar histórico de resultados das validações;
 - impedir publicação na Serving quando regras críticas falharem.
 
----
+### 3. Melhorias futuras de Engenharia de Dados
 
-### 2.6 Modelo dimensional pode ganhar novas métricas
+Melhorias recomendadas:
 
-O Star Schema atual organiza fatos e dimensões para análise, mas pode receber novos indicadores.
+- padronizar nomes de funções, módulos e variáveis para manter consistência entre português e inglês;
+- revisar e reduzir uso de `print()` em favor de logs estruturados;
+- revisar pontos remanescentes com `df.count()` para evitar custo desnecessário em Spark;
+- garantir carregamento correto do `.env` em ambiente local;
+- centralizar nomes e aliases de modelos ML em configuração;
+- criar logs claros de início, fim e erro por dataset;
+- configurar CI/CD com GitHub Actions;
+- ampliar testes unitários e de integração;
+- criar workflow orquestrado com Databricks Workflows, Airflow, Prefect ou Dagster;
+- persistir logs operacionais em tabela Delta;
+- criar modo de execução parcial por camada ou dataset;
+- criar release/tag de portfólio, como `v1.0.0-portfolio`.
 
-Possível limitação:
+### 4. Melhorias futuras de ML/NLP
 
-- nem todas as análises legislativas possíveis estão contempladas no modelo atual.
+A classificação de proposições é um dos diferenciais técnicos do projeto.
 
-Evolução possível:
+Melhorias recomendadas:
 
-- criar novas métricas sobre tramitação de proposições;
-- calcular tempo médio entre etapas legislativas;
-- medir produtividade por parlamentar, partido, UF ou órgão;
-- criar indicadores de participação em eventos;
-- criar métricas de votação por partido ou orientação;
-- adicionar dimensões auxiliares para análise temporal e temática.
+- ampliar a base de treinamento;
+- revisar classes com baixa representatividade;
+- medir acurácia, precisão, recall e F1-score por classe;
+- gerar matriz de confusão;
+- registrar métricas no MLflow;
+- criar critérios mínimos para promoção de modelos ao alias `champion`;
+- versionar datasets de treino;
+- comparar abordagem por regras, modelo clássico e embeddings;
+- testar embeddings ou modelos de linguagem para classificação semântica;
+- criar avaliação manual de amostras classificadas;
+- reduzir conflitos entre temas semelhantes;
+- monitorar percentual de fallback;
+- documentar evolução dos modelos por versão.
 
----
+Métricas recomendadas:
 
-### 2.7 Dashboard pode evoluir em profundidade analítica
+- acurácia geral;
+- precisão por classe;
+- recall por classe;
+- F1-score por classe;
+- matriz de confusão;
+- percentual de registros classificados por regra;
+- percentual de registros classificados por ML;
+- percentual de registros classificados por fallback.
 
-O projeto possui consumo em Power BI, mas o dashboard pode ser expandido.
+### 5. Melhorias futuras de Analytics e BI
 
-Possível limitação:
+O projeto pode evoluir na camada analítica para ampliar a leitura sobre a atuação do Congresso.
 
-- o dashboard pode estar concentrado em uma primeira versão analítica.
+Análises possíveis:
 
-Evolução possível:
+- evolução temporal da quantidade de proposições;
+- temas legislativos mais frequentes por ano ou legislatura;
+- distribuição de proposições por partido, UF e parlamentar;
+- deputados com maior volume de autoria;
+- partidos com maior participação em proposições;
+- análise da tramitação das proposições ao longo do tempo;
+- órgãos com maior concentração de eventos e tramitações;
+- distribuição de votações por período;
+- comportamento dos votos por partido;
+- participação parlamentar em eventos;
+- comparação entre legislaturas;
+- identificação de temas prioritários em diferentes períodos políticos.
+
+Melhorias recomendadas no dashboard:
 
 - criar páginas temáticas no Power BI;
 - adicionar indicadores executivos;
-- documentar medidas DAX;
-- criar visão por tema, partido, parlamentar, UF e período;
+- documentar medidas DAX reais do `.pbix`;
+- criar visão por tema, partido, parlamentar, UF, órgão e período;
 - incluir análise de tendências;
 - incluir filtros avançados;
-- criar seção de storytelling dos dados.
+- criar seção de storytelling dos dados;
+- adicionar página de metodologia;
+- incluir análise por legislaturas antigas.
 
----
+### 6. Ampliação histórica
 
-### 2.8 Ambiente produtivo ainda não formalizado
+Uma evolução importante é aumentar o período de análise para incluir legislaturas antigas.
 
-O projeto foi desenvolvido com foco em portfólio, portanto algumas práticas produtivas podem ser simuladas ou parcialmente implementadas.
+Benefícios:
 
-Possível limitação:
+- permitir comparação entre legislaturas;
+- analisar evolução de temas ao longo dos anos;
+- identificar mudanças de prioridade legislativa;
+- comparar atuação de partidos em diferentes períodos;
+- avaliar comportamento parlamentar em janelas históricas maiores.
 
-- não há necessariamente separação formal de ambientes como desenvolvimento, homologação e produção.
+Cuidados necessários:
 
-Evolução possível:
+- avaliar volume adicional de dados;
+- revisar paginação e limites da API;
+- ajustar estratégia incremental;
+- validar consistência histórica de partidos, deputados e órgãos;
+- revisar modelo de tempo e legislatura.
 
-- separar ambientes por configuração;
-- criar schemas diferentes por ambiente;
-- parametrizar paths e catálogos;
-- adotar secrets para credenciais;
-- criar processo de deploy automatizado;
-- definir convenções de versionamento.
+### 7. Evolução de Data Quality e contratos
 
----
+Possíveis melhorias:
 
-## 3. Melhorias futuras recomendadas
+- transformar contratos em arquivos YAML executáveis;
+- criar registry formal de contratos por tabela;
+- integrar contratos ao runner de cada camada;
+- persistir resultados das validações em tabela Delta;
+- criar dashboard operacional de qualidade de dados;
+- aplicar bloqueio automático antes da camada Serving;
+- adicionar validação de integridade referencial entre fatos e dimensões;
+- alinhar contratos com schemas físicos finais das tabelas Delta;
+- versionar contratos por release do projeto.
 
-As melhorias abaixo estão organizadas por prioridade.
+### 8. Evolução do modelo dimensional
 
-### 3.1 Prioridade alta
+Possíveis melhorias:
 
-- Revisar execução completa ponta a ponta após cada alteração relevante.
-- Garantir que o carregamento do `.env` funcione corretamente em ambiente local.
-- Reduzir uso de `print()` em favor de logs estruturados.
-- Revisar pontos remanescentes com `df.count()` para evitar custo desnecessário.
-- Garantir logs claros de início, fim e erro por dataset.
-- Validar aliases dos modelos ML utilizados na inferência.
-- Consolidar documentação do README com links para todos os arquivos da pasta `docs/`.
+- criar diagrama visual do Star Schema;
+- validar integridade referencial entre todos os fatos e dimensões;
+- documentar fisicamente o schema final de cada tabela;
+- incluir dimensões adicionais para legislatura, mandato e região;
+- criar fatos agregados para otimizar consultas no Power BI;
+- revisar historização de partido por parlamentar;
+- documentar granularidade final com base nas tabelas publicadas;
+- alinhar contratos de dados com as tabelas físicas da camada Star.
 
----
+### 9. Evolução da documentação
 
-### 3.2 Prioridade média
+A documentação atual cobre os principais blocos do projeto.
 
-- Criar testes unitários para transformações críticas.
-- Criar testes de integração para runners principais.
-- Criar contratos de dados por tabela.
-- Registrar métricas de Data Quality em uma tabela histórica.
-- Expandir métricas do dashboard Power BI.
-- Melhorar documentação das medidas DAX utilizadas.
-- Documentar exemplos de consultas SQL nas tabelas finais.
+Arquivos existentes:
 
----
+```text
+docs/architecture.md
+docs/dashboard.md
+docs/data_contracts.md
+docs/data_quality.md
+docs/dax_measures.md
+docs/execution_guide.md
+docs/lineage.md
+docs/ml_nlp.md
+docs/project_evolution.md
+docs/star_schema.md
+```
 
-### 3.3 Prioridade baixa
+Possíveis documentos futuros:
 
-- Criar automação de deploy.
-- Criar ambiente de demonstração reproduzível.
-- Adicionar badges no README.
-- Adicionar diagrama visual da arquitetura.
-- Criar exemplos de análise exploratória.
-- Adicionar comparação entre versões do modelo ML.
+```text
+docs/troubleshooting.md
+docs/sql_examples.md
+docs/operations_guide.md
+docs/model_diagram.md
+```
 
----
+### 10. Roadmap sugerido
 
-## 4. Roadmap sugerido
-
-### Fase 1 — Finalização para portfólio
+#### Fase 1 — Finalização para portfólio
 
 Objetivo: deixar o projeto claro, executável e bem documentado.
 
@@ -242,26 +340,22 @@ Tarefas recomendadas:
 - revisar docstrings principais;
 - revisar exemplos de execução;
 - garantir que o dashboard esteja documentado;
-- incluir prints ou descrição das principais páginas do Power BI.
+- incluir print do Power BI em `docs/images/dashboard-preview.png`.
 
----
-
-### Fase 2 — Qualidade e confiabilidade
+#### Fase 2 — Qualidade e confiabilidade
 
 Objetivo: aumentar a confiança nos dados gerados.
 
 Tarefas recomendadas:
 
 - ampliar testes;
-- formalizar contratos de dados;
+- formalizar contratos executáveis;
 - registrar resultados de validações;
 - criar validações entre camadas;
 - validar integridade entre fatos e dimensões;
 - criar logs operacionais mais detalhados.
 
----
-
-### Fase 3 — Evolução do ML/NLP
+#### Fase 3 — Evolução do ML/NLP
 
 Objetivo: melhorar a classificação automática das proposições.
 
@@ -274,9 +368,7 @@ Tarefas recomendadas:
 - registrar experimentos no MLflow;
 - definir métrica mínima aceitável para publicação do modelo.
 
----
-
-### Fase 4 — Orquestração e produção
+#### Fase 4 — Orquestração e produção
 
 Objetivo: aproximar o projeto de uma solução produtiva.
 
@@ -290,187 +382,7 @@ Tarefas recomendadas:
 - publicar tabelas finais com controle de versão;
 - criar documentação de operação.
 
----
-
-## 5. Possíveis evoluções arquiteturais
-
-### 5.1 Orquestração com Databricks Workflows
-
-Uma evolução natural é transformar a execução sequencial dos runners em um workflow com dependências explícitas:
-
-```text
-Bronze
-  ↓
-Silver
-  ↓
-ML Training
-  ↓
-Gold
-  ↓
-Star Schema
-  ↓
-Serving
-```
-
-Benefícios:
-
-- melhor controle de falhas;
-- histórico de execuções;
-- agendamento;
-- retries;
-- observabilidade operacional.
-
----
-
-### 5.2 Integração com GitHub Actions
-
-O GitHub Actions pode ser usado para validar o projeto a cada push ou pull request.
-
-Exemplos de validações:
-
-- instalação das dependências;
-- execução dos testes;
-- validação de lint;
-- checagem de imports;
-- validação de documentação Markdown.
-
----
-
-### 5.3 Camada de métricas operacionais
-
-Criar uma tabela de monitoramento técnico permitiria acompanhar a saúde do pipeline.
-
-Exemplo de campos:
-
-```text
-execution_id
-camada
-dataset
-status
-started_at
-finished_at
-duration_seconds
-rows_read
-rows_written
-error_message
-```
-
-Benefícios:
-
-- rastreabilidade;
-- análise de falhas;
-- comparação entre execuções;
-- base para alertas.
-
----
-
-### 5.4 Data Quality como etapa bloqueante
-
-Uma evolução importante é impedir que dados inconsistentes avancem para camadas analíticas.
-
-Exemplo:
-
-```text
-se validação crítica falhar:
-    não publicar na Serving
-```
-
-Benefícios:
-
-- maior confiabilidade;
-- redução de erro no dashboard;
-- melhor governança dos dados.
-
----
-
-## 6. Evolução da classificação de proposições
-
-A classificação de proposições é um dos pontos mais importantes para evolução do projeto.
-
-### Melhorias possíveis
-
-- separar claramente classificação por regras e classificação por ML;
-- medir cobertura das regras;
-- medir acurácia do modelo ML;
-- criar avaliação manual de amostras classificadas;
-- balancear classes com poucos exemplos;
-- revisar temas sobrepostos;
-- criar hierarquia de temas;
-- usar embeddings para capturar similaridade semântica;
-- registrar versão do modelo utilizada em cada execução;
-- salvar a origem da classificação em campo próprio.
-
-### Métricas recomendadas
-
-- acurácia geral;
-- precisão por classe;
-- recall por classe;
-- F1-score por classe;
-- matriz de confusão;
-- percentual de registros classificados por regra;
-- percentual de registros classificados por ML;
-- percentual de registros classificados por fallback.
-
----
-
-## 7. Evolução do dashboard
-
-O dashboard pode ser expandido para contar melhor a história dos dados legislativos.
-
-### Ideias de páginas
-
-- visão geral legislativa;
-- análise de proposições por tema;
-- análise por parlamentar;
-- análise por partido;
-- análise por UF;
-- tramitação e tempo médio;
-- votações e posicionamentos;
-- presença em eventos;
-- evolução temporal.
-
-### Melhorias técnicas
-
-- documentar tabelas usadas;
-- documentar medidas DAX;
-- revisar relacionamentos no modelo Power BI;
-- criar calendário analítico;
-- padronizar nomes de medidas;
-- separar medidas por pasta temática;
-- incluir página de metodologia.
-
----
-
-## 8. Evolução da documentação
-
-A documentação atual já cobre os principais blocos do projeto, mas pode ser ampliada com documentos complementares.
-
-Arquivos existentes:
-
-```text
-docs/architecture.md
-docs/dashboard.md
-docs/data_quality.md
-docs/execution_guide.md
-docs/lineage.md
-docs/ml_nlp.md
-docs/star_schema.md
-docs/project_evolution.md
-```
-
-Possíveis documentos futuros:
-
-```text
-docs/troubleshooting.md
-docs/data_contracts.md
-docs/sql_examples.md
-docs/dax_measures.md
-docs/operations_guide.md
-```
-
----
-
-## 9. O que este projeto demonstra
+### 11. Competências demonstradas
 
 Mesmo com pontos de evolução, o projeto já demonstra competências importantes para uma vaga júnior em Engenharia de Dados:
 
@@ -484,25 +396,70 @@ Mesmo com pontos de evolução, o projeto já demonstra competências importante
 - Fact Tables;
 - Dimension Tables;
 - qualidade de dados;
+- contratos de dados;
 - documentação técnica;
 - classificação textual com ML/NLP;
 - integração com Power BI;
 - visão de pipeline ponta a ponta;
 - preocupação com manutenção e evolução.
 
+### 12. Próximos passos recomendados
+
+Próximos passos de maior impacto:
+
+1. adicionar a imagem real do dashboard em `docs/images/dashboard-preview.png`;
+2. validar links do README e da pasta `docs/`;
+3. executar testes com `pytest`;
+4. executar lint com `ruff`;
+5. revisar `.env.example` e carregamento de variáveis;
+6. validar execução ponta a ponta;
+7. criar tag/release de portfólio;
+8. divulgar o projeto no currículo e LinkedIn.
+
 ---
 
-## 10. Conclusão
+## Como este documento se conecta ao projeto
 
-O projeto está estruturado como uma solução completa de portfólio, cobrindo ingestão, transformação, enriquecimento, modelagem dimensional e visualização.
+Este documento é a referência principal para roadmap, evolução e próximos passos do projeto.
 
-As próximas evoluções devem priorizar:
+Ele se conecta diretamente a:
 
-1. execução ponta a ponta validada;
-2. automação e orquestração;
-3. melhoria da classificação ML/NLP;
-4. ampliação da qualidade de dados;
-5. documentação de métricas e dashboard;
-6. preparação para um cenário mais próximo de produção.
+- `README.md`, que apresenta as evoluções futuras de forma resumida;
+- `docs/architecture.md`, que mostra a base arquitetural atual;
+- `docs/execution_guide.md`, que pode evoluir com orquestração e automação;
+- `docs/ml_nlp.md`, que detalha a camada de classificação a ser aprimorada;
+- `docs/data_quality.md`, que pode evoluir para validações bloqueantes;
+- `docs/data_contracts.md`, que pode evoluir para contratos executáveis;
+- `docs/star_schema.md`, que pode evoluir com novas dimensões e fatos;
+- `docs/dashboard.md`, que pode evoluir com novas páginas e análises;
+- `docs/dax_measures.md`, que pode evoluir com medidas reais do `.pbix`.
 
-Essas melhorias reforçam a maturidade do projeto e mostram capacidade de pensar não apenas no código, mas também em arquitetura, confiabilidade, governança e evolução contínua.
+---
+
+## Referências relacionadas
+
+- [README do Projeto](../README.md)
+- [Arquitetura do Projeto](architecture.md)
+- [Guia de Execução](execution_guide.md)
+- [Classificação ML/NLP](ml_nlp.md)
+- [Qualidade de Dados](data_quality.md)
+- [Contratos de Dados](data_contracts.md)
+- [Modelo Star Schema](star_schema.md)
+- [Dashboard Power BI](dashboard.md)
+- [Medidas DAX](dax_measures.md)
+- [Linhagem dos Dados](lineage.md)
+
+---
+
+## Próximas evoluções
+
+As próximas evoluções prioritárias são:
+
+- adicionar imagem real do dashboard ao repositório;
+- validar execução ponta a ponta;
+- configurar CI/CD básico;
+- criar release de portfólio;
+- ampliar avaliação formal do modelo ML/NLP;
+- transformar contratos de dados em validações executáveis;
+- ampliar análise para legislaturas antigas;
+- evoluir o dashboard com novas análises sobre atuação do Congresso.
