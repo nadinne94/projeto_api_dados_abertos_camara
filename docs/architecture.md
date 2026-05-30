@@ -1,13 +1,10 @@
 # Arquitetura do Projeto
 
-Este documento descreve a arquitetura técnica do projeto de Engenharia de Dados desenvolvido com dados públicos da Câmara dos Deputados.
+## Objetivo
 
-O projeto implementa um pipeline lakehouse com arquitetura medalhão, processamento em PySpark, armazenamento em Delta Lake, classificação NLP/ML, modelo dimensional em star schema e camada de serving para consumo analítico em Power BI.
+Este documento descreve a arquitetura técnica do projeto `projeto_api_dados_abertos_camara`.
 
-
-## Objetivo da Arquitetura
-
-O objetivo da arquitetura é transformar dados brutos da API pública da Câmara dos Deputados em um produto analítico confiável, organizado e pronto para visualização.
+O objetivo da arquitetura é transformar dados brutos da API pública da Câmara dos Deputados em um produto analítico confiável, organizado e pronto para visualização em Power BI.
 
 A arquitetura foi desenhada para atender aos seguintes princípios:
 
@@ -22,7 +19,45 @@ A arquitetura foi desenhada para atender aos seguintes princípios:
 - observabilidade básica;
 - facilidade de manutenção.
 
-## Visão Geral
+---
+
+## Contexto
+
+O projeto implementa um pipeline lakehouse com arquitetura medalhão, processamento em PySpark, armazenamento em Delta Lake, classificação ML/NLP, modelo dimensional em Star Schema e camada de Serving para consumo analítico.
+
+A fonte principal é a API pública de Dados Abertos da Câmara dos Deputados. Os dados extraídos são organizados em camadas, enriquecidos com regras de negócio e preparados para análises sobre proposições, votações, deputados, partidos, órgãos, eventos e tramitações.
+
+---
+
+## Escopo
+
+Este documento cobre:
+
+- visão geral da arquitetura;
+- componentes principais;
+- estrutura de pastas;
+- padrão arquitetural utilizado;
+- camadas Bronze, Silver e Gold;
+- ingestão de dados;
+- registries;
+- orquestração;
+- Delta Lake;
+- configuração;
+- observabilidade;
+- qualidade de dados;
+- integração com ML/NLP;
+- Star Schema;
+- Serving;
+- Power BI;
+- pontos de evolução.
+
+Este documento não detalha todos os contratos de dados, medidas DAX ou regras específicas de classificação. Esses temas possuem documentos próprios na pasta `docs/`.
+
+---
+
+## Conteúdo Principal
+
+### 1. Visão geral da arquitetura
 
 ```text
 ┌──────────────────────────────────────────────┐
@@ -43,14 +78,14 @@ A arquitetura foi desenhada para atender aos seguintes princípios:
                         │
                         ▼
 ┌──────────────────────────────────────────────┐
-│ Gold                                         │
-│ Enriquecimento analítico e classificação      │
+│ ML/NLP                                       │
+│ Treinamento e classificação textual           │
 └───────────────────────┬──────────────────────┘
                         │
                         ▼
 ┌──────────────────────────────────────────────┐
-│ ML/NLP                                       │
-│ Classificação temática e jurídica             │
+│ Gold                                         │
+│ Enriquecimento analítico e classificação      │
 └───────────────────────┬──────────────────────┘
                         │
                         ▼
@@ -72,23 +107,22 @@ A arquitetura foi desenhada para atender aos seguintes princípios:
 └──────────────────────────────────────────────┘
 ```
 
-## Componentes Principais
+### 2. Componentes principais
 
-| Componente   | Responsabilidade                                  |
-| ------------ | ------------------------------------------------- |
-| API Câmara   | Fonte pública dos dados legislativos              |
-| Bronze       | Persistência dos dados brutos                     |
-| Silver       | Limpeza, padronização e tipagem                   |
-| Gold         | Enriquecimento, regras de negócio e classificação |
-| ML/NLP       | Classificação textual de proposições              |
-| Star Schema  | Modelo dimensional para análise                   |
-| Serving      | Publicação das tabelas finais                     |
-| Power BI     | Camada de visualização                            |
-| Monitoring   | Logs, execução e rastreabilidade                  |
-| Data Quality | Validações formais por camada e tabela            |
+| Componente | Responsabilidade |
+|---|---|
+| API Câmara | Fonte pública dos dados legislativos. |
+| Bronze | Persistência dos dados brutos. |
+| Silver | Limpeza, padronização e tipagem. |
+| ML/NLP | Treinamento e inferência para classificação textual. |
+| Gold | Enriquecimento, regras de negócio e classificação. |
+| Star Schema | Modelo dimensional para análise. |
+| Serving | Publicação das tabelas finais. |
+| Power BI | Camada de visualização. |
+| Monitoring | Logs, execução e rastreabilidade. |
+| Data Quality | Validações formais por camada e tabela. |
 
-
-## Estrutura de Pastas
+### 3. Estrutura de pastas
 
 ```text
 src/
@@ -134,53 +168,51 @@ src/
     quality/
 ```
 
-## Padrão Arquitetural
+### 4. Padrões arquiteturais
 
 O projeto combina três padrões principais:
 
-1. **Arquitetura Medalhão**
-2. **Lakehouse com Delta Lake**
-3. **Modelo Dimensional Star Schema**
+1. **Arquitetura Medalhão**;
+2. **Lakehouse com Delta Lake**;
+3. **Modelo Dimensional Star Schema**.
 
-Além disso, o projeto usa padrões de modularização como:
+Além disso, utiliza padrões de modularização como:
 
-* registries;
-* runners por camada;
-* factories de ingestão;
-* helpers reutilizáveis;
-* contratos de qualidade;
-* logging estruturado.
+- registries;
+- runners por camada;
+- factories de ingestão;
+- helpers reutilizáveis;
+- contratos de qualidade;
+- logging estruturado.
 
-# Arquitetura Medalhão
+### 5. Arquitetura Medalhão
 
-## Bronze
+#### Bronze
 
 A camada Bronze é responsável por capturar dados da API da forma mais próxima possível da origem.
 
-### Responsabilidades
+Responsabilidades:
 
-* consumir endpoints da API;
-* tratar paginação;
-* lidar com endpoints dependentes;
-* controlar ingestões incrementais;
-* adicionar metadados técnicos;
-* salvar dados em Delta Lake;
-* registrar logs de execução.
+- consumir endpoints da API;
+- tratar paginação;
+- lidar com endpoints dependentes;
+- controlar ingestões incrementais;
+- adicionar metadados técnicos;
+- salvar dados em Delta Lake;
+- registrar logs de execução.
 
-### Dados típicos
+Dados típicos:
 
-* deputados;
-* partidos;
-* órgãos;
-* proposições;
-* autores;
-* tramitações;
-* votações;
-* votos;
-* eventos;
-* presença em eventos.
-
-### Características
+- deputados;
+- partidos;
+- órgãos;
+- proposições;
+- autores;
+- tramitações;
+- votações;
+- votos;
+- eventos;
+- presença em eventos.
 
 A Bronze não deve conter regras analíticas complexas. Seu papel principal é preservar o dado bruto e garantir rastreabilidade.
 
@@ -190,22 +222,20 @@ API
 Bronze Delta
 ```
 
-## Silver
+#### Silver
 
-A camada Silver é responsável por transformar os dados brutos em dados limpos, consistentes e padronizados.
+A camada Silver transforma os dados brutos em dados limpos, consistentes e padronizados.
 
-### Responsabilidades
+Responsabilidades:
 
-* renomear colunas;
-* converter tipos;
-* padronizar datas;
-* tratar nulos;
-* remover duplicidades;
-* normalizar textos;
-* padronizar identificadores;
-* preparar dados para enriquecimento.
-
-### Características
+- renomear colunas;
+- converter tipos;
+- padronizar datas;
+- tratar nulos;
+- remover duplicidades;
+- normalizar textos;
+- padronizar identificadores;
+- preparar dados para enriquecimento.
 
 A Silver deve conter dados confiáveis e coerentes, mas ainda sem regras analíticas muito específicas.
 
@@ -215,29 +245,29 @@ Bronze Delta
 Silver Delta
 ```
 
-## Gold
+#### Gold
 
 A camada Gold adiciona valor analítico aos dados.
 
-### Responsabilidades
+Responsabilidades:
 
-* criar atributos derivados;
-* aplicar regras de negócio;
-* classificar proposições;
-* enriquecer votos, eventos e tramitações;
-* gerar flags analíticas;
-* preparar dados para modelo dimensional.
+- criar atributos derivados;
+- aplicar regras de negócio;
+- classificar proposições;
+- enriquecer votos, eventos e tramitações;
+- gerar flags analíticas;
+- preparar dados para modelo dimensional.
 
-### Exemplos de enriquecimentos
+Exemplos de enriquecimentos:
 
-* classificação temática;
-* natureza jurídica;
-* tipo documental;
-* categoria regimental;
-* macrotema;
-* flags sociais, econômicas e normativas;
-* classificação de votos;
-* categorização de eventos.
+- classificação temática;
+- natureza jurídica;
+- tipo documental;
+- categoria regimental;
+- macrotema;
+- flags sociais, econômicas e normativas;
+- classificação de votos;
+- categorização de eventos.
 
 ```text
 Silver Delta
@@ -245,11 +275,11 @@ Silver Delta
 Gold Delta
 ```
 
-# Ingestão de Dados
+### 6. Ingestão de dados
 
 A ingestão foi desenhada para suportar diferentes padrões da API da Câmara.
 
-## Ingestão Simples
+#### Ingestão simples
 
 Usada para endpoints que retornam entidades independentes.
 
@@ -273,9 +303,7 @@ create DataFrame
 write Bronze
 ```
 
----
-
-## Ingestão Incremental
+#### Ingestão incremental
 
 Usada para endpoints que podem ser processados por período ou atualização.
 
@@ -299,8 +327,7 @@ write/merge Bronze
 update watermark
 ```
 
-
-## Ingestão Dependente
+#### Ingestão dependente
 
 Usada para endpoints filhos que dependem de IDs de entidades pai.
 
@@ -328,33 +355,26 @@ append parent id metadata
 write Bronze
 ```
 
----
-
-# Registries
+### 7. Registries
 
 O projeto utiliza registries para desacoplar os runners das transformações.
 
-## Objetivo
-
-Evitar que os runners conheçam detalhes internos de cada transformação.
-
 Em vez de codificar regras diretamente no runner, cada camada consulta um registry que informa:
 
-* nome da tabela;
-* função de transformação;
-* origem;
-* destino;
-* chaves;
-* dependências.
+- nome da tabela;
+- função de transformação;
+- origem;
+- destino;
+- chaves;
+- dependências.
 
+Benefícios:
 
-## Benefícios
-
-* facilita inclusão de novos datasets;
-* reduz acoplamento;
-* melhora organização;
-* torna o pipeline mais extensível;
-* facilita leitura por camada.
+- facilita inclusão de novos datasets;
+- reduz acoplamento;
+- melhora organização;
+- torna o pipeline mais extensível;
+- facilita leitura por camada.
 
 Exemplo conceitual:
 
@@ -365,7 +385,7 @@ TRANSFORM_REGISTRY = {
 }
 ```
 
-# Orquestração
+### 8. Orquestração
 
 A orquestração é modular, com runners separados por camada.
 
@@ -377,19 +397,17 @@ star/orchestration/runner.py
 ml/orchestration/training_runner.py
 ```
 
-## Responsabilidades dos runners
+Responsabilidades dos runners:
 
-* identificar datasets a processar;
-* consultar registries;
-* executar transformações;
-* aplicar validações;
-* salvar dados;
-* registrar logs;
-* tratar erros.
+- identificar datasets a processar;
+- consultar registries;
+- executar transformações;
+- aplicar validações;
+- salvar dados;
+- registrar logs;
+- tratar erros.
 
----
-
-## Fluxo de execução recomendado
+Fluxo de execução recomendado:
 
 ```text
 1. Bronze
@@ -401,42 +419,34 @@ ml/orchestration/training_runner.py
 7. Power BI
 ```
 
----
-
-# Delta Lake
+### 9. Delta Lake
 
 O Delta Lake é usado como formato de armazenamento nas camadas do pipeline.
 
-## Benefícios
+Benefícios:
 
-* transações ACID;
-* schema enforcement;
-* suporte a merge/upsert;
-* histórico de versões;
-* integração nativa com Spark;
-* base adequada para arquitetura lakehouse.
+- transações ACID;
+- schema enforcement;
+- suporte a merge/upsert;
+- histórico de versões;
+- integração nativa com Spark;
+- base adequada para arquitetura lakehouse.
 
----
+Operações centralizadas em utilitários:
 
-## Operações utilizadas
-
-O projeto centraliza operações Delta em utilitários, como:
-
-* leitura de tabelas;
-* escrita;
-* merge;
-* overwrite;
-* append;
-* optimize;
-* vacuum.
+- leitura de tabelas;
+- escrita;
+- merge;
+- overwrite;
+- append;
+- optimize;
+- vacuum.
 
 ```text
 src/utils/storage/delta_io.py
 ```
 
----
-
-# Configuração
+### 10. Configuração
 
 As configurações ficam centralizadas em `src/config`.
 
@@ -448,17 +458,12 @@ src/config/
   spark_config.py
 ```
 
-## Responsabilidades
-
-| Arquivo             | Responsabilidade                                 |
-| ------------------- | ------------------------------------------------ |
-| `api_config.py`     | Configurações da API                             |
-| `dataset_config.py` | Definição dos datasets, endpoints e dependências |
-| `project_config.py` | Caminhos, schemas e storage                      |
-| `spark_config.py`   | Configurações Spark                              |
-
-
-## Parametrização por ambiente
+| Arquivo | Responsabilidade |
+|---|---|
+| `api_config.py` | Configurações da API. |
+| `dataset_config.py` | Definição dos datasets, endpoints e dependências. |
+| `project_config.py` | Caminhos, schemas e storage. |
+| `spark_config.py` | Configurações Spark. |
 
 A arquitetura ideal usa variáveis de ambiente para evitar valores fixos no código.
 
@@ -472,378 +477,174 @@ GOLD_SCHEMA=dados_abertos.gold
 STAR_SCHEMA=dados_abertos.star_schema
 ```
 
-Essas variáveis podem ser descritas no arquivo:
+### 11. Observabilidade
 
-```text
-.env.example
-```
+O projeto prevê logs estruturados para rastrear a execução do pipeline.
 
-# ML/NLP Legislativo
+Informações recomendadas nos logs:
 
-O projeto possui uma camada de NLP e Machine Learning voltada à classificação de proposições legislativas.
-
-## Objetivo
-
-Classificar proposições com base em texto legislativo, especialmente ementa e descrição.
-
-As principais classificações são:
-
-* tema;
-* macrotema;
-* natureza jurídica;
-* tipo documental;
-* categoria regimental.
-
-## Arquitetura ML/NLP
-
-```text
-Silver Proposições
-        ↓
-Pré-processamento textual
-        ↓
-Regras regex + dicionários
-        ↓
-Features textuais
-        ↓
-Treinamento supervisionado
-        ↓
-MLflow Tracking
-        ↓
-Model Registry
-        ↓
-Inferência
-        ↓
-Gold Proposições
-```
-
-## Estratégia Híbrida
-
-O projeto usa uma estratégia híbrida:
-
-| Técnica               | Uso                                       |
-| --------------------- | ----------------------------------------- |
-| Regex                 | Capturar padrões legislativos explícitos  |
-| Dicionários           | Apoiar classificação temática e jurídica  |
-| TF-IDF                | Transformar texto em features             |
-| Modelo supervisionado | Generalizar padrões textuais              |
-| MLflow                | Rastrear experimentos e versionar modelos |
-| Fallback              | Evitar classificação forçada              |
-
-## Por que regex + ML?
-
-O domínio legislativo possui muitos padrões textuais explícitos, como:
-
-* altera lei;
-* institui política;
-* revoga dispositivo;
-* cria programa;
-* dispõe sobre;
-* concede homenagem;
-* institui data comemorativa.
-
-Regex captura bem esse tipo de padrão.
-
-O ML complementa ao lidar com textos menos explícitos e melhorar a generalização.
-
-# Star Schema
-
-A camada Star organiza os dados em modelo dimensional para consumo analítico.
-
-## Objetivo
-
-Facilitar consultas e dashboards, separando:
-
-* dimensões descritivas;
-* fatos transacionais ou relacionais.
-
-## Dimensões
-
-| Dimensão         | Descrição                        |
-| ---------------- | -------------------------------- |
-| `dim_tempo`      | Calendário analítico             |
-| `dim_deputado`   | Dados dos deputados              |
-| `dim_partido`    | Dados dos partidos               |
-| `dim_proposicao` | Dados analíticos das proposições |
-| `dim_evento`     | Dados dos eventos                |
-| `dim_orgao`      | Dados dos órgãos legislativos    |
-
-
-## Fatos
-
-| Fato              | Granularidade                          |
-| ----------------- | -------------------------------------- |
-| `fato_proposicao` | Uma linha por proposição               |
-| `fato_autoria`    | Uma linha por relação proposição-autor |
-| `fato_tramitacao` | Uma linha por tramitação               |
-| `fato_votacao`    | Uma linha por votação                  |
-| `fato_voto`       | Uma linha por voto parlamentar         |
-| `fato_evento`     | Uma linha por evento                   |
-| `fato_presenca`   | Uma linha por presença em evento       |
-
-## Relacionamentos principais
-
-```text
-dim_proposicao 1 ─── * fato_proposicao
-dim_proposicao 1 ─── * fato_autoria
-dim_proposicao 1 ─── * fato_tramitacao
-dim_proposicao 1 ─── * fato_votacao
-dim_proposicao 1 ─── * fato_voto
-
-dim_deputado   1 ─── * fato_autoria
-dim_deputado   1 ─── * fato_voto
-dim_deputado   1 ─── * fato_presenca
-
-dim_partido    1 ─── * fato_voto
-
-dim_evento     1 ─── * fato_evento
-dim_evento     1 ─── * fato_presenca
-
-dim_orgao      1 ─── * fato_evento
-dim_orgao      1 ─── * fato_tramitacao
-dim_orgao      1 ─── * fato_votacao
-
-dim_tempo      1 ─── * fatos temporais
-```
-
-# Surrogate Keys
-
-As dimensões utilizam surrogate keys para relacionamentos com fatos.
-
-A estratégia recomendada é usar chaves determinísticas baseadas em hash das chaves naturais.
+- identificador da execução;
+- camada;
+- dataset;
+- status;
+- mensagem;
+- quantidade de registros;
+- timestamp de início e fim;
+- duração;
+- erro, quando houver.
 
 Exemplo conceitual:
 
-```text
-sk_deputado = sha2(id_deputado)
-sk_proposicao = sha2(id_proposicao)
-sk_partido = sha2(id_partido)
-```
+| execution_id | layer | dataset | status | records | timestamp |
+|---|---|---|---|---|---|
+| abc123 | bronze | proposicoes | success | 10000 | 2026-05-28 10:00 |
 
-## Benefícios
+### 12. Data Quality
 
-* estabilidade entre reprocessamentos;
-* consistência entre fatos e dimensões;
-* independência do particionamento Spark;
-* melhor suporte a reexecuções;
-* maior confiabilidade analítica.
+A qualidade de dados é uma parte essencial da arquitetura.
 
-# Data Quality
+Validações esperadas:
 
-A arquitetura prevê uma camada formal de Data Quality.
+- dataset não vazio;
+- colunas obrigatórias;
+- chaves não nulas;
+- unicidade de chaves;
+- percentual máximo de nulos;
+- domínio de valores permitidos;
+- contratos de dados por tabela e camada.
 
-```text
-src/utils/quality/
-  checks.py
-  contracts.py
-  runner.py
-  report.py
-```
-
-## Tipos de validação
-
-| Regra              | Descrição                                      |
-| ------------------ | ---------------------------------------------- |
-| `not_empty`        | Verifica se a tabela possui registros          |
-| `required_columns` | Verifica se colunas obrigatórias existem       |
-| `no_nulls`         | Verifica se colunas críticas não possuem nulos |
-| `unique_key`       | Verifica unicidade de chaves                   |
-| `max_null_ratio`   | Controla percentual máximo de nulos            |
-| `allowed_values`   | Valida domínio permitido de valores            |
-| `min_rows`         | Verifica volume mínimo                         |
-| `value_range`      | Valida intervalo numérico                      |
-
----
-
-## Pontos de aplicação
+A integração ideal é:
 
 ```text
-Bronze:
-  após ingestão
-
-Silver:
-  após padronização
-
-Gold:
-  após enriquecimento
-
-Star:
-  após construção de fatos e dimensões
-
-Serving:
-  após publicação
+Tabela produzida
+      ↓
+Contrato de dados
+      ↓
+Validações de qualidade
+      ↓
+Resultado da validação
+      ↓
+Publicação ou bloqueio
 ```
 
-# Observabilidade
+### 13. ML/NLP
 
-O projeto possui observabilidade por meio de logs estruturados.
+O módulo de ML/NLP apoia a classificação textual de proposições legislativas.
 
-## Logs do pipeline
+Responsabilidades:
 
-Os logs registram:
+- pré-processamento textual;
+- aplicação de regras regex;
+- uso de dicionários temáticos;
+- treinamento de modelos supervisionados;
+- registro e versionamento com MLflow;
+- inferência na camada Gold;
+- fallback para textos ambíguos.
 
-* execution_id;
-* camada;
-* dataset;
-* status;
-* quantidade de registros;
-* mensagem;
-* timestamp;
-* erro, quando aplicável.
+Fluxo conceitual:
 
-## Monitoramento recomendado
+```text
+Texto da proposição
+      ↓
+Regras + dicionários
+      ↓
+Modelo supervisionado
+      ↓
+Classificação temática e jurídica
+      ↓
+Gold
+```
 
-Além dos logs atuais, a arquitetura pode evoluir para monitorar:
+### 14. Star Schema
 
-* duração por etapa;
-* volume processado;
-* volume rejeitado;
-* freshness;
-* falhas por camada;
-* falhas de Data Quality;
-* versão do modelo ML;
-* versão do pipeline.
+A camada Star Schema organiza os dados em modelo dimensional.
 
-# Serving
+Principais elementos:
+
+- dimensões;
+- fatos;
+- chaves substitutas;
+- chaves de negócio;
+- granularidade definida por fato;
+- relacionamentos para consumo em BI.
+
+Exemplos:
+
+| Tipo | Exemplos |
+|---|---|
+| Dimensões | `dim_tempo`, `dim_deputado`, `dim_partido`, `dim_proposicao`, `dim_orgao` |
+| Fatos | `fato_proposicao`, `fato_autoria`, `fato_tramitacao`, `fato_votacao`, `fato_voto`, `fato_evento`, `fato_presenca` |
+
+### 15. Serving
 
 A camada Serving publica as tabelas finais para consumo analítico.
 
-## Objetivo
+Objetivos:
 
-Disponibilizar as dimensões e fatos em formato adequado para:
+- disponibilizar tabelas estáveis para Power BI;
+- facilitar consultas SQL;
+- separar produção analítica das camadas internas;
+- garantir uma interface clara para consumo.
 
-* Power BI;
-* consultas SQL;
-* análises exploratórias;
-* dashboards executivos;
-* validações analíticas.
+### 16. Power BI
 
-## Fluxo de publicação
+O Power BI consome as tabelas finais publicadas pela camada Serving.
 
-```text
-Star Delta Tables
-        ↓
-Serving Publish Tables
-        ↓
-SQL Schema
-        ↓
-Power BI
-```
+Análises possíveis:
 
-# Power BI
+- proposições por tema;
+- proposições por partido;
+- proposições por deputado;
+- tramitações ao longo do tempo;
+- votações e votos parlamentares;
+- presença em eventos;
+- atuação parlamentar por período;
+- comparação entre legislaturas.
 
-O Power BI consome as tabelas finais do star schema.
+---
 
-## Modelo esperado
+## Como este documento se conecta ao projeto
 
-```text
-Dimensões:
-  dim_tempo
-  dim_deputado
-  dim_partido
-  dim_proposicao
-  dim_evento
-  dim_orgao
+Este documento serve como referência arquitetural principal do projeto.
 
-Fatos:
-  fato_proposicao
-  fato_autoria
-  fato_tramitacao
-  fato_votacao
-  fato_voto
-  fato_evento
-  fato_presenca
-```
+Ele se conecta diretamente a:
 
-## Análises possíveis
+- `README.md`, que apresenta uma versão resumida da arquitetura;
+- `docs/execution_guide.md`, que explica como executar o fluxo;
+- `docs/lineage.md`, que detalha a movimentação dos dados entre camadas;
+- `docs/data_quality.md`, que aprofunda as validações;
+- `docs/data_contracts.md`, que documenta regras por tabela;
+- `docs/ml_nlp.md`, que aprofunda a classificação textual;
+- `docs/star_schema.md`, que detalha o modelo dimensional;
+- `docs/dashboard.md`, que documenta o consumo analítico em Power BI.
 
-* proposições por tema;
-* proposições por ano;
-* proposições por partido;
-* autores mais frequentes;
-* votos por parlamentar;
-* votos por partido;
-* tramitações por órgão;
-* eventos por tipo;
-* presença parlamentar;
-* evolução legislativa ao longo do tempo.
+---
 
-# Fluxo de Execução
+## Referências relacionadas
 
-## Execução completa
+- [README do Projeto](../README.md)
+- [Guia de Execução](execution_guide.md)
+- [Linhagem dos Dados](lineage.md)
+- [Qualidade de Dados](data_quality.md)
+- [Contratos de Dados](data_contracts.md)
+- [Classificação ML/NLP](ml_nlp.md)
+- [Modelo Star Schema](star_schema.md)
+- [Dashboard Power BI](dashboard.md)
+- [Medidas DAX](dax_measures.md)
+- [Evolução do Projeto](project_evolution.md)
 
-```text
-1. Ingestão Bronze
-2. Transformação Silver
-3. Treinamento ML
-4. Enriquecimento Gold
-5. Construção Star Schema
-6. Publicação Serving
-7. Consumo Power BI
-```
+---
 
-## Execução conceitual por módulo
+## Próximas evoluções
 
-```bash
-python -m src.bronze.orchestration.runner
-python -m src.silver.orchestration.runner
-python -m src.ml.orchestration.training_runner
-python -m src.gold.orchestration.runner
-python -m src.star.orchestration.runner
-python -m src.serving.publish_tables
-```
-# Decisões Técnicas
+Possíveis evoluções arquiteturais:
 
-## Uso de arquitetura medalhão
-
-A arquitetura medalhão foi escolhida para separar claramente os estágios dos dados:
-
-* dados brutos;
-* dados limpos;
-* dados enriquecidos;
-* dados analíticos.
-
-
-## Uso de Delta Lake
-
-Delta Lake foi escolhido para aumentar a confiabilidade do data lake, permitindo:
-
-* transações;
-* controle de schema;
-* histórico;
-* upsert;
-* integração com Spark.
-
-## Uso de PySpark
-
-PySpark foi escolhido por ser uma tecnologia amplamente usada em pipelines lakehouse e permitir processamento distribuído.
-
-## Uso de registries
-
-Registries reduzem o acoplamento entre orquestração e transformação, permitindo adicionar novos datasets com menor impacto no código.
-
-
-## Uso de star schema
-
-O star schema foi escolhido por ser adequado para consumo em BI, facilitando filtros, agregações e relacionamentos analíticos.
-
-
-## Uso de MLflow
-
-MLflow foi escolhido para rastrear experimentos e organizar o ciclo de vida dos modelos de classificação.
-
-# Resumo da Arquitetura
-
-Este projeto implementa uma arquitetura moderna de dados com:
-
-* ingestão de API pública;
-* arquitetura medalhão;
-* Delta Lake;
-* PySpark;
-* ML/NLP aplicado;
-* MLflow;
-* star schema;
-* serving analítico;
-* Power BI;
-* logs estruturados;
-* proposta de Data Quality formal.
-
+- formalizar orquestração com Databricks Workflows, Airflow, Prefect ou Dagster;
+- configurar CI/CD com GitHub Actions;
+- persistir métricas operacionais de execução;
+- transformar contratos de dados em arquivos YAML executáveis;
+- tornar Data Quality uma etapa bloqueante antes da Serving;
+- melhorar monitoramento e alertas;
+- ampliar suporte a legislaturas antigas;
+- evoluir a classificação ML/NLP com novas abordagens semânticas;
+- versionar releases do pipeline.
