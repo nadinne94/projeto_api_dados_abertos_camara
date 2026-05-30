@@ -5,7 +5,6 @@
 ![Delta Lake](https://img.shields.io/badge/Delta%20Lake-3.0%2B-brightgreen)
 ![MLflow](https://img.shields.io/badge/MLflow-MLOps-blueviolet)
 ![Power BI](https://img.shields.io/badge/Power%20BI-Dashboard-yellow)
-![Status](https://img.shields.io/badge/status-portf%C3%B3lio%20finalizado-success)
 
 Projeto de Engenharia de Dados que transforma dados públicos da Câmara dos Deputados em um produto analítico estruturado para exploração em Power BI.
 
@@ -151,8 +150,6 @@ Documentação complementar:
 - [Documentação do Dashboard](docs/dashboard.md)
 - [Modelo Star Schema](docs/star_schema.md)
 - [Medidas DAX](docs/dax_measures.md)
-
-> Observação: a imagem acima deve ser mantida em `docs/images/dashboard-preview.png`. Caso o arquivo ainda não exista no repositório, adicione um print do dashboard com esse nome para que a prévia apareça corretamente no GitHub.
 
 ---
 
