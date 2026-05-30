@@ -1,16 +1,58 @@
 # Guia de Execução do Projeto
 
-Este documento apresenta o passo a passo recomendado para executar o pipeline do projeto `projeto_api_dados_abertos_camara`, seguindo o fluxo:
+## Objetivo
+
+Este documento apresenta o passo a passo recomendado para executar o pipeline do projeto `projeto_api_dados_abertos_camara`.
+
+O objetivo é orientar a execução completa do projeto, desde a ingestão dos dados públicos da Câmara dos Deputados até a publicação das tabelas analíticas para consumo no Power BI.
+
+Fluxo principal:
 
 ```text
 Bronze → Silver → ML → Gold → Star Schema → Serving
 ```
 
-O objetivo é orientar a execução completa do projeto, desde a ingestão dos dados públicos da Câmara dos Deputados até a publicação das tabelas analíticas para consumo no Power BI.
+---
+
+## Contexto
+
+O projeto foi desenvolvido com uma arquitetura lakehouse em camadas. Cada etapa do pipeline depende dos dados produzidos pela etapa anterior.
+
+Por isso, a execução deve respeitar a ordem lógica das camadas:
+
+1. Bronze;
+2. Silver;
+3. ML Training;
+4. Gold;
+5. Star Schema;
+6. Serving;
+7. Power BI.
+
+A etapa de ML é executada antes da Gold porque os modelos treinados e registrados podem ser utilizados para enriquecer as proposições na camada Gold.
 
 ---
 
-## 1. Pré-requisitos
+## Escopo
+
+Este guia cobre:
+
+- pré-requisitos de ambiente;
+- configuração inicial;
+- ordem geral de execução;
+- execução das camadas Bronze, Silver, ML, Gold, Star Schema e Serving;
+- validações recomendadas por etapa;
+- checklist de execução completa;
+- fluxo resumido;
+- problemas comuns;
+- conexão com os demais documentos da pasta `docs/`.
+
+Este guia não substitui a documentação detalhada de arquitetura, contratos de dados, Star Schema, ML/NLP ou dashboard. Esses temas possuem documentos próprios.
+
+---
+
+## Conteúdo Principal
+
+### 1. Pré-requisitos
 
 Antes de executar o pipeline, confirme que o ambiente possui:
 
@@ -22,9 +64,7 @@ Antes de executar o pipeline, confirme que o ambiente possui:
 - variáveis de ambiente configuradas, quando aplicável;
 - ambiente Databricks ou ambiente local compatível com Spark.
 
----
-
-## 2. Configuração do ambiente
+### 2. Configuração do ambiente
 
 O projeto utiliza configurações centralizadas em `src/config/`.
 
@@ -52,32 +92,29 @@ Exemplo:
 BASE_STORAGE_PATH=file:/tmp/dados_abertos_camara
 ```
 
----
-
-## 3. Ordem geral de execução
+### 3. Ordem geral de execução
 
 A ordem recomendada é:
 
 ```text
 1. Bronze
 2. Silver
-3. ML
+3. ML Training
 4. Gold
 5. Star Schema
 6. Serving
+7. Power BI
 ```
 
 Essa ordem deve ser respeitada porque cada camada depende dos dados produzidos pela camada anterior.
 
----
+### 4. Etapa Bronze — Ingestão dos dados brutos
 
-# 4. Etapa Bronze — Ingestão dos dados brutos
-
-## Objetivo
+#### Objetivo
 
 A camada Bronze é responsável por consumir os dados da API pública da Câmara dos Deputados e armazená-los em formato Delta, preservando os dados o mais próximo possível da origem.
 
-## Entrada
+#### Entrada
 
 Fonte externa:
 
@@ -85,11 +122,11 @@ Fonte externa:
 API Dados Abertos Câmara dos Deputados
 ```
 
-## Saída
+#### Saída
 
 Tabelas ou arquivos Delta na camada Bronze.
 
-## Execução
+#### Execução
 
 Execute o runner da camada Bronze:
 
@@ -103,7 +140,7 @@ ou, no Databricks, execute o notebook ou comando equivalente que chama:
 src/bronze/orchestration/runner.py
 ```
 
-## Resultado esperado
+#### Resultado esperado
 
 Ao final da execução, devem ser gerados dados brutos para entidades como:
 
@@ -118,7 +155,7 @@ Ao final da execução, devem ser gerados dados brutos para entidades como:
 - eventos;
 - presença em eventos.
 
-## Validação recomendada
+#### Validação recomendada
 
 Após a Bronze, verifique:
 
@@ -127,23 +164,21 @@ Após a Bronze, verifique:
 - se não houve falha de conexão com a API;
 - se os logs indicam sucesso na ingestão.
 
----
+### 5. Etapa Silver — Padronização e limpeza
 
-# 5. Etapa Silver — Padronização e limpeza
-
-## Objetivo
+#### Objetivo
 
 A camada Silver transforma os dados brutos em dados padronizados, tipados e mais consistentes.
 
-## Entrada
+#### Entrada
 
 Dados da camada Bronze.
 
-## Saída
+#### Saída
 
 Tabelas Delta na camada Silver.
 
-## Execução
+#### Execução
 
 Execute o runner da camada Silver:
 
@@ -157,7 +192,7 @@ ou, no Databricks:
 src/silver/orchestration/runner.py
 ```
 
-## Principais transformações
+#### Principais transformações
 
 Nesta etapa podem ocorrer:
 
@@ -169,7 +204,7 @@ Nesta etapa podem ocorrer:
 - remoção de duplicidades;
 - padronização de identificadores.
 
-## Validação recomendada
+#### Validação recomendada
 
 Após a Silver, verifique:
 
@@ -179,11 +214,9 @@ Após a Silver, verifique:
 - se os tipos de dados estão coerentes;
 - se as validações de qualidade foram executadas.
 
----
+### 6. Etapa ML — Treinamento e registro dos classificadores
 
-# 6. Etapa ML — Treinamento e registro dos classificadores
-
-## Objetivo
+#### Objetivo
 
 A etapa de Machine Learning prepara e registra os modelos utilizados para classificação textual de proposições.
 
@@ -193,15 +226,15 @@ O projeto utiliza classificação para enriquecer os dados com informações com
 - natureza jurídica;
 - origem da classificação.
 
-## Entrada
+#### Entrada
 
 Dados tratados, regras, dicionários e bases de treinamento do módulo `src/ml/`.
 
-## Saída
+#### Saída
 
 Modelos treinados e registrados para uso posterior na camada Gold.
 
-## Execução
+#### Execução
 
 Execute o runner de treinamento:
 
@@ -215,7 +248,7 @@ ou o ponto de entrada principal do módulo de ML, quando aplicável:
 python -m src.ml.main
 ```
 
-## Resultado esperado
+#### Resultado esperado
 
 Ao final da execução, espera-se que os classificadores estejam treinados e disponíveis para inferência.
 
@@ -225,7 +258,7 @@ No ambiente Databricks/MLflow, confirme se os modelos foram registrados corretam
 champion
 ```
 
-## Validação recomendada
+#### Validação recomendada
 
 Após o treinamento, verifique:
 
@@ -234,23 +267,21 @@ Após o treinamento, verifique:
 - se a inferência de teste retorna classificações válidas;
 - se há fallback configurado para textos sem classificação confiável.
 
----
+### 7. Etapa Gold — Enriquecimento analítico
 
-# 7. Etapa Gold — Enriquecimento analítico
-
-## Objetivo
+#### Objetivo
 
 A camada Gold adiciona regras de negócio, atributos derivados e classificações aos dados padronizados.
 
-## Entrada
+#### Entrada
 
 Dados da camada Silver e modelos/regras do módulo ML.
 
-## Saída
+#### Saída
 
 Tabelas Delta enriquecidas na camada Gold.
 
-## Execução
+#### Execução
 
 Execute o runner da camada Gold:
 
@@ -264,7 +295,7 @@ ou, no Databricks:
 src/gold/orchestration/runner.py
 ```
 
-## Principais enriquecimentos
+#### Principais enriquecimentos
 
 Nesta etapa podem ser gerados campos como:
 
@@ -277,7 +308,7 @@ Nesta etapa podem ser gerados campos como:
 - flags analíticas;
 - classificações derivadas de textos legislativos.
 
-## Validação recomendada
+#### Validação recomendada
 
 Após a Gold, verifique:
 
@@ -287,11 +318,9 @@ Após a Gold, verifique:
 - se não houve erro na chamada dos modelos ML;
 - se os fallbacks foram aplicados quando necessário.
 
----
+### 8. Etapa Star Schema — Modelo dimensional
 
-# 8. Etapa Star Schema — Modelo dimensional
-
-## Objetivo
+#### Objetivo
 
 A etapa Star Schema organiza os dados enriquecidos em um modelo dimensional para análise.
 
@@ -302,15 +331,15 @@ Essa camada estrutura os dados em:
 - chaves substitutas;
 - tabelas analíticas integradas.
 
-## Entrada
+#### Entrada
 
 Dados da camada Gold.
 
-## Saída
+#### Saída
 
 Tabelas dimensionais e fatos na camada Star.
 
-## Execução
+#### Execução
 
 Execute o runner da camada Star:
 
@@ -324,7 +353,7 @@ ou, no Databricks:
 src/star/orchestration/runner.py
 ```
 
-## Ordem interna recomendada
+#### Ordem interna recomendada
 
 A ordem conceitual esperada é:
 
@@ -335,7 +364,7 @@ A ordem conceitual esperada é:
 
 As dimensões devem ser criadas antes das tabelas fato, pois os fatos dependem das chaves dimensionais.
 
-## Exemplos de tabelas esperadas
+#### Exemplos de tabelas esperadas
 
 Dimensões:
 
@@ -354,7 +383,7 @@ Fatos:
 - fato de presença;
 - fato de eventos.
 
-## Validação recomendada
+#### Validação recomendada
 
 Após a Star, verifique:
 
@@ -364,23 +393,21 @@ Após a Star, verifique:
 - se não há perda indevida de registros;
 - se as tabelas fato estão prontas para consumo analítico.
 
----
+### 9. Etapa Serving — Publicação das tabelas finais
 
-# 9. Etapa Serving — Publicação das tabelas finais
-
-## Objetivo
+#### Objetivo
 
 A camada Serving publica as tabelas finais para consumo analítico, principalmente pelo Power BI.
 
-## Entrada
+#### Entrada
 
 Tabelas da camada Star Schema.
 
-## Saída
+#### Saída
 
 Tabelas finais publicadas em schema ou local de consumo.
 
-## Execução
+#### Execução
 
 Execute o processo de publicação da camada Serving:
 
@@ -394,11 +421,11 @@ ou, no Databricks, execute o notebook/script equivalente em:
 src/serving/
 ```
 
-## Resultado esperado
+#### Resultado esperado
 
 Ao final, as tabelas finais devem estar disponíveis para conexão no Power BI ou outra ferramenta analítica.
 
-## Validação recomendada
+#### Validação recomendada
 
 Após o Serving, verifique:
 
@@ -407,9 +434,7 @@ Após o Serving, verifique:
 - se os nomes das tabelas estão padronizados;
 - se as medidas e visuais esperados conseguem ser construídos.
 
----
-
-# 10. Checklist de execução completa
+### 10. Checklist de execução completa
 
 Use este checklist para validar uma execução ponta a ponta:
 
@@ -431,9 +456,7 @@ Use este checklist para validar uma execução ponta a ponta:
 [ ] Atualizar ou validar dashboard Power BI
 ```
 
----
-
-# 11. Fluxo resumido
+### 11. Fluxo resumido
 
 ```text
 API Câmara
@@ -453,41 +476,84 @@ Serving
 Power BI
 ```
 
----
+### 12. Problemas comuns
 
-# 12. Problemas comuns
-
-## Falha ao ler variáveis de ambiente
+#### Falha ao ler variáveis de ambiente
 
 Verifique se o arquivo `.env` existe e se foi criado com base no `.env.example`.
 
-## Erro de path de armazenamento
+#### Erro de path de armazenamento
 
 Confirme se `BASE_STORAGE_PATH` está configurado corretamente em ambiente local ou Databricks.
 
-## Tabelas Silver vazias
+#### Tabelas Silver vazias
 
 Verifique se a Bronze foi executada antes da Silver e se os endpoints da API retornaram dados.
 
-## Erro na inferência ML
+#### Erro na inferência ML
 
 Confirme se os modelos foram treinados, registrados e se o alias utilizado pelo projeto está disponível.
 
-## Fatos sem relacionamento com dimensões
+#### Fatos sem relacionamento com dimensões
 
 Verifique se as dimensões foram geradas antes das tabelas fato e se as chaves de relacionamento estão corretas.
 
+### 13. Observações para portfólio
+
+Este guia documenta a execução lógica do pipeline e deve ser usado junto com os demais documentos da pasta `docs/`.
+
+A execução completa demonstra conhecimentos em:
+
+- ingestão de dados;
+- arquitetura medalhão;
+- PySpark;
+- Delta Lake;
+- Machine Learning aplicado a texto;
+- modelagem dimensional;
+- publicação para BI.
+
 ---
 
-# 13. Observações para portfólio
+## Como este documento se conecta ao projeto
 
-Este guia documenta a execução lógica do pipeline e deve ser usado junto com os demais documentos da pasta `docs/`:
+Este documento é a referência principal para execução do pipeline.
 
+Ele se conecta diretamente a:
+
+- `README.md`, que apresenta o comando resumido de execução;
+- `docs/architecture.md`, que explica a arquitetura e a ordem das camadas;
+- `docs/data_quality.md`, que documenta validações aplicadas ao pipeline;
+- `docs/data_contracts.md`, que define regras esperadas para as tabelas;
+- `docs/ml_nlp.md`, que explica o módulo de classificação textual;
+- `docs/star_schema.md`, que detalha dimensões e fatos;
+- `docs/dashboard.md`, que documenta o consumo final no Power BI.
+
+---
+
+## Referências relacionadas
+
+- [README do Projeto](../README.md)
 - [Arquitetura do Projeto](architecture.md)
 - [Qualidade de Dados](data_quality.md)
-- [Linhagem dos Dados](lineage.md)
+- [Contratos de Dados](data_contracts.md)
 - [Classificação ML/NLP](ml_nlp.md)
 - [Modelo Star Schema](star_schema.md)
-- [Dashboard](dashboard.md)
+- [Dashboard Power BI](dashboard.md)
+- [Medidas DAX](dax_measures.md)
+- [Evolução do Projeto](project_evolution.md)
 
-A execução completa demonstra conhecimentos em ingestão de dados, arquitetura medalhão, PySpark, Delta Lake, Machine Learning aplicado a texto, modelagem dimensional e publicação para BI.
+---
+
+## Próximas evoluções
+
+Possíveis evoluções para a execução do projeto:
+
+- transformar a execução sequencial em workflow orquestrado;
+- criar jobs no Databricks Workflows;
+- configurar retries e alertas;
+- criar CI/CD com GitHub Actions;
+- adicionar validação automática antes da execução da próxima camada;
+- persistir logs de execução em tabela Delta;
+- documentar parâmetros de execução por ambiente;
+- criar modo de execução parcial por dataset ou camada;
+- adicionar troubleshooting mais detalhado por erro conhecido.
