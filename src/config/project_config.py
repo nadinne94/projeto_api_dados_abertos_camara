@@ -1,63 +1,79 @@
 """
-Global project configuration.
+Configuração global do projeto.
 
-Centraliza paths de storage
-da arquitetura medallion.
+Centraliza os caminhos de armazenamento da arquitetura lakehouse.
+As configurações podem ser carregadas a partir de variáveis de ambiente.
 """
 
-# =========================================================
-# BASE PATHS
-# =========================================================
+import os
 
-BASE_STORAGE_PATH = (
-    "abfss://conteiner@"
-    "arqmedallion.dfs.core.windows.net"
-)
+from dotenv import load_dotenv
 
-MEDALLION_PATH = (
-    f"{BASE_STORAGE_PATH}/medallion"
-)
 
-ML_PATH = (
-    f"{BASE_STORAGE_PATH}/ml"
-)
-
-METADATA_PATH = (
-    f"{BASE_STORAGE_PATH}/metadata"
-)
+load_dotenv()
 
 # =========================================================
-# STORAGE CONFIGURATION
+# CAMINHOS DE ARMAZENAMENTO
 # =========================================================
 
-STORAGE_CONFIG = {
+BASE_STORAGE_PATH = os.getenv(
+    "BASE_STORAGE_PATH",
+    "file:/tmp/dados_abertos_camara",
+)
 
-    # MEDALLION
+MEDALLION_PATH = os.getenv(
+    "MEDALLION_PATH",
+    f"{BASE_STORAGE_PATH}/medallion",
+)
 
-    "bronze":
+ML_PATH = os.getenv(
+    "ML_PATH",
+    f"{BASE_STORAGE_PATH}/ml",
+)
+
+METADATA_PATH = os.getenv(
+    "METADATA_PATH",
+    f"{BASE_STORAGE_PATH}/metadata",
+)
+
+# =========================================================
+# CONFIGURAÇÕES DE ARMAZENAMENTO
+# =========================================================
+
+STORAGE_CONFIG: dict[str, str] = {
+    # ARQUITETURA MEDALLION
+    "bronze": os.getenv(
+        "BRONZE_PATH",
         f"{MEDALLION_PATH}/bronze",
-
-    "silver":
+    ),
+    "silver": os.getenv(
+        "SILVER_PATH",
         f"{MEDALLION_PATH}/silver",
-
-    "gold":
+    ),
+    "gold": os.getenv(
+        "GOLD_PATH",
         f"{MEDALLION_PATH}/gold",
+    ),
 
     # STAR SCHEMA
-
-    "star":
+    "star": os.getenv(
+        "STAR_PATH",
         f"{MEDALLION_PATH}/gold/star_schema",
+    ),
 
     # ML
-
-    "ml_models":
+    "ml_models": os.getenv(
+        "ML_MODELS_PATH",
         f"{ML_PATH}/models",
+    ),
 
-    # GOVERNANCE
-
-    "logs":
+    # GOVERNANÇA
+    "logs": os.getenv(
+        "LOGS_PATH",
         f"{METADATA_PATH}/logs",
-
-    "watermark":
-        f"{METADATA_PATH}/watermark"
+    ),
+    "watermark": os.getenv(
+        "WATERMARK_PATH",
+        f"{METADATA_PATH}/watermark",
+    ),
 }
