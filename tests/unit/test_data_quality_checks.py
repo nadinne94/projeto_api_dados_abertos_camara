@@ -3,10 +3,11 @@ import pytest
 from src.utils.quality.checks import (
     check_allowed_values,
     check_max_null_ratio,
+    check_min_rows,
     check_no_nulls,
     check_not_empty,
     check_required_columns,
-    check_unique_key
+    check_unique_key,
 )
 
 
@@ -102,6 +103,23 @@ def test_check_no_nulls_fails_when_column_has_null(spark):
     assert result["status"] == "failed"
 
 
+def test_check_no_nulls_fails_when_column_does_not_exist(spark):
+    df = spark.createDataFrame(
+        [
+            (1, "PL"),
+        ],
+        ["id", "sigla"],
+    )
+
+    result = check_no_nulls(
+        df=df,
+        columns=["nome"],
+    )
+
+    assert result["status"] == "failed"
+    assert "nome" in result["message"]
+
+
 def test_check_unique_key_passes_when_key_is_unique(spark):
     df = spark.createDataFrame(
         [
@@ -134,6 +152,23 @@ def test_check_unique_key_fails_when_key_is_duplicated(spark):
     )
 
     assert result["status"] == "failed"
+
+
+def test_check_unique_key_fails_when_key_column_does_not_exist(spark):
+    df = spark.createDataFrame(
+        [
+            (1, "PL"),
+        ],
+        ["id", "sigla"],
+    )
+
+    result = check_unique_key(
+        df=df,
+        key_columns=["id_inexistente"],
+    )
+
+    assert result["status"] == "failed"
+    assert "id_inexistente" in result["message"]
 
 
 def test_check_max_null_ratio_passes_when_ratio_is_below_limit(spark):
@@ -214,6 +249,40 @@ def test_check_allowed_values_fails_for_invalid_domain(spark):
             "Não",
             "Abstenção"
         ]
+    )
+
+    assert result["status"] == "failed"
+
+
+def test_check_min_rows_passes_when_row_count_is_enough(spark):
+    df = spark.createDataFrame(
+        [
+            (1,),
+            (2,),
+            (3,),
+        ],
+        ["id"],
+    )
+
+    result = check_min_rows(
+        df=df,
+        min_rows=2,
+    )
+
+    assert result["status"] == "passed"
+
+
+def test_check_min_rows_fails_when_row_count_is_below_minimum(spark):
+    df = spark.createDataFrame(
+        [
+            (1,),
+        ],
+        ["id"],
+    )
+
+    result = check_min_rows(
+        df=df,
+        min_rows=2,
     )
 
     assert result["status"] == "failed"

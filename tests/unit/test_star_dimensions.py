@@ -122,3 +122,43 @@ def test_build_dim_partido_removes_duplicates_and_creates_surrogate_key(spark):
 
     assert result.count() == 2
     assert "sk_partido" in result.columns
+
+
+def test_build_dim_deputado_has_expected_columns(spark):
+    df = spark.createDataFrame(
+        [
+            (
+                1,
+                "Deputada A",
+                "PT",
+                "MG",
+                "Sudeste",
+                "a@camara.leg.br",
+                "foto_a",
+            ),
+        ],
+        [
+            "id_deputado",
+            "nome_deputado",
+            "sigla_partido",
+            "uf_origem",
+            "regiao",
+            "email",
+            "url_foto",
+        ],
+    )
+
+    result = build_dim_deputado(df)
+
+    expected_columns = {
+        "sk_deputado",
+        "id_deputado",
+        "nome_deputado",
+        "sigla_partido",
+        "uf_origem",
+        "regiao",
+        "email",
+        "url_foto",
+    }
+
+    assert expected_columns.issubset(set(result.columns))

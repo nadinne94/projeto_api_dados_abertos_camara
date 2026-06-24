@@ -1,37 +1,112 @@
-from src.ml.base.regex import find_regex_match
+from pyspark.sql.functions import col
+
+from src.ml.base.regex import (
+    regex_count,
+    regex_extract_length,
+    regex_match,
+    score_regex,
+)
 
 
-def test_find_regex_match_returns_expected_category():
-    patterns = {
-        "Saúde": [
-            r"\bsaúde\b",
-            r"\bsus\b"
+def test_regex_match_returns_true_when_pattern_matches(spark):
+    df = spark.createDataFrame(
+        [
+            ("Projeto sobre saúde pública",),
+            ("Projeto sobre educação",),
         ],
-        "Educação": [
-            r"\beducação\b",
-            r"\bescola\b"
-        ],
-    }
-
-    result = find_regex_match(
-        text="Projeto de lei sobre financiamento do SUS.",
-        patterns=patterns
+        ["texto"],
     )
 
-    assert result == "Saúde"
-
-
-def test_find_regex_match_returns_none_when_no_pattern_matches():
-    patterns = {
-        "Saúde": [
-            r"\bsaúde\b",
-            r"\bsus\b"
-        ],
-    }
-
-    result = find_regex_match(
-        text="Projeto sobre telecomunicações.",
-        patterns=patterns
+    result = (
+        df.withColumn(
+            "has_match",
+            regex_match(
+                col("texto"),
+                r"saúde",
+            ),
+        )
+        .orderBy("texto")
+        .collect()
     )
 
-    assert result is None
+    rows = {
+        row["texto"]: row["has_match"]
+        for row in result
+    }
+
+    assert rows["Projeto sobre saúde pública"] is True
+    assert rows["Projeto sobre educação"] is False
+
+
+def test_regex_count_counts_pattern_occurrences(spark):
+    df = spark.createDataFrame(
+        [
+            ("sus sus saúde",),
+        ],
+        ["texto"],
+    )
+
+    result = (
+        df.withColumn(
+            "total_matches",
+            regex_count(
+                col("texto"),
+                r"sus",
+            ),
+        )
+        .collect()[0]["total_matches"]
+    )
+
+    assert result == 2
+
+
+def test_regex_extract_length_returns_match_length(spark):
+    df = spark.createDataFrame(
+        [
+            ("sistema unico de saude",),
+        ],
+        ["texto"],
+    )
+
+    result = (
+        df.withColumn(
+            "match_length",
+            regex_extract_length(
+                col("texto"),
+                r"saude",
+            ),
+        )
+        .collect()[0]["match_length"]
+    )
+
+    assert result == 5
+
+
+def test_score_regex_returns_weight_when_pattern_matches(spark):
+    df = spark.createDataFrame(
+        [
+            ("sistema unico de saude",),
+            ("tema nao relacionado",),
+        ],
+        ["texto"],
+    )
+
+    result = (
+        df.withColumn(
+            "score",
+            score_regex(
+                col("texto"),
+                r"saude",
+                10,
+            ),
+        )
+        .orderBy("texto")
+        .collect()
+    )
+
+    scores = [
+        row["score"]
+        for row in result
+    ]
+
+    assert scores == [10, 0]
