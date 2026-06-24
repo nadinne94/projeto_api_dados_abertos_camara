@@ -1,3 +1,13 @@
+"""
+Carregamento de modelos e criação de UDFs de inferência.
+
+Centraliza a leitura de modelos registrados no MLflow e a criação de UDFs
+Spark usadas para aplicar classificação textual em DataFrames.
+
+Este módulo permite integrar os modelos de Machine Learning ao fluxo de
+transformação da camada Gold.
+"""
+
 import os
 import traceback
 

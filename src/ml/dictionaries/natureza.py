@@ -1,3 +1,14 @@
+"""
+Dicionário de naturezas jurídicas.
+
+Centraliza classes, palavras-chave e padrões textuais usados para
+identificar a natureza jurídica de proposições legislativas.
+
+Este módulo apoia a classificação determinística, a geração de labels e
+a inferência aplicada na camada Gold.
+"""
+
+
 # =========================================================
 # NATUREZA JURÍDICA
 # =========================================================

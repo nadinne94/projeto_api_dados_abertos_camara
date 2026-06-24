@@ -1,3 +1,14 @@
+"""
+Funções auxiliares para cálculo de scores de classificação.
+
+Centraliza regras de pontuação usadas para combinar evidências textuais,
+dicionários e padrões identificados durante a classificação de proposições.
+
+Este módulo apoia a priorização de classes candidatas antes da aplicação
+de fallback ou seleção final.
+"""
+
+
 from pyspark.sql.functions import (
     array,
     array_sort,

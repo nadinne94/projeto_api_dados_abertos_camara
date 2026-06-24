@@ -1,3 +1,15 @@
+"""
+Geração de labels para treinamento supervisionado.
+
+Centraliza regras usadas para atribuir rótulos iniciais às proposições
+legislativas a partir de dicionários, padrões textuais, taxonomias e
+critérios determinísticos.
+
+Este módulo apoia a criação da base supervisionada usada no treinamento
+dos classificadores.
+"""
+
+
 from pyspark.sql.functions import (
     when
 )

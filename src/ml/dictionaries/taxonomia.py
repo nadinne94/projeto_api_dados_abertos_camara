@@ -1,3 +1,14 @@
+"""
+Taxonomia de classificação legislativa.
+
+Centraliza categorias, hierarquias e mapeamentos usados para organizar
+os temas e classificações aplicadas às proposições legislativas.
+
+Este módulo apoia a padronização das classes utilizadas nas regras,
+features, treinamento e documentação do modelo.
+"""
+
+
 TAXONOMIA_REGIMENTAL = {
 
     "PL": {

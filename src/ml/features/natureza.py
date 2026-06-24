@@ -1,3 +1,13 @@
+"""
+Features para classificação de natureza jurídica.
+
+Centraliza a criação de variáveis textuais, scores e indicadores usados
+para identificar a natureza jurídica de proposições legislativas.
+
+Este módulo combina evidências baseadas em texto, regex e dicionários
+para apoiar regras de classificação e modelos supervisionados.
+"""
+
 from pyspark.sql.column import Column
 
 from pyspark.sql.functions import (

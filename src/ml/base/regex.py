@@ -1,3 +1,14 @@
+"""
+Funções auxiliares para classificação baseada em expressões regulares.
+
+Centraliza operações reutilizáveis de matching, contagem, extração e
+pontuação por regex aplicadas a colunas textuais em DataFrames Spark.
+
+Este módulo apoia a classificação determinística de temas e naturezas
+jurídicas a partir de padrões explícitos nos textos legislativos.
+"""
+
+
 from pyspark.sql.column import Column
 
 from pyspark.sql.functions import (

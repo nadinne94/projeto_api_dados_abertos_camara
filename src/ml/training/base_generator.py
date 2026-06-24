@@ -1,3 +1,14 @@
+"""
+Geração da base de treinamento.
+
+Centraliza funções responsáveis por preparar os dados usados no
+treinamento dos modelos de classificação textual, incluindo seleção de
+campos, limpeza, aplicação de regras e montagem da base supervisionada.
+
+Este módulo cria a ponte entre os dados tratados do pipeline e os modelos
+de Machine Learning.
+"""
+
 from pyspark.sql import SparkSession
 
 from pyspark.sql.functions import (

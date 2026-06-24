@@ -1,3 +1,15 @@
+"""
+Treinamento e avaliação dos modelos de classificação textual.
+
+Centraliza a execução do treinamento supervisionado, cálculo de métricas,
+avaliação dos resultados e preparação dos artefatos para registro no
+MLflow.
+
+Este módulo contém a lógica principal de treinamento dos classificadores
+usados no projeto.
+"""
+
+
 import pandas as pd
 
 from pyspark.sql.functions import col

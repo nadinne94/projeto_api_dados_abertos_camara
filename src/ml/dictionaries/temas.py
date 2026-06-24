@@ -1,3 +1,14 @@
+"""
+Dicionário de temas legislativos.
+
+Centraliza classes temáticas, palavras-chave e padrões textuais usados
+para identificar o tema principal de proposições legislativas.
+
+Este módulo apoia a classificação determinística, a geração de labels e
+a inferência aplicada na camada Gold.
+"""
+
+
 # =========================================================
 # TEMA — REGEX RULES
 # =========================================================

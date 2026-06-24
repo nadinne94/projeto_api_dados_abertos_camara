@@ -1,3 +1,15 @@
+"""
+Pré-processamento textual para classificação legislativa.
+
+Centraliza funções de normalização, limpeza e padronização de textos
+usados nas etapas de feature engineering, treinamento e inferência dos
+modelos de classificação.
+
+Este módulo apoia tanto regras determinísticas quanto modelos
+supervisionados aplicados às proposições legislativas.
+"""
+
+
 import re
 import unicodedata
 

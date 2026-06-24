@@ -1,3 +1,15 @@
+"""
+Configurações de treinamento dos modelos de classificação.
+
+Centraliza os parâmetros usados na geração da base de treino, criação de
+features, divisão treino/teste, vetorização textual, treinamento,
+avaliação e registro dos modelos.
+
+As configurações deste módulo permitem padronizar o treinamento dos
+classificadores de tema e natureza jurídica.
+"""
+
+
 import os
 
 from dotenv import load_dotenv

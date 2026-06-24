@@ -1,3 +1,14 @@
+"""
+Registro dos modelos no MLflow.
+
+Centraliza funções responsáveis por registrar modelos treinados, definir
+aliases e organizar versões usadas posteriormente na inferência.
+
+Este módulo apoia o controle de versões dos classificadores de tema e
+natureza jurídica.
+"""
+
+
 import mlflow
 import mlflow.sklearn
 

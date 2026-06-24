@@ -1,3 +1,14 @@
+"""
+Runner de treinamento dos modelos de classificação textual.
+
+Centraliza a execução do pipeline de treinamento para os classificadores
+de tema e natureza jurídica, incluindo preparação dos dados, criação de
+labels, treinamento, avaliação e registro no MLflow.
+
+Este módulo é o ponto principal de execução da etapa de Machine Learning
+dentro do pipeline.
+"""
+
 import time
 import mlflow
 

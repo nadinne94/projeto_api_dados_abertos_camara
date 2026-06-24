@@ -1,3 +1,14 @@
+"""
+Ponto de entrada do pipeline de Machine Learning.
+
+Executa o fluxo principal de treinamento e registro dos modelos de
+classificação textual utilizados no projeto.
+
+Este módulo orquestra a preparação da base de treino, criação de labels,
+treinamento, avaliação e registro dos modelos no MLflow.
+"""
+
+
 import os
 
 from dotenv import load_dotenv

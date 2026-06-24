@@ -1,3 +1,15 @@
+"""
+Features para classificação temática.
+
+Centraliza a criação de variáveis textuais, scores e indicadores usados
+para identificar o tema principal de proposições legislativas.
+
+Este módulo combina evidências baseadas em texto, regex, dicionários e
+taxonomia temática para apoiar regras de classificação e modelos
+supervisionados.
+"""
+
+
 from pyspark.sql.column import Column
 
 from pyspark.sql.functions import (

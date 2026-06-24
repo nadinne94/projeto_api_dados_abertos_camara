@@ -1,3 +1,14 @@
+"""
+Construção do pipeline de Machine Learning.
+
+Centraliza a criação dos componentes de vetorização, transformação de
+features e estimadores usados no treinamento dos classificadores textuais.
+
+Este módulo padroniza a estrutura dos pipelines supervisionados usados
+para classificação de tema e natureza jurídica.
+"""
+
+
 from sklearn.pipeline import Pipeline
 
 from sklearn.feature_extraction.text import (
