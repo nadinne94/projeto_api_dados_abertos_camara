@@ -7,7 +7,7 @@ from pyspark.sql.functions import (
 )
 
 from src.ml.base.preprocessing import (
-    normalizar_texto
+    normalize_text
 )
 
 from src.ml.base.regex import (
@@ -27,7 +27,7 @@ def calcular_scores_natureza(
     col_ementa: Column
 ):
 
-    texto = normalizar_texto(
+    texto = normalize_text(
         col_ementa
     )
 
