@@ -1,3 +1,13 @@
+"""
+Configuração dos modelos de Machine Learning.
+
+Centraliza os nomes, aliases e parâmetros relacionados aos modelos
+utilizados na classificação textual de proposições legislativas.
+
+As configurações podem ser carregadas a partir de variáveis de ambiente,
+permitindo ajustar nomes de modelos e aliases sem alterar o código.
+"""
+
 from src.ml.features.proposicoes import (
     classificar_tema_treino,
     classificar_natureza_juridica_treino

@@ -1,5 +1,11 @@
 """
-Spark / Delta configuration.
+Configuração da sessão Spark.
+
+Centraliza os parâmetros usados para criação e configuração da SparkSession,
+incluindo nome da aplicação, partições de shuffle, timezone e opções
+relacionadas ao Delta Lake.
+
+As configurações podem ser carregadas a partir de variáveis de ambiente.
 """
 
 SPARK_CONFIG = {

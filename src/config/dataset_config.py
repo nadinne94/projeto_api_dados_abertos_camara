@@ -1,5 +1,12 @@
 """
-Dataset configuration.
+Configuração dos datasets do projeto.
+
+Centraliza os metadados dos datasets processados pelo pipeline,
+incluindo nomes lógicos, tabelas, chaves, endpoints, camadas e regras
+de processamento.
+
+Este arquivo é usado pelos runners e registries para padronizar
+a execução das etapas do pipeline.
 """
 
 DATASETS_CONFIG = {

@@ -1,18 +1,17 @@
 """
-API execution configuration.
+Configuração da API Dados Abertos da Câmara.
 
-Centraliza configurações de:
-- requests HTTP
-- retry / backoff
-- paginação
-- concorrência
-- throttling
+Centraliza os parâmetros usados nas requisições à API pública,
+incluindo URL base, timeout, tentativas, paginação e identificação
+do cliente.
+
+As configurações podem ser carregadas a partir de variáveis de ambiente.
 """
 
 API_CONFIG = {
 
     # =====================================================
-    # API BASE
+    # BASE DA API 
     # =====================================================
 
     "base_url":
@@ -29,7 +28,7 @@ API_CONFIG = {
     "retry_delay": 2,
 
     # =====================================================
-    # PAGINATION
+    # PAGINAÇÃO
     # =====================================================
 
     "page_size": 50,
@@ -37,7 +36,7 @@ API_CONFIG = {
     "max_pages_per_execution": 100,
 
     # =====================================================
-    # NESTED INGESTION
+    # INGESTÃO DEPENDENTE
     # =====================================================
 
     "max_workers": 4,
@@ -45,7 +44,7 @@ API_CONFIG = {
     "max_parent_ids": 100,
 
     # =====================================================
-    # RATE LIMIT CONTROL
+    # CONTROLE DE LIMITE DE TAXA
     # =====================================================
 
     "request_sleep": 0.5,
