@@ -24,8 +24,12 @@ O pipeline cobre ingestão via API, tratamento com PySpark, arquitetura medalhã
 - [Estrutura do Projeto](#estrutura-do-projeto)
 - [Como Executar](#como-executar)
 - [Documentação Técnica](#documentação-técnica)
+- [Qualidade de Dados](#qualidade-de-dados)
+- [Classificação ML/NLP](#classificação-mlnlp)
+- [Modelo Dimensional](#modelo-dimensional)
 - [Evoluções Futuras](#evoluções-futuras)
 - [Fonte dos Dados](#fonte-dos-dados)
+- [Status do Projeto](#status-do-projeto)
 
 ---
 
@@ -103,19 +107,19 @@ Para detalhes completos, consulte a [documentação de arquitetura](docs/archite
 
 ## Tecnologias Utilizadas
 
-| Categoria | Tecnologia |
+| Categoria | Tecnologia / Conceito |
 |---|---|
-| Linguagem | Python |
+| Linguagem | Python 3.10+ |
 | Processamento | PySpark |
 | Armazenamento | Delta Lake |
-| Arquitetura | Lakehouse, Medallion Architecture |
-| Modelagem | Star Schema, Fact Tables, Dimension Tables |
+| Arquitetura | Lakehouse, Arquitetura Medalhão |
+| Modelagem | Star Schema, tabelas fato e dimensão |
 | Machine Learning | scikit-learn |
 | NLP | Regex, TF-IDF, classificação textual |
 | MLOps | MLflow |
 | BI | Power BI, DAX, Power Query |
 | Qualidade | Data Quality Checks, Data Contracts |
-| Observabilidade | Logs estruturados |
+| Observabilidade | Logs estruturados, watermarks |
 | Fonte | API Dados Abertos Câmara dos Deputados |
 
 ---
@@ -155,35 +159,30 @@ Documentação complementar:
 
 ## Competências Demonstradas
 
-Este projeto demonstra competências relevantes para atuação como Engenheira de Dados Júnior, Analytics Engineer ou BI Engineer.
+Este projeto foi desenvolvido como uma aplicação prática de conceitos de Engenharia de Dados, Analytics Engineering e BI, desde a ingestão de dados públicos até a disponibilização de tabelas analíticas para consumo em Power BI.
 
 ### Engenharia de Dados
 
-- Consumo de API pública com múltiplos endpoints.
-- Organização em arquitetura medalhão: Bronze, Silver e Gold.
-- Processamento de dados com PySpark.
+- Ingestão de dados via API pública com múltiplos endpoints.
+- Organização do pipeline em camadas Bronze, Silver, Gold, Star Schema e Serving.
+- Processamento distribuído com PySpark.
 - Armazenamento em Delta Lake.
-- Modularização de código por camadas e responsabilidades.
-- Uso de runners, registries, configurações e utilitários reutilizáveis.
-- Modelagem dimensional com Star Schema.
-- Criação de Fact Tables e Dimension Tables.
-- Validações de qualidade e contratos de dados.
-- Documentação técnica orientada à manutenção do pipeline.
+- Separação de responsabilidades com runners, registries, configurações e utilitários reutilizáveis.
+- Validações de qualidade, contratos de dados, logs e rastreabilidade básica.
 
-### Analytics e BI
+### Modelagem e Analytics
 
-- Publicação de tabelas finais para consumo analítico.
-- Construção de dashboard Power BI.
-- Uso de DAX e Power Query.
-- Estruturação de perguntas de negócio sobre dados legislativos.
-- Organização de métricas por tema, partido, parlamentar, proposição, votação e evento.
+- Construção de modelo dimensional com tabelas fato e dimensão.
+- Organização de dados para consumo analítico em Power BI.
+- Estruturação de métricas sobre proposições, partidos, parlamentares, votações, tramitações e eventos.
+- Criação de dashboard para exploração dos dados legislativos.
 
 ### ML/NLP aplicado a dados
 
 - Classificação textual de proposições legislativas.
-- Uso de regras, regex, dicionários temáticos e modelo supervisionado.
+- Uso combinado de regras, regex, dicionários temáticos e modelo supervisionado.
 - Registro e versionamento de modelos com MLflow.
-- Uso de fallback para evitar classificações forçadas em textos ambíguos.
+- Aplicação de fallback para evitar classificações forçadas em textos ambíguos.
 
 ---
 
@@ -227,6 +226,53 @@ Principais módulos:
 
 ## Como Executar
 
+Antes de executar, configure o ambiente com base no arquivo `.env.example`.
+
+O arquivo `.env.example` contém exemplos das variáveis necessárias para execução. Para uso real, crie um arquivo `.env` local com os valores do seu ambiente. O arquivo `.env` não deve ser versionado.
+
+### Execução local resumida
+
+Clone o repositório:
+
+```bash
+git clone https://github.com/nadinne94/projeto_api_dados_abertos_camara.git
+cd projeto_api_dados_abertos_camara
+```
+
+Crie o ambiente virtual:
+
+```bash
+python -m venv .venv
+```
+
+Ative o ambiente virtual:
+
+```bash
+# Windows
+.venv\Scripts\activate
+
+# Linux/Mac
+source .venv/bin/activate
+```
+
+Instale as dependências:
+
+```bash
+pip install -e ".[dev]"
+```
+
+Crie o arquivo de configuração local:
+
+```bash
+cp .env.example .env
+```
+
+Execute os testes:
+
+```bash
+pytest
+```
+
 A execução deve respeitar a ordem das camadas:
 
 ```bash
@@ -243,8 +289,6 @@ Fluxo conceitual:
 ```text
 Bronze → Silver → ML → Gold → Star Schema → Serving
 ```
-
-Antes de executar, configure o ambiente com base no arquivo `.env.example`.
 
 Para instruções detalhadas, consulte o [Guia de Execução](docs/execution_guide.md).
 
@@ -323,20 +367,23 @@ Mais detalhes em [Modelo Star Schema](docs/star_schema.md).
 
 ## Evoluções Futuras
 
-As melhorias futuras estão organizadas em dois eixos: Engenharia de Dados e Analytics.
+As evoluções abaixo não impedem o uso do projeto como portfólio. Elas representam próximos passos possíveis para aproximar a solução de um ambiente produtivo e ampliar sua profundidade técnica.
 
 ### Engenharia de Dados
 
-- Padronizar nomes de funções, módulos e variáveis para manter consistência entre português e inglês.
-- Melhorar o modelo ML/NLP para classificação de proposições, incluindo avaliação por precisão, recall, F1-score e matriz de confusão.
-- Ampliar a base de treino e revisar classes com baixa representatividade.
-- Testar embeddings ou modelos de linguagem para classificação semântica de proposições.
-- Aumentar o período de análise para incluir legislaturas antigas e permitir comparações históricas.
 - Automatizar a orquestração com Databricks Workflows, Airflow, Prefect ou Dagster.
 - Configurar CI/CD com GitHub Actions.
 - Ampliar testes unitários e de integração.
 - Registrar métricas históricas de Data Quality.
 - Criar monitoramento operacional do pipeline.
+- Padronizar nomes de funções, módulos e variáveis para manter consistência entre português e inglês.
+
+### ML/NLP
+
+- Melhorar a classificação de proposições com avaliação por precisão, recall, F1-score e matriz de confusão.
+- Ampliar a base de treino e revisar classes com baixa representatividade.
+- Testar embeddings ou modelos de linguagem para classificação semântica.
+- Documentar critérios de promoção de modelos no MLflow.
 
 ### Analytics
 
@@ -369,4 +416,8 @@ Este projeto utiliza dados públicos disponibilizados pela Câmara dos Deputados
 
 ## Status do Projeto
 
-Projeto desenvolvido com foco em portfólio para demonstrar competências de Engenharia de Dados, modelagem analítica, qualidade de dados, ML/NLP aplicado a texto e integração com Power BI.
+Projeto em versão de portfólio, com pipeline ponta a ponta implementado, documentação técnica organizada e dashboard Power BI publicado.
+
+A versão atual demonstra competências práticas em Engenharia de Dados, modelagem analítica, qualidade de dados, ML/NLP aplicado a texto e integração com BI.
+
+Próximas melhorias estão documentadas em [Evolução do Projeto](docs/project_evolution.md).
