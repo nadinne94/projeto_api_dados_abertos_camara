@@ -203,7 +203,6 @@ projeto_api_dados_abertos_camara/
 ├── tests/
 ├── .env.example
 ├── pyproject.toml
-├── pytest.ini
 └── README.md
 ```
 
