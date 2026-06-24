@@ -20,15 +20,15 @@ from src.config.project_config import (
 )
 
 from src.ml.training.base_generator import (
-    gerar_base_treino
+    generate_training_base
 )
 
 from src.ml.training.trainer import (
-    executar_treino
+    run_training
 )
 
 from src.ml.training.registry import (
-    registrar_execucao
+    register_run
 )
 
 from src.utils.monitoring.mlflow_registry import (
@@ -58,7 +58,7 @@ REQUIRED_CONFIG_KEYS = [
 ]
 
 
-def validar_config(
+def validate_config(
     config: dict
 ):
 
@@ -78,7 +78,7 @@ def validar_config(
         )
 
 
-def logar_distribuicao_classes(
+def log_class_distribution(
     df,
     target_col: str
 ):
@@ -100,7 +100,7 @@ def executar_pipeline_treino(
     config
 ):
 
-    validar_config(
+    validate_config(
         config
     )
 
@@ -157,13 +157,13 @@ def executar_pipeline_treino(
             "BASE_START"
         )
 
-        df_train = gerar_base_treino(
+        df_train = generate_training_base(
             config
         )
 
         n_records = df_train.count()
 
-        distribuicao = logar_distribuicao_classes(
+        distribuicao = log_class_distribution(
             df_train,
             target_col
         )
@@ -186,7 +186,7 @@ def executar_pipeline_treino(
             "TRAIN_START"
         )
 
-        resultado = executar_treino(
+        resultado = run_training(
             df=df_train,
             target_col=target_col
         )
@@ -206,7 +206,7 @@ def executar_pipeline_treino(
             "REGISTRY_START"
         )
 
-        version = registrar_execucao(
+        version = register_run(
             resultado,
             config
         )
@@ -249,7 +249,7 @@ def executar_pipeline_treino(
         raise
 
 
-def executar_lote_treinamento(
+def run_training_batch(
     configs,
     experiment_name
 ):

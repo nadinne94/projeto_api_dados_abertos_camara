@@ -16,8 +16,8 @@ from pyspark.sql.functions import (
 )
 
 from src.gold.classification.eventos.functions import (
-    classificar_tipo_evento,
-    classificar_status_evento
+    classify_event_type,
+    classify_event_status
 )
 
 
@@ -84,12 +84,12 @@ def transform_eventos(df):
 
         .withColumn(
             "situacao_evento",
-            classificar_status_evento(col("situacao"))
+            classify_event_status(col("situacao"))
         )
 
         .withColumn(
             "tipo_evento_classificado",
-            classificar_tipo_evento(col("tipo_evento"))
+            classify_event_type(col("tipo_evento"))
         )
 
         .withColumn(

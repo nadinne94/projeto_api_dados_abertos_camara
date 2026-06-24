@@ -6,8 +6,8 @@ from pyspark.sql.functions import (
 )
 
 from src.gold.classification.autores.functions import (
-    classificar_papel_autor,
-    classificar_tipo_autor
+    classify_author_role,
+    classify_author_type
 )
 
 
@@ -77,7 +77,7 @@ def transform_proposicoes_autores(
         .withColumn(
             "papel_autor",
 
-            classificar_papel_autor(
+            classify_author_role(
                 col("ordem_assinatura")
             )
         )
@@ -91,7 +91,7 @@ def transform_proposicoes_autores(
         .withColumn(
             "tipo_autor_classificado",
 
-            classificar_tipo_autor(
+            classify_author_type(
                 col("tipo_autor")
             )
         )

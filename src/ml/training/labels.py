@@ -15,11 +15,11 @@ from pyspark.sql.functions import (
 )
 
 from src.ml.features.tema import (
-    classificar_tema_treino
+    classify_topic_for_training
 )
 
 from src.ml.features.natureza import (
-    classificar_natureza_juridica_treino
+    classify_legal_nature_for_training
 )
 
 
@@ -61,11 +61,11 @@ NATUREZAS_TREINO = [
 ]
 
 
-def classificar_tema_label(
+def classify_topic_label(
     col_ementa
 ):
 
-    tema = classificar_tema_treino(
+    tema = classify_topic_for_training(
         col_ementa
     )
 
@@ -83,7 +83,7 @@ def classificar_natureza_label(
     col_ementa
 ):
 
-    natureza = classificar_natureza_juridica_treino(
+    natureza = classify_legal_nature_for_training(
         col_ementa
     )
 

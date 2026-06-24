@@ -15,8 +15,8 @@ import os
 from dotenv import load_dotenv
 
 from src.ml.training.labels import (
-    classificar_tema_label,
-    classificar_natureza_label
+    classify_topic_label,
+    classify_legal_nature_label
 )
 
 from src.ml.dictionaries.temas import (
@@ -47,7 +47,7 @@ CONFIG_TEMA = {
 
     "tabela_treino": "proposicoes_tema_treino",
 
-    "regex_func": classificar_tema_label,
+    "regex_func": classify_topic_label,
 
     "fallback": TEMA_FALLBACK,
 
@@ -74,7 +74,7 @@ CONFIG_NATUREZA = {
 
     "tabela_treino": "proposicoes_natureza_treino",
 
-    "regex_func": classificar_natureza_label,
+    "regex_func": classify_legal_nature_label,
 
     "fallback": "Outros Tipos",
 

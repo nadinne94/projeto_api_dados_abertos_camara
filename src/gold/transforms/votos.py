@@ -18,7 +18,7 @@ from pyspark.sql.functions import (
 )
 
 from src.gold.classification.votos.functions import (
-    classificar_voto
+    classify_vote
 )
 
 
@@ -65,7 +65,7 @@ def transform_votos(
         .withColumn(
             "categoria_voto",
 
-            classificar_voto(
+            classify_vote(
                 col("voto")
             )
         )

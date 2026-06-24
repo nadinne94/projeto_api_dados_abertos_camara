@@ -25,7 +25,7 @@ load_dotenv()
 _MODEL_CACHE = {}
 
 
-def carregar_modelo(
+def load_model(
     model_name: str,
     model_alias: str | None = None,
     registry_uri: str | None = None
@@ -62,7 +62,7 @@ def carregar_modelo(
     return _MODEL_CACHE[model_uri]
 
 
-def criar_udf_classificacao(
+def create_classification_udf(
     model_name: str,
     model_alias: str | None = None,
     fallback: str = "Não Classificado",
@@ -81,13 +81,13 @@ def criar_udf_classificacao(
     """
 
     @pandas_udf(StringType())
-    def classificar_ml(
+    def classify_with_ml(
         texts: pd.Series
     ) -> pd.Series:
 
         try:
 
-            model = carregar_modelo(
+            model = load_model(
                 model_name=model_name,
                 model_alias=model_alias,
                 registry_uri=registry_uri
@@ -119,4 +119,4 @@ def criar_udf_classificacao(
                 f"[{model_name}@{model_alias}]\n{erro}"
             ) from exc
 
-    return classificar_ml
+    return classify_with_ml

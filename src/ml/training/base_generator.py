@@ -26,7 +26,7 @@ from src.utils.storage.delta_io import (
 )
 
 
-def gerar_base_treino(
+def generate_training_base(
     config
 ):
 

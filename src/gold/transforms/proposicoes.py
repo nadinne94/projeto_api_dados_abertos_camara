@@ -20,15 +20,15 @@ from pyspark.sql.functions import (
 )
 
 from src.gold.classification.proposicoes.functions import (
-    classificar_tipo_documental
+    classify_document_type
 )
 
 from src.gold.classification.proposicoes.taxonomy import (
-    aplicar_taxonomia_regimental
+    apply_regimental_taxonomy
 )
 
 from src.ml.inference.udf_loader import (
-    criar_udf_classificacao
+    create_classification_udf
 )
 
 
@@ -66,13 +66,13 @@ REGEX_TEXTOS_GENERICOS = r"""(?i)(
 
 def transform_proposicoes(df):
 
-    tema_ml = criar_udf_classificacao(
+    tema_ml = create_classification_udf(
         model_name="api_dados_abertos.ml.tema_classificador",
         model_alias="champion",
         fallback=TEMA_FALLBACK
     )
 
-    natureza_ml = criar_udf_classificacao(
+    natureza_ml = create_classification_udf(
         model_name="api_dados_abertos.ml.natureza_classificador",
         model_alias="champion",
         fallback=NATUREZA_FALLBACK
@@ -136,14 +136,14 @@ def transform_proposicoes(df):
         )
         .withColumn(
             "tipo_documental",
-            classificar_tipo_documental(
+            classify_document_type(
                 col("ementa"),
                 col("sigla_tipo")
             )
         )
     )
 
-    df = aplicar_taxonomia_regimental(df)
+    df = apply_regimental_taxonomy(df)
 
     return (
         df

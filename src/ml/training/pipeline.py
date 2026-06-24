@@ -24,7 +24,7 @@ from sklearn.calibration import (
 )
 
 
-def criar_pipeline():
+def create_pipeline():
 
     base_classifier = LogisticRegression(
 

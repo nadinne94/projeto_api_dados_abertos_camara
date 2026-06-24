@@ -22,7 +22,7 @@ from sklearn.metrics import (
 )
 
 from src.ml.training.pipeline import (
-    criar_pipeline
+    create_pipeline
 )
 
 
@@ -211,7 +211,7 @@ def treinar_modelo(
     y_train
 ):
 
-    pipeline = criar_pipeline()
+    pipeline = create_pipeline()
 
     pipeline.fit(
         X_train,
@@ -276,7 +276,7 @@ def avaliar_modelo(
     }
 
 
-def executar_treino(
+def run_training(
     df,
     target_col
 ):

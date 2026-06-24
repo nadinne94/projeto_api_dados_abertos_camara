@@ -1,6 +1,6 @@
 from pyspark.sql.functions import lower, when, coalesce, lit
 
-def classificar_tipo_evento(col_tipo):
+def classify_event_type(col_tipo):
     t = lower(coalesce(col_tipo, lit("")))
 
     return (
@@ -10,7 +10,7 @@ def classificar_tipo_evento(col_tipo):
         .when(t.rlike("reunião|reuniao"), "Reunião")
         .otherwise("Outros")
     )
-def classificar_status_evento(col_situacao):
+def classify_event_status(col_situacao):
     s = lower(coalesce(col_situacao, lit("")))
 
     return (

@@ -21,7 +21,7 @@ from src.utils.monitoring.mlflow_registry import (
 )
 
 
-def registrar_execucao(
+def register_run(
     resultado,
     config
 ):

@@ -44,7 +44,7 @@ def _print_step(
     )
 
 
-def _validar_dataset(
+def _validate_dataset(
     dataset: str,
     logger: PipelineLogger
 ) -> bool:
@@ -86,7 +86,7 @@ def _validar_dataset(
     return True
 
 
-def _resolver_datasets(
+def _resolve_datasets(
     dataset_name: str | list[str]
 ) -> list[str]:
     """Resolve the Gold datasets that should be processed."""
@@ -123,7 +123,7 @@ def run_gold(
         STORAGE_CONFIG["logs"]
     )
 
-    datasets = _resolver_datasets(
+    datasets = _resolve_datasets(
         dataset_name
     )
 
@@ -156,7 +156,7 @@ def run_gold(
             f"Iniciando dataset {index}/{total_datasets}"
         )
 
-        if not _validar_dataset(
+        if not _validate_dataset(
             dataset,
             logger
         ):

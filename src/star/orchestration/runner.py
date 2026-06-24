@@ -60,7 +60,7 @@ def _print_step(
     )
 
 
-def _resolver_datasets(
+def _resolve_datasets(
     object_name: str | list[str] = "all"
 ) -> list[str]:
     """Resolve the Star objects that should be processed."""
@@ -83,7 +83,7 @@ def _resolver_datasets(
     )
 
 
-def _validar_objeto(
+def _validate_object(
     object_name: str,
     logger: PipelineLogger
 ) -> bool:
@@ -127,7 +127,7 @@ def _parse_source(
     return parts[0], parts[1]
 
 
-def _carregar_fontes(
+def _load_sources(
     spark,
     object_name: str,
     sources: list
@@ -161,7 +161,7 @@ def _carregar_fontes(
     return dfs
 
 
-def _executar_funcao_transform(
+def _run_transform_function(
     fn,
     dfs: dict,
     sources: list
@@ -189,7 +189,7 @@ def run_star(
         log_path=STORAGE_CONFIG["logs"]
     )
 
-    objects = _resolver_datasets(
+    objects = _resolve_datasets(
         object_name
     )
 
@@ -222,7 +222,7 @@ def run_star(
             f"Iniciando objeto {index}/{total_objects}"
         )
 
-        if not _validar_objeto(
+        if not _validate_object(
             obj,
             logger
         ):
@@ -277,7 +277,7 @@ def run_star(
 
             read_start = time.time()
 
-            dfs = _carregar_fontes(
+            dfs = _load_sources(
                 spark=spark,
                 object_name=obj,
                 sources=sources
@@ -308,7 +308,7 @@ def run_star(
 
             transform_start = time.time()
 
-            df_star = _executar_funcao_transform(
+            df_star = _run_transform_function(
                 fn=fn,
                 dfs=dfs,
                 sources=sources

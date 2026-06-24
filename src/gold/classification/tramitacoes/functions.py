@@ -13,7 +13,7 @@ from src.gold.classification.tramitacoes.dictionaries import (
 )
 
 
-def classificar_status_tramitacao(
+def classify_proceeding_status(
     col_situacao: Column,
     col_descricao: Column,
     col_despacho: Column

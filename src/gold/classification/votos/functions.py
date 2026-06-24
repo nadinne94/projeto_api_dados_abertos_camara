@@ -7,7 +7,7 @@ from pyspark.sql.functions import (
 )
 
 
-def classificar_voto(col_voto):
+def classify_vote(col_voto):
 
     voto = lower(
         trim(

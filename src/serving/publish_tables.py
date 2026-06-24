@@ -12,7 +12,7 @@ from src.utils.storage.delta_io import (
 DEFAULT_SCHEMA = "api_dados_abertos.star_schema"
 
 
-def listar_tabelas_star(
+def list_star_tables(
     spark: SparkSession
 ):
 
@@ -27,7 +27,7 @@ def listar_tabelas_star(
     ]
 
 
-def criar_schema(
+def create_schema(
     spark: SparkSession,
     schema: str = DEFAULT_SCHEMA,
     reset: bool = False
@@ -44,7 +44,7 @@ def criar_schema(
     )
 
 
-def publicar_tabela(
+def publish_table(
     spark: SparkSession,
     table_name: str,
     schema: str = DEFAULT_SCHEMA
@@ -77,7 +77,7 @@ def publicar_tabela(
     )
 
 
-def publicar_star_schema(
+def publish_star_schema(
     spark: SparkSession = None,
     schema: str = DEFAULT_SCHEMA,
     reset_schema: bool = False
@@ -90,7 +90,7 @@ def publicar_star_schema(
         flush=True
     )
 
-    criar_schema(
+    create_schema(
         spark=spark,
         schema=schema,
         reset=reset_schema
@@ -102,7 +102,7 @@ def publicar_star_schema(
 
     for table in tables:
 
-        publicar_tabela(
+        publish_table(
             spark=spark,
             table_name=table,
             schema=schema
@@ -114,7 +114,7 @@ def publicar_star_schema(
     )
 
 
-def validar_tabelas_publicadas(
+def validate_published_tables(
     spark: SparkSession = None,
     schema: str = DEFAULT_SCHEMA
 ):
@@ -147,7 +147,7 @@ def validar_tabelas_publicadas(
         df.printSchema()
 
 
-def validar_delta_star(
+def validate_star_delta_tables(
     spark: SparkSession = None,
     table_name: str = "fato_tramitacao"
 ):
@@ -181,6 +181,6 @@ def validar_delta_star(
     return df
 
 if __name__ == "__main__":
-    publicar_star_schema()
-    validar_tabelas_publicadas()
-    validar_delta_star()
+    publish_star_schema()
+    validate_published_tables()
+    validate_star_delta_tables()

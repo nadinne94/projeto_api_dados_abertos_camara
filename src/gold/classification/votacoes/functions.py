@@ -4,7 +4,7 @@ from pyspark.sql.functions import (
 )
 
 
-def classificar_resultado_votacao(
+def classify_vote_result(
     col_aprovacao
 ):
 

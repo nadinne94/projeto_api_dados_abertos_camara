@@ -13,11 +13,11 @@ from src.gold.classification.proposicoes.dictionaries import (
 )
 
 from src.ml.features.tema import (
-    classificar_tema
+    classify_topic
 )
 
 from src.ml.features.natureza import (
-    classificar_natureza_juridica
+    classify_legal_nature
 )
 
 
@@ -25,7 +25,7 @@ from src.ml.features.natureza import (
 # TEXTO BASE
 # =========================================================
 
-def montar_texto_proposicao(
+def build_proposition_text(
     col_ementa: Column,
     col_sigla_tipo: Column = None
 ):
@@ -60,41 +60,15 @@ def montar_texto_proposicao(
 
 
 # =========================================================
-# TEMA REGEX
-# =========================================================
-
-def classificar_tema_regex(
-    col_ementa: Column
-):
-
-    return classificar_tema(
-        col_ementa
-    )["tema"]
-
-
-# =========================================================
-# NATUREZA JURÍDICA
-# =========================================================
-
-def classificar_natureza_juridica_regex(
-    col_ementa: Column
-):
-
-    return classificar_natureza_juridica(
-        col_ementa
-    )
-
-
-# =========================================================
 # TIPO DOCUMENTAL
 # =========================================================
 
-def classificar_tipo_documental(
+def classify_document_type(
     col_ementa: Column,
     col_sigla_tipo: Column = None
 ):
 
-    texto = montar_texto_proposicao(
+    texto = build_proposition_text(
         col_ementa,
         col_sigla_tipo
     )

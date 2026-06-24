@@ -27,7 +27,7 @@ from src.ml.base.regex import (
 )
 
 from src.ml.base.scoring import (
-    escolher_melhor_score
+    select_best_score
 )
 
 from src.ml.dictionaries.temas import (
@@ -39,7 +39,7 @@ from src.ml.dictionaries.temas import (
 )
 
 
-def calcular_scores_tema(
+def calculate_topic_scores(
     col_ementa: Column
 ) -> dict:
 
@@ -70,11 +70,11 @@ def classificar_tema(
     col_ementa: Column
 ):
 
-    scores = calcular_scores_tema(
+    scores = calculate_topic_scores(
         col_ementa
     )
 
-    resultado = escolher_melhor_score(
+    resultado = select_best_score(
 
         scores_dict=scores,
 
@@ -103,61 +103,10 @@ def classificar_tema(
     )
 
 
-def classificar_tema_treino(
+def classify_topic_for_training(
     col_ementa: Column
 ):
 
     return classificar_tema(
         col_ementa
     )["tema"]
-
-
-def classificar_tema_final(
-    col_ementa: Column,
-    udf_ml
-):
-
-    tema_rule = classificar_tema(
-        col_ementa
-    )
-
-    tema_ml = udf_ml(
-        col_ementa
-    )
-
-    regra_valida = (
-        tema_rule["tema"] != TEMA_FALLBACK
-    )
-
-    return struct(
-
-        when(
-            regra_valida,
-            tema_rule["tema"]
-        )
-        .otherwise(
-            tema_ml
-        )
-        .alias(
-            "tema_final"
-        ),
-
-        when(
-            regra_valida,
-            lit("REGRA_SCORE")
-        )
-        .otherwise(
-            lit("ML")
-        )
-        .alias(
-            "origem_classificacao"
-        ),
-
-        tema_rule["score_max"],
-
-        tema_rule["score_second"],
-
-        tema_rule["score_margem"],
-
-        tema_rule["confianca"]
-    )

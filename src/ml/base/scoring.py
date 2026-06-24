@@ -20,7 +20,7 @@ from pyspark.sql.functions import (
 )
 
 
-def calcular_confianca(
+def calculate_confidence(
     max_score,
     second_score
 ):
@@ -41,7 +41,7 @@ def calcular_confianca(
     )
 
 
-def escolher_melhor_score(
+def select_best_score(
     scores_dict: dict,
     min_score: int = 4,
     min_margin: int = 1,
@@ -90,7 +90,7 @@ def escolher_melhor_score(
         max_score.alias("score_max"),
         second_score.alias("score_second"),
         margem.alias("score_margem"),
-        calcular_confianca(
+        calculate_confidence(
             max_score,
             second_score
         ).alias("confianca")

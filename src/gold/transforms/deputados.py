@@ -14,8 +14,8 @@ from pyspark.sql.functions import (
 )
 
 from src.gold.classification.deputados.functions import (
-    classificar_estado,
-    classificar_regiao
+    classify_state,
+    classify_region
 )
 
 def transform_deputados(df):
@@ -49,12 +49,12 @@ def transform_deputados(df):
 
         .withColumn(
             "nome_estado",
-            classificar_estado(col("uf_origem"))
+            classify_state(col("uf_origem"))
         )
 
         .withColumn(
             "regiao",
-            classificar_regiao(col("uf_origem"))
+            classify_region(col("uf_origem"))
         )
 
         .withColumn(

@@ -11,7 +11,7 @@ from src.gold.classification.partidos.dictionaries import (
 )
 
 
-def aplicar_classificacao_dict(
+def apply_dict_classification(
     col_partido,
     mapping,
     default="Outros"
@@ -36,31 +36,31 @@ def aplicar_classificacao_dict(
     return expr
 
 
-def classificar_bloco_ideologico(
+def classify_ideological_bloc(
     col_partido
 ):
 
-    return aplicar_classificacao_dict(
+    return apply_dict_classification(
         col_partido,
         BLOCO_IDEOLOGICO
     )
 
 
-def classificar_corrente_ideologica(
+def classify_ideological_current(
     col_partido
 ):
 
-    return aplicar_classificacao_dict(
+    return apply_dict_classification(
         col_partido,
         CORRENTE_IDEOLOGICA
     )
 
 
-def classificar_espectro_politico(
+def classify_political_spectrum(
     col_partido
 ):
 
-    return aplicar_classificacao_dict(
+    return apply_dict_classification(
         col_partido,
         ESPECTRO_POLITICO
     )

@@ -9,7 +9,7 @@ from pyspark.sql.functions import (
 )
 
 from src.gold.classification.tramitacoes.functions import (
-    classificar_status_tramitacao
+    classify_proceeding_status
 )
 
 
@@ -69,7 +69,7 @@ def transform_tramitacoes(df):
         .withColumn(
             "status",
 
-            classificar_status_tramitacao(
+            classify_proceeding_status(
                 col("descricao_situacao"),
                 col("descricao_tramitacao"),
                 col("despacho")

@@ -1,6 +1,6 @@
 from pyspark.sql.functions import when
 
-def classificar_regiao(col_uf):
+def classify_region(col_uf):
     return (
         when(col_uf.isin("AC","AP","AM","PA","RO","RR","TO"), "Norte")
         .when(col_uf.isin("AL","BA","CE","MA","PB","PE","PI","RN","SE"), "Nordeste")
@@ -10,7 +10,7 @@ def classificar_regiao(col_uf):
         .otherwise("Indefinida")
     )
 
-def classificar_estado(col_uf):
+def classify_state(col_uf):
 
     return (
 

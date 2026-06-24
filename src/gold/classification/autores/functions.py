@@ -6,7 +6,7 @@ from pyspark.sql.functions import (
 )
 
 
-def classificar_papel_autor(
+def classify_author_role(
     col_ordem_assinatura
 ):
 
@@ -25,7 +25,7 @@ def classificar_papel_autor(
     )
 
 
-def classificar_tipo_autor(
+def classify_author_type(
     col_tipo_autor
 ):
 
