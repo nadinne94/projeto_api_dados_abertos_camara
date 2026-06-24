@@ -1,3 +1,7 @@
+import os
+
+from dotenv import load_dotenv
+
 from src.ml.training.labels import (
     classificar_tema_label,
     classificar_natureza_label
@@ -11,6 +15,8 @@ from src.ml.dictionaries.temas import (
 )
 
 
+load_dotenv()
+
 SOURCE_TABLE_PROPOSICOES = "proposicoes"
 
 
@@ -20,7 +26,10 @@ CONFIG_TEMA = {
 
     "source_table": SOURCE_TABLE_PROPOSICOES,
 
-    "model_name": "api_dados_abertos.ml.tema_classificador",
+    "model_name": os.getenv(
+        "MLFLOW_TEMA_MODEL_NAME",
+        "api_dados_abertos.ml.tema_classificador",
+    ),
 
     "target_col": "tema_ementa",
 
@@ -44,7 +53,10 @@ CONFIG_NATUREZA = {
 
     "source_table": SOURCE_TABLE_PROPOSICOES,
 
-    "model_name": "api_dados_abertos.ml.natureza_classificador",
+    "model_name": os.getenv(
+        "MLFLOW_NATUREZA_MODEL_NAME",
+        "api_dados_abertos.ml.natureza_classificador",
+    ),
 
     "target_col": "natureza_juridica",
 

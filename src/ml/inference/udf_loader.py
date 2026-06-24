@@ -1,19 +1,24 @@
+import os
 import traceback
+
 import mlflow
 import mlflow.sklearn
 import pandas as pd
+from dotenv import load_dotenv
 
 from pyspark.sql.functions import pandas_udf
 from pyspark.sql.types import StringType
 
+
+load_dotenv()
 
 _MODEL_CACHE = {}
 
 
 def carregar_modelo(
     model_name: str,
-    model_alias: str = "champion",
-    registry_uri: str = "databricks-uc"
+    model_alias: str | None = None,
+    registry_uri: str | None = None
 ):
     """Load and cache an MLflow model by name and alias.
 
@@ -25,6 +30,9 @@ def carregar_modelo(
     Returns:
         Loaded scikit-learn compatible model.
     """
+    model_alias = model_alias or os.getenv("MLFLOW_MODEL_ALIAS", "champion")
+    registry_uri = registry_uri or os.getenv("MLFLOW_REGISTRY_URI", "databricks-uc")
+
     mlflow.set_registry_uri(
         registry_uri
     )
@@ -46,9 +54,9 @@ def carregar_modelo(
 
 def criar_udf_classificacao(
     model_name: str,
-    model_alias: str = "champion",
+    model_alias: str | None = None,
     fallback: str = "Não Classificado",
-    registry_uri: str = "databricks-uc"
+    registry_uri: str | None = None
 ):
     """Create a pandas UDF for Spark batch inference.
 
