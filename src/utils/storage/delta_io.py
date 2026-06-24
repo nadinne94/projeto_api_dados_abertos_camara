@@ -1,12 +1,12 @@
 """
-Delta Lake utilities.
+Utilitários de leitura e escrita em Delta Lake.
 
-Centraliza:
-- leitura
-- escrita
-- merge/upsert
-- optimize
-- vacuum
+Centraliza operações de I/O usadas pelas camadas do pipeline, incluindo
+leitura, escrita, merge/upsert, otimização, vacuum e resolução de caminhos
+físicos das tabelas Delta.
+
+Este módulo apoia a persistência dos dados nas camadas Bronze, Silver,
+Gold e Star.
 """
 
 import logging

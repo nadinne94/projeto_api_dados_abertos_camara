@@ -1,5 +1,11 @@
 """
-Incremental watermark manager.
+Gerenciador de watermarks incrementais.
+
+Centraliza a leitura, atualização e persistência de marcas de controle
+usadas em processamentos incrementais do pipeline.
+
+Este módulo apoia a rastreabilidade de cargas e evita reprocessamentos
+desnecessários quando há controle por data ou identificador incremental.
 """
 
 import logging

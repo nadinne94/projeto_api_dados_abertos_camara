@@ -1,5 +1,11 @@
 """
-Date utilities.
+Utilitários para manipulação de datas.
+
+Centraliza funções auxiliares usadas em transformações Spark relacionadas
+a datas, como cálculo de intervalos e geração da data de processamento.
+
+Este módulo é usado nas camadas de transformação e enriquecimento do
+pipeline.
 """
 
 from pyspark.sql.column import Column

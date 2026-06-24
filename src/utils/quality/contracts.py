@@ -1,8 +1,9 @@
 """
 Contratos declarativos de Data Quality.
 
-Cada contrato define as regras mínimas esperadas para uma tabela em uma
-determinada camada do pipeline.
+Centraliza as regras mínimas esperadas para datasets em diferentes
+camadas do pipeline, incluindo colunas obrigatórias, chaves, unicidade,
+domínios permitidos e severidade das validações.
 
 As regras possuem severidade:
 

@@ -75,5 +75,5 @@ STORAGE_CONFIG: dict[str, str] = {
     "watermark": os.getenv(
         "WATERMARK_PATH",
         f"{METADATA_PATH}/watermark",
-    ),
+    )
 }

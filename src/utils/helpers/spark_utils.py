@@ -1,5 +1,11 @@
 """
-Spark utilities.
+Utilitários de configuração e suporte ao Spark.
+
+Centraliza funções auxiliares para configuração de logging, criação da
+SparkSession e aplicação de parâmetros usados durante a execução local
+ou distribuída do pipeline.
+
+Este módulo apoia a inicialização do ambiente de processamento.
 """
 
 import logging

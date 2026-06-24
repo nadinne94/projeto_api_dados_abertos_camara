@@ -1,12 +1,11 @@
 """
-Módulo de logging estruturado para pipelines.
+Logging estruturado para execução dos pipelines.
 
-Responsável por:
+Centraliza a geração de logs operacionais com identificador de execução,
+camada, tabela, status, mensagens e métricas de processamento.
 
-- logs estruturados
-- persistência Delta
-- rastreabilidade
-- execution_id
+Este módulo apoia a rastreabilidade das execuções e pode persistir os
+registros em Delta Lake.
 """
 
 import logging

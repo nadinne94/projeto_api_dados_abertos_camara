@@ -1,9 +1,11 @@
 """
-Utilities para geração de surrogate keys determinísticas.
+Utilitários para geração de surrogate keys determinísticas.
 
-Em modelos dimensionais, surrogate keys precisam ser estáveis entre
-reprocessamentos para garantir consistência nos relacionamentos entre
-fatos e dimensões.
+Centraliza funções usadas na criação de chaves substitutas estáveis para
+dimensões do modelo analítico.
+
+Em modelos dimensionais, surrogate keys precisam ser consistentes entre
+reprocessamentos para preservar os relacionamentos entre fatos e dimensões.
 
 Este módulo evita o uso de `monotonically_increasing_id()`, pois essa
 função depende do particionamento físico do Spark e pode gerar valores

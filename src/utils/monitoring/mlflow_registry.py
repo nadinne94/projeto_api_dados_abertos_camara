@@ -1,3 +1,13 @@
+"""
+Utilitários para gerenciamento do Model Registry no MLflow.
+
+Centraliza funções auxiliares para operações administrativas em modelos
+registrados, como remoção de modelos e definição de aliases.
+
+Este módulo apoia o controle de versões dos modelos usados na
+classificação textual de proposições legislativas.
+"""
+
 from mlflow.tracking import MlflowClient
 
 

@@ -1,3 +1,13 @@
+"""
+Utilitários de configuração do MLflow.
+
+Centraliza a configuração do registry e do experimento utilizados para
+rastreamento, registro e versionamento dos modelos de Machine Learning.
+
+Este módulo apoia o treinamento e a inferência dos modelos de
+classificação textual.
+"""
+
 import mlflow
 
 

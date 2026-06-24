@@ -1,8 +1,11 @@
 """
 Geração de relatórios de Data Quality.
 
-Permite converter os resultados das regras em DataFrame Spark para
-persistência em Delta Lake.
+Centraliza funções para converter resultados de validações em DataFrames
+Spark, permitindo persistência dos relatórios em Delta Lake e posterior
+consulta operacional.
+
+Este módulo apoia a rastreabilidade das validações executadas no pipeline.
 """
 
 from datetime import datetime

@@ -1,12 +1,12 @@
 """
-Cliente HTTP da API Câmara.
+Cliente da API Dados Abertos da Câmara.
 
-Responsável por:
+Centraliza a comunicação HTTP com a API pública, incluindo criação da
+sessão, configuração de headers, retentativas, paginação e coleta de
+dados em endpoints simples ou aninhados.
 
-- requests
-- retry / backoff
-- paginação
-- nested collection
+Este módulo é usado principalmente pela camada Bronze para ingestão dos
+dados brutos.
 """
 
 import logging

@@ -1,11 +1,13 @@
 """
 Checks reutilizáveis de Data Quality para DataFrames Spark.
 
-As funções deste módulo retornam dicionários padronizados com o resultado
-da validação, em vez de interromperem diretamente a execução.
+Centraliza funções de validação aplicadas aos datasets do pipeline, como
+verificação de registros, colunas obrigatórias, nulos, unicidade, domínios
+permitidos e limites de valores ausentes.
 
-A decisão de falhar ou apenas registrar warning fica concentrada no
-runner de qualidade.
+As funções deste módulo retornam dicionários padronizados com o resultado
+da validação. A decisão de bloquear a execução ou apenas registrar um
+warning fica concentrada no runner de qualidade.
 """
 
 from typing import Iterable, Optional

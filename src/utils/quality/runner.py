@@ -1,8 +1,12 @@
 """
-Runner de Data Quality.
+Executor de contratos de Data Quality.
 
-Este módulo executa contratos declarativos de qualidade sobre DataFrames
-Spark e decide se falhas devem bloquear ou apenas gerar warnings.
+Centraliza a execução das regras declarativas de qualidade sobre
+DataFrames Spark e decide, com base na severidade configurada, se uma
+falha deve bloquear a execução ou apenas gerar um warning.
+
+Este módulo conecta os contratos definidos em `contracts.py` aos checks
+reutilizáveis definidos em `checks.py`.
 """
 
 from typing import Dict, List

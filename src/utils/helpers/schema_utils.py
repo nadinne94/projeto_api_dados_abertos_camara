@@ -1,5 +1,11 @@
 """
-Schema helpers.
+Utilitários para criação e tratamento de schemas.
+
+Centraliza funções auxiliares para criação segura de DataFrames Spark a
+partir de registros JSON, especialmente em cenários de respostas vazias
+ou estruturas variáveis retornadas pela API.
+
+Este módulo apoia a ingestão e a padronização dos dados no pipeline.
 """
 
 from typing import List, Dict, Any
