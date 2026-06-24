@@ -1,3 +1,12 @@
+"""
+Testes unitários da geração de surrogate keys.
+
+Valida a criação de chaves substitutas determinísticas, garantindo
+estabilidade entre execuções, tratamento de valores nulos e erros para
+configurações inválidas de natural keys.
+"""
+
+
 import pytest
 
 from src.utils.helpers.surrogate import add_surrogate_key

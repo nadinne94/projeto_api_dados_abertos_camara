@@ -1,3 +1,12 @@
+"""
+Configuração compartilhada dos testes.
+
+Centraliza fixtures reutilizáveis usadas pela suíte de testes, incluindo
+a criação de uma SparkSession local para validação de transformações,
+checks de qualidade e componentes auxiliares do projeto.
+"""
+
+
 import os
 import sys
 

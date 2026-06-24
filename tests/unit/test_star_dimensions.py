@@ -1,3 +1,11 @@
+"""
+Testes unitários das dimensões do modelo Star Schema.
+
+Valida a construção de dimensões analíticas, incluindo seleção de colunas,
+remoção de duplicidades e criação de surrogate keys determinísticas.
+"""
+
+
 from src.star.dimensions.dim_deputado import build_dim_deputado
 from src.star.dimensions.dim_partido import build_dim_partido
 

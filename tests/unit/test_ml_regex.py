@@ -1,3 +1,11 @@
+"""
+Testes unitários das funções auxiliares de regex.
+
+Valida operações de matching, contagem, extração e pontuação baseadas em
+expressões regulares usadas na classificação textual de proposições
+legislativas.
+"""
+
 from pyspark.sql.functions import col
 
 from src.ml.base.regex import (

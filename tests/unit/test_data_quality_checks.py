@@ -1,3 +1,13 @@
+"""
+Testes unitários dos checks de Data Quality.
+
+Valida o comportamento das funções reutilizáveis de qualidade de dados,
+incluindo verificação de datasets vazios, colunas obrigatórias, valores
+nulos, unicidade, percentual máximo de nulos, domínios permitidos e volume
+mínimo de registros.
+"""
+
+
 import pytest
 
 from src.utils.quality.checks import (
