@@ -8,20 +8,36 @@ relacionadas ao Delta Lake.
 As configurações podem ser carregadas a partir de variáveis de ambiente.
 """
 
+import os
+
+from dotenv import load_dotenv
+
+
+load_dotenv()
+
+
 SPARK_CONFIG = {
-
-    # Delta
-
-    "spark.databricks.delta.schema.autoMerge.enabled":
+    # DELTA
+    "spark.databricks.delta.schema.autoMerge.enabled": os.getenv(
+        "DELTA_SCHEMA_MERGE_ENABLED",
         "true",
+    ),
 
     # AQE
-
-    "spark.sql.adaptive.enabled":
+    "spark.sql.adaptive.enabled": os.getenv(
+        "SPARK_SQL_ADAPTIVE_ENABLED",
         "true",
+    ),
 
-    # Bronze workloads (API)
+    # SHUFFLE
+    "spark.sql.shuffle.partitions": os.getenv(
+        "SPARK_SQL_SHUFFLE_PARTITIONS",
+        "50",
+    ),
 
-    "spark.sql.shuffle.partitions":
-        "50"
+    # TIMEZONE
+    "spark.sql.session.timeZone": os.getenv(
+        "SPARK_SQL_SESSION_TIMEZONE",
+        "America/Sao_Paulo",
+    )
 }
