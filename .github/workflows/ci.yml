@@ -1,3 +1,19 @@
+# ============================================================
+# CI - Validação automatizada do projeto
+# ============================================================
+#
+# Este workflow executa verificações básicas de qualidade a cada push
+# na branch main e a cada pull request.
+#
+# Validações executadas:
+# - instalação das dependências do projeto;
+# - verificação de estilo com Ruff;
+# - execução dos testes automatizados com Pytest.
+#
+# O objetivo é garantir que alterações no código não quebrem os testes
+# nem introduzam problemas básicos de qualidade antes da versão v1.0 Portfolio.
+# ============================================================
+
 name: CI
 
 on:
@@ -14,6 +30,12 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
 
       - name: Set up Python
         uses: actions/setup-python@v5
