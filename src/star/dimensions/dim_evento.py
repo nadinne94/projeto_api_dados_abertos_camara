@@ -1,3 +1,10 @@
+"""
+Construção da dimensão Evento.
+
+Centraliza a seleção, padronização, deduplicação e geração de surrogate key
+da dimensão `dim_evento` usada no modelo Star Schema.
+"""
+
 from pyspark.sql.functions import (
     col
 )

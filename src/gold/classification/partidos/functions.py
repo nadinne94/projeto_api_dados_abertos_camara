@@ -1,3 +1,10 @@
+"""
+Funções de classificação partidária.
+
+Centraliza regras usadas para classificar partidos por bloco ideológico,
+corrente ideológica e espectro político.
+"""
+
 from pyspark.sql.functions import (
     upper,
     when,

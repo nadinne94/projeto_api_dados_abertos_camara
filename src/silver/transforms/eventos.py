@@ -1,3 +1,10 @@
+"""
+Transformação Silver — Eventos.
+
+Centraliza regras de limpeza, padronização, tipagem e deduplicação do
+dataset `eventos` antes do enriquecimento analítico na camada Gold.
+"""
+
 from pyspark.sql.functions import (
     col,
     to_date,

@@ -1,3 +1,10 @@
+"""
+Runner da camada Silver.
+
+Centraliza a execução das transformações de limpeza e padronização,
+validações de qualidade e persistência dos datasets tratados.
+"""
+
 from pyspark.sql import SparkSession
 
 from src.config.dataset_config import DATASETS_CONFIG

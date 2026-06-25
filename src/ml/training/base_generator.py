@@ -44,7 +44,7 @@ def generate_training_base(
 
     regex_func = config["regex_func"]
 
-    tabela_treino = config["tabela_treino"]
+    training_table = config["training_table"]
 
     df = read_table(
 
@@ -106,7 +106,7 @@ def generate_training_base(
 
         layer="ml_models",
 
-        table_name=tabela_treino
+        table_name=training_table
     )
 
     return df

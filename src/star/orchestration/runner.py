@@ -1,3 +1,10 @@
+"""
+Runner de construção do modelo Star Schema.
+
+Centraliza a execução das dimensões e fatos, resolução de datasets,
+carregamento de fontes, validações e escrita das tabelas analíticas finais.
+"""
+
 import time
 from datetime import datetime
 
@@ -113,7 +120,7 @@ def _validate_object(
 def _parse_source(
     source: str
 ) -> tuple[str, str]:
-    """Split a source reference into layer and table name."""
+    """Divide uma referência de origem entre camada e nome da tabela."""
 
     if "." not in source:
 
@@ -180,7 +187,7 @@ def _run_transform_function(
 def run_star(
     object_name: str | list[str] = "all"
 ) -> None:
-    """Run the Star pipeline for one object, a list of objects or all objects."""
+    """Executa o pipeline Star para um objeto, uma lista de objetos ou todos os objetos."""
 
     spark = SparkSession.builder.getOrCreate()
 

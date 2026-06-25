@@ -1,3 +1,10 @@
+"""
+Dicionários de classificação partidária.
+
+Centraliza mapeamentos de blocos, correntes ideológicas e espectro
+político usados para enriquecer partidos.
+"""
+
 # ==========================================================
 # BLOCO IDEOLÓGICO
 # ==========================================================

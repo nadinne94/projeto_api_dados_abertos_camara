@@ -1,3 +1,10 @@
+"""
+Registry de fatos do Star Schema.
+
+Centraliza os metadados das tabelas fato, incluindo funções de construção,
+fontes necessárias, destinos e granularidade analítica.
+"""
+
 from src.star.facts.fato_proposicao import (
     build_fato_proposicao
 )

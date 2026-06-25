@@ -16,12 +16,10 @@ from typing import Optional
 from pyspark.sql import SparkSession
 from pyspark.sql.functions import current_timestamp
 from pyspark.sql.types import (
-    IntegerType,
     LongType,
     StringType,
     StructField,
     StructType,
-    TimestampType,
 )
 
 logger = logging.getLogger(__name__)

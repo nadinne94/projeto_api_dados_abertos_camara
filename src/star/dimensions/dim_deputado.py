@@ -1,3 +1,10 @@
+"""
+Construção da dimensão Deputado.
+
+Centraliza a seleção, padronização, deduplicação e geração de surrogate key
+da dimensão `dim_deputado` usada no modelo Star Schema.
+"""
+
 from src.utils.helpers.surrogate import (
     add_surrogate_key
 )

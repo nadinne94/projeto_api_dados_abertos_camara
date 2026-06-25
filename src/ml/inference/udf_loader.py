@@ -30,14 +30,14 @@ def load_model(
     model_alias: str | None = None,
     registry_uri: str | None = None
 ):
-    """Load and cache an MLflow model by name and alias.
+    """Carrega e mantém em cache um modelo MLflow por nome e alias.
 
-    Args:
-        model_name: Registered model name.
-        model_alias: Model alias used for inference.
+    Parâmetros:
+        model_name: Nome do modelo registrado.
+        model_alias: Alias do modelo usado para inferência.
         registry_uri: MLflow registry URI.
 
-    Returns:
+    Retorna:
         Loaded scikit-learn compatible model.
     """
     model_alias = model_alias or os.getenv("MLFLOW_MODEL_ALIAS", "champion")
@@ -68,15 +68,15 @@ def create_classification_udf(
     fallback: str = "Não Classificado",
     registry_uri: str | None = None
 ):
-    """Create a pandas UDF for Spark batch inference.
+    """Cria uma pandas UDF para inferência em lote no Spark.
 
-    Args:
-        model_name: Registered model name.
-        model_alias: Model alias used for inference.
+    Parâmetros:
+        model_name: Nome do modelo registrado.
+        model_alias: Alias do modelo usado para inferência.
         fallback: Value returned when a prediction is missing.
         registry_uri: MLflow registry URI.
 
-    Returns:
+    Retorna:
         pandas UDF that receives text values and returns predicted labels.
     """
 
@@ -93,7 +93,7 @@ def create_classification_udf(
                 registry_uri=registry_uri
             )
 
-            textos_limpos = (
+            clean_texts = (
                 texts
                 .fillna("")
                 .astype(str)
@@ -101,7 +101,7 @@ def create_classification_udf(
             )
 
             predictions = model.predict(
-                textos_limpos
+                clean_texts
             )
 
             return (
@@ -112,11 +112,11 @@ def create_classification_udf(
 
         except Exception as exc:
 
-            erro = traceback.format_exc()
+            error = traceback.format_exc()
 
             raise RuntimeError(
                 f"Erro inferência ML "
-                f"[{model_name}@{model_alias}]\n{erro}"
+                f"[{model_name}@{model_alias}]\n{error}"
             ) from exc
 
     return classify_with_ml

@@ -22,17 +22,17 @@ from src.utils.monitoring.mlflow_registry import (
 
 
 def register_run(
-    resultado,
+    training_result,
     config
 ):
 
     model_name = config["model_name"]
 
-    pipeline = resultado["pipeline"]
+    pipeline = training_result["pipeline"]
 
-    X_test = resultado["X_test"]
+    X_test = training_result["X_test"]
 
-    report = resultado["report"]
+    report = training_result["report"]
 
     predictions = pipeline.predict(
         X_test
@@ -76,10 +76,6 @@ def register_run(
 
         tfidf = pipeline.named_steps[
             "tfidf"
-        ]
-
-        clf = pipeline.named_steps[
-            "clf"
         ]
 
         mlflow.log_params({

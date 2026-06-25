@@ -1,3 +1,10 @@
+"""
+Funções de classificação de eventos.
+
+Centraliza regras usadas para classificar tipo e status de eventos
+legislativos.
+"""
+
 from pyspark.sql.functions import lower, when, coalesce, lit
 
 def classify_event_type(col_tipo):

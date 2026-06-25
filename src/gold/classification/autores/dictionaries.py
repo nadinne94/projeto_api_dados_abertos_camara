@@ -1,3 +1,10 @@
+"""
+Dicionários de classificação de autoria.
+
+Centraliza mapeamentos usados para identificar papéis e tipos de autores
+associados às proposições legislativas.
+"""
+
 TIPO_AUTOR_RULES = {
 
     "Deputado(a)": [

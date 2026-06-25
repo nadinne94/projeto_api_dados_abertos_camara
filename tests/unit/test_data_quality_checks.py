@@ -8,7 +8,6 @@ mínimo de registros.
 """
 
 
-import pytest
 
 from src.utils.quality.checks import (
     check_allowed_values,

@@ -1,3 +1,10 @@
+"""
+Funções de classificação de votos.
+
+Centraliza regras usadas para padronizar e classificar votos
+parlamentares.
+"""
+
 from pyspark.sql.functions import (
     lower,
     trim,

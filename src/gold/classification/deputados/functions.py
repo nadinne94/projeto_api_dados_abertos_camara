@@ -1,3 +1,10 @@
+"""
+Funções de classificação de deputados.
+
+Centraliza regras auxiliares para classificação geográfica de deputados,
+incluindo estado e região de origem.
+"""
+
 from pyspark.sql.functions import when
 
 def classify_region(col_uf):

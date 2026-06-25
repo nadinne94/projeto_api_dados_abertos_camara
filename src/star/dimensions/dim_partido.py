@@ -1,3 +1,10 @@
+"""
+Construção da dimensão Partido.
+
+Centraliza a seleção, padronização, deduplicação e geração de surrogate key
+da dimensão `dim_partido` usada no modelo Star Schema.
+"""
+
 from src.utils.helpers.surrogate import (
     add_surrogate_key
 )

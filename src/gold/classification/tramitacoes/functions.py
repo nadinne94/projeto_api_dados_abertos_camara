@@ -1,3 +1,10 @@
+"""
+Funções de classificação de tramitações.
+
+Centraliza regras usadas para classificar o status de tramitações
+legislativas a partir de descrições textuais.
+"""
+
 from pyspark.sql.column import Column
 
 from pyspark.sql.functions import (

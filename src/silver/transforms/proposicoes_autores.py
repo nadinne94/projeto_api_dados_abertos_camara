@@ -1,3 +1,10 @@
+"""
+Transformação Silver — Proposicoes Autores.
+
+Centraliza regras de limpeza, padronização, tipagem e deduplicação do
+dataset `proposicoes_autores` antes do enriquecimento analítico na camada Gold.
+"""
+
 # Importação de Dependências Spark SQL
 from pyspark.sql.functions import col, upper, current_timestamp
 

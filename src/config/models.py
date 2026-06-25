@@ -10,8 +10,6 @@ permitindo ajustar nomes de modelos e aliases sem alterar o código.
 
 from src.ml.config.training_configs import (
     CLASSIFICADORES_PROPOSICOES,
-    CONFIG_NATUREZA,
-    CONFIG_TEMA,
 )
 
 

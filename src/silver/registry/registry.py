@@ -1,3 +1,10 @@
+"""
+Registry da camada Silver.
+
+Centraliza os metadados dos datasets processados na camada Silver,
+incluindo fontes, destinos, transformações e chaves de validação.
+"""
+
 from src.silver.transforms.deputados import transform_deputados
 from src.silver.transforms.partidos import transform_partidos
 from src.silver.transforms.proposicoes import transform_proposicoes

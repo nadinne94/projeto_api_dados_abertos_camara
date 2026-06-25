@@ -34,10 +34,10 @@ def _normalize_key_column(column_name: str) -> Column:
     A normalização reduz risco de chaves diferentes por variações simples
     de texto, como espaços extras ou diferenças entre maiúsculas/minúsculas.
 
-    Args:
+    Parâmetros:
         column_name: Nome da coluna usada como chave natural.
 
-    Returns:
+    Retorna:
         Expressão Spark normalizada para composição do hash.
     """
 
@@ -66,16 +66,16 @@ def add_surrogate_key(
     estável entre execuções desde que os valores das chaves naturais
     permaneçam os mesmos.
 
-    Args:
+    Parâmetros:
         df: DataFrame de entrada.
         key_name: Nome da coluna de surrogate key a ser criada.
         natural_keys: Coluna ou lista de colunas que identificam
             unicamente o registro na dimensão.
 
-    Returns:
+    Retorna:
         DataFrame com a coluna de surrogate key adicionada.
 
-    Raises:
+    Exceções:
         ValueError: Se nenhuma chave natural for informada.
     """
 

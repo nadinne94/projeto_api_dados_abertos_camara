@@ -1,3 +1,10 @@
+"""
+Funções de classificação de proposições.
+
+Centraliza regras para montagem de texto base e classificação de tipo
+documental em proposições legislativas.
+"""
+
 from pyspark.sql.column import Column
 
 from pyspark.sql.functions import (
@@ -11,15 +18,6 @@ from pyspark.sql.functions import (
 from src.gold.classification.proposicoes.dictionaries import (
     TIPOS_DOCUMENTAIS
 )
-
-from src.ml.features.tema import (
-    classify_topic
-)
-
-from src.ml.features.natureza import (
-    classify_legal_nature
-)
-
 
 # =========================================================
 # TEXTO BASE

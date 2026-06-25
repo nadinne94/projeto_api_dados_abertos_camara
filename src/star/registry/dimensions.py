@@ -1,3 +1,10 @@
+"""
+Registry de dimensões do Star Schema.
+
+Centraliza os metadados das dimensões analíticas, incluindo funções de
+construção, fontes necessárias, destinos e chaves naturais.
+"""
+
 from src.star.dimensions.dim_deputado import (
     build_dim_deputado
 )

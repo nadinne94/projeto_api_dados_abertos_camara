@@ -24,7 +24,7 @@ def calculate_confidence(
     max_score,
     second_score
 ):
-    margem = max_score - second_score
+    margin = max_score - second_score
 
     return (
         when(
@@ -46,7 +46,7 @@ def select_best_score(
     min_score: int = 4,
     min_margin: int = 1,
     fallback: str = "Tema Não Explícito",
-    thresholds_por_classe: dict | None = None
+    class_thresholds: dict | None = None
 ):
     scores = list(scores_dict.values())
 
@@ -66,30 +66,30 @@ def select_best_score(
         lit(0)
     )
 
-    margem = max_score - second_score
+    margin = max_score - second_score
 
-    classe = lit(fallback)
+    selected_class = lit(fallback)
 
-    for nome, score in scores_dict.items():
+    for class_name, score in scores_dict.items():
 
-        threshold_classe = (
-            thresholds_por_classe.get(nome, min_score)
-            if thresholds_por_classe
+        class_threshold = (
+            class_thresholds.get(class_name, min_score)
+            if class_thresholds
             else min_score
         )
 
-        classe = when(
+        selected_class = when(
             (score == max_score)
-            & (max_score >= threshold_classe)
-            & (margem >= min_margin),
-            lit(nome)
-        ).otherwise(classe)
+            & (max_score >= class_threshold)
+            & (margin >= min_margin),
+            lit(class_name)
+        ).otherwise(selected_class)
 
     return struct(
-        classe.alias("classe"),
+        selected_class.alias("classe"),
         max_score.alias("score_max"),
         second_score.alias("score_second"),
-        margem.alias("score_margem"),
+        margin.alias("score_margem"),
         calculate_confidence(
             max_score,
             second_score

@@ -1,11 +1,17 @@
+"""
+Taxonomia regimental de proposições.
+
+Centraliza regras de enriquecimento analítico baseadas em tipo documental,
+tema e categorias regimentais.
+"""
+
 from pyspark.sql.functions import (
     col,
     when,
-    lit
 )
 
 
-def aplicar_taxonomia_regimental(df):
+def apply_regimental_taxonomy(df):
 
     return (
 

@@ -136,22 +136,15 @@ exclude = [
 ]
 
 [tool.ruff.lint]
+# Validação conservadora para a versão v1.0 Portfolio.
+# O foco inicial é capturar erros objetivos, como imports quebrados,
+# nomes indefinidos e código claramente inconsistente, sem transformar
+# a revisão em uma refatoração massiva de estilo.
 select = [
-    "E",
-    "F",
-    "W",
-    "I",
-    "B",
-    "UP",
-    "SIM",
-    "C4",
-    "PL"
+    "F"
 ]
 ignore = [
-    "E501",
-    "PLR0913",
-    "PLR0915",
-    "PLR2004"
+    "E501"
 ]
 
 [tool.ruff.lint.isort]

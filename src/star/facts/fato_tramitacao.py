@@ -1,3 +1,10 @@
+"""
+Construção do fato Tramitacao.
+
+Centraliza a seleção de chaves, métricas e atributos necessários para a
+tabela `fato_tramitacao` do modelo Star Schema.
+"""
+
 from pyspark.sql.functions import (
     col,
     trim,

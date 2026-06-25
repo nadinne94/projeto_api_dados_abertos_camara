@@ -1,3 +1,10 @@
+"""
+Construção do fato Proposicao.
+
+Centraliza a seleção de chaves, métricas e atributos necessários para a
+tabela `fato_proposicao` do modelo Star Schema.
+"""
+
 from pyspark.sql.functions import (
     col,
     date_format,

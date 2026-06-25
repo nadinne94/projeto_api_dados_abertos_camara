@@ -13,7 +13,6 @@ from pyspark.sql.column import Column
 from pyspark.sql.functions import (
     lit,
     struct,
-    when
 )
 
 from src.ml.base.preprocessing import (
@@ -25,7 +24,7 @@ from src.ml.base.regex import (
 )
 
 from src.ml.base.scoring import (
-    escolher_melhor_score
+    select_best_score
 )
 
 from src.ml.dictionaries.natureza import (
@@ -37,27 +36,25 @@ def calculate_legal_nature_scores(
     col_ementa: Column
 ):
 
-    texto = normalize_text(
+    normalized_text = normalize_text(
         col_ementa
     )
 
     scores = {}
 
-    for classe, regras in (
-        NATUREZA_REGEX.items()
-    ):
+    for class_name, rules in NATUREZA_REGEX.items():
 
         total = lit(0)
 
-        for regex, peso in regras:
+        for regex, weight in rules:
 
             total += score_regex(
-                texto,
+                normalized_text,
                 regex,
-                peso
+                weight
             )
 
-        scores[classe] = total
+        scores[class_name] = total
 
     return scores
 
@@ -70,7 +67,7 @@ def classify_legal_nature(
         col_ementa
     )
 
-    resultado = escolher_melhor_score(
+    result = select_best_score(
 
         scores_dict=scores,
 
@@ -83,17 +80,17 @@ def classify_legal_nature(
 
     return struct(
 
-        resultado["classe"].alias(
+        result["classe"].alias(
             "natureza_juridica"
         ),
 
-        resultado["score_max"],
+        result["score_max"],
 
-        resultado["score_second"],
+        result["score_second"],
 
-        resultado["score_margem"],
+        result["score_margem"],
 
-        resultado["confianca"]
+        result["confianca"]
     )
 
 

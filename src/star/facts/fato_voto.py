@@ -1,3 +1,10 @@
+"""
+Construção do fato Voto.
+
+Centraliza a seleção de chaves, métricas e atributos necessários para a
+tabela `fato_voto` do modelo Star Schema.
+"""
+
 from pyspark.sql.functions import (
     col,
     date_format,

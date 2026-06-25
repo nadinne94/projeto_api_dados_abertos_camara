@@ -1,3 +1,10 @@
+"""
+Transformação Silver — Tramitacoes.
+
+Centraliza regras de limpeza, padronização, tipagem e deduplicação do
+dataset `tramitacoes` antes do enriquecimento analítico na camada Gold.
+"""
+
 from pyspark.sql.window import Window
 from pyspark.sql.functions import (
     col,

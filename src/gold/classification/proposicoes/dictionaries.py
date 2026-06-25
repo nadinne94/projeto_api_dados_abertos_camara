@@ -1,3 +1,10 @@
+"""
+Dicionários de classificação documental de proposições.
+
+Centraliza padrões textuais usados para identificar tipos documentais
+associados às proposições legislativas.
+"""
+
 # =========================================================
 # TIPO DOCUMENTAL
 # =========================================================

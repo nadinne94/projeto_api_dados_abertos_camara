@@ -1,3 +1,10 @@
+"""
+Funções de classificação de autoria.
+
+Centraliza regras usadas para classificar papel e tipo de autor nas
+relações entre proposições e seus autores.
+"""
+
 from pyspark.sql.functions import (
     lower,
     trim,

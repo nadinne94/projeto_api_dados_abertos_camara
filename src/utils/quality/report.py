@@ -30,14 +30,14 @@ def build_quality_report_df(
     """
     Converte resultados de Data Quality em DataFrame Spark.
 
-    Args:
+    Parâmetros:
         spark: SparkSession ativa.
         results: Lista de resultados retornada pelo runner de qualidade.
         execution_id: Identificador da execução do pipeline.
         layer: Camada validada.
         table_name: Tabela validada.
 
-    Returns:
+    Retorna:
         DataFrame Spark com relatório de qualidade.
     """
 

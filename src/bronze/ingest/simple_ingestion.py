@@ -32,14 +32,14 @@ def ingest_simple_dataset(
     """
     Executa ingestão de datasets simples.
 
-    Args:
+    Parâmetros:
         spark: SparkSession.
         dataset_name: Nome do dataset.
         config: Configuração do dataset.
         api_config: Configuração da API.
         logger: Logger estruturado.
 
-    Returns:
+    Retorna:
         DataFrame Spark ou None.
     """
 

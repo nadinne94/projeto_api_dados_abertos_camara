@@ -1,3 +1,10 @@
+"""
+Construção da dimensão Orgao.
+
+Centraliza a seleção, padronização, deduplicação e geração de surrogate key
+da dimensão `dim_orgao` usada no modelo Star Schema.
+"""
+
 from pyspark.sql.functions import (
     col,
     trim

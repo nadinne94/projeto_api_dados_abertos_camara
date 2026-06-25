@@ -1,3 +1,10 @@
+"""
+Dicionários de classificação de tramitações.
+
+Centraliza padrões textuais usados para identificar status e categorias
+associadas às tramitações legislativas.
+"""
+
 STATUS_TRAMITACAO = {
 
     "Convertida em Norma": [

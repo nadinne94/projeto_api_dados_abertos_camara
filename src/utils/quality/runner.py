@@ -33,17 +33,17 @@ def run_quality_checks(
     """
     Executa as validações de Data Quality para uma tabela.
 
-    Args:
+    Parâmetros:
         df: DataFrame a ser validado.
         layer: Camada do pipeline. Exemplo: bronze, silver, gold, star.
         table_name: Nome da tabela/dataset.
         fail_on_error: Se True, lança exceção quando houver falha com
             severidade error.
 
-    Returns:
+    Retorna:
         Lista de resultados das regras executadas.
 
-    Raises:
+    Exceções:
         ValueError: Se houver falhas bloqueantes e fail_on_error=True.
     """
 

@@ -1,3 +1,10 @@
+"""
+Transformação Silver — Deputados.
+
+Centraliza regras de limpeza, padronização, tipagem e deduplicação do
+dataset `deputados` antes do enriquecimento analítico na camada Gold.
+"""
+
 from pyspark.sql.functions import col, trim, upper, lower, current_timestamp
 
 def transform_deputados(df):

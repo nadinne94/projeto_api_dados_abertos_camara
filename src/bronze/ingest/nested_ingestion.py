@@ -30,7 +30,7 @@ def ingest_nested_dataset(
     """
     Executa ingestão de datasets dependentes.
 
-    Args:
+    Parâmetros:
         spark: SparkSession.
         dataset_name: Nome do dataset.
         config: Configuração do dataset.
@@ -38,7 +38,7 @@ def ingest_nested_dataset(
         storage_config: Configuração storage.
         logger: Logger estruturado.
 
-    Returns:
+    Retorna:
         DataFrame Spark ou None.
     """
 

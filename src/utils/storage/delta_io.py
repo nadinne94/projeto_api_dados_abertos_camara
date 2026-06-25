@@ -27,14 +27,14 @@ def get_path(
     layer: str,
     table_name: str
 ) -> str:
-    """Return the physical Delta path for a table.
+    """Retorna o caminho físico Delta de uma tabela.
 
-    Args:
-        storage_config: Mapping with base paths by layer.
-        layer: Logical layer name, such as bronze, silver, gold or star.
+    Parâmetros:
+        storage_config: Mapeamento com caminhos base por camada.
+        layer: Nome lógico da camada, como bronze, silver, gold ou star.
         table_name: Table name inside the layer.
 
-    Returns:
+    Retorna:
         Full storage path for the Delta table.
     """
 
@@ -51,16 +51,16 @@ def read_table(
     table_name: str,
     validate: bool = True
 ) -> DataFrame:
-    """Read a Delta table from the configured storage path.
+    """Lê uma tabela Delta a partir do caminho configurado.
 
-    Args:
-        spark: Active SparkSession.
-        storage_config: Mapping with base paths by layer.
+    Parâmetros:
+        spark: SparkSession ativa.
+        storage_config: Mapeamento com caminhos base por camada.
         layer: Logical layer name.
         table_name: Table to read.
         validate: If True, checks whether the path is a Delta table.
 
-    Returns:
+    Retorna:
         DataFrame loaded from Delta.
     """
 
@@ -102,12 +102,12 @@ def write_table(
     layer: str,
     table_name: str
 ) -> None:
-    """Write a DataFrame as a Delta table using overwrite mode.
+    """Escreve um DataFrame como tabela Delta usando modo overwrite.
 
-    Args:
-        spark: Active SparkSession.
-        df: DataFrame to persist.
-        storage_config: Mapping with base paths by layer.
+    Parâmetros:
+        spark: SparkSession ativa.
+        df: DataFrame a ser persistido.
+        storage_config: Mapeamento com caminhos base por camada.
         layer: Logical layer name.
         table_name: Target table name.
     """
@@ -153,10 +153,10 @@ def merge_table(
     If the target table does not exist yet, the function creates it with
     the same write behavior used by `write_table`.
 
-    Args:
-        spark: Active SparkSession.
+    Parâmetros:
+        spark: SparkSession ativa.
         df: Source DataFrame.
-        storage_config: Mapping with base paths by layer.
+        storage_config: Mapeamento com caminhos base por camada.
         layer: Logical layer name.
         table_name: Target table name.
         merge_keys: Columns used to match source and target records.

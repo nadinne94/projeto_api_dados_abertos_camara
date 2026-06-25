@@ -13,8 +13,6 @@ import time
 import mlflow
 
 from pyspark.sql import SparkSession
-from pyspark.sql.functions import col
-
 from src.config.project_config import (
     STORAGE_CONFIG
 )
@@ -50,7 +48,7 @@ REQUIRED_CONFIG_KEYS = [
 
     "target_col",
 
-    "tabela_treino",
+    "training_table",
 
     "source_table",
 
@@ -96,7 +94,7 @@ def log_class_distribution(
     }
 
 
-def executar_pipeline_treino(
+def run_training_pipeline(
     config
 ):
 
@@ -163,7 +161,7 @@ def executar_pipeline_treino(
 
         n_records = df_train.count()
 
-        distribuicao = log_class_distribution(
+        class_distribution = log_class_distribution(
             df_train,
             target_col
         )
@@ -177,7 +175,7 @@ def executar_pipeline_treino(
 
         print(
             f"\nDistribuição treino {model_name}: "
-            f"{distribuicao}"
+            f"{class_distribution}"
         )
 
         logger.log_event(
@@ -186,18 +184,18 @@ def executar_pipeline_treino(
             "TRAIN_START"
         )
 
-        resultado = run_training(
+        training_result = run_training(
             df=df_train,
             target_col=target_col
         )
 
-        accuracy = resultado["report"]["accuracy"]
+        accuracy = training_result["report"]["accuracy"]
 
         logger.log_event(
             "ML_PIPELINE",
             model_name,
             "TRAIN_SUCCESS",
-            records=resultado["n_samples"]
+            records=training_result["n_samples"]
         )
 
         logger.log_event(
@@ -207,7 +205,7 @@ def executar_pipeline_treino(
         )
 
         version = register_run(
-            resultado,
+            training_result,
             config
         )
 
@@ -264,6 +262,6 @@ def run_training_batch(
             f"\nRodando pipeline: {config['model_name']}"
         )
 
-        executar_pipeline_treino(
+        run_training_pipeline(
             config
         )

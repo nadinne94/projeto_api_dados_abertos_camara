@@ -45,7 +45,7 @@ CONFIG_TEMA = {
 
     "target_col": "tema_ementa",
 
-    "tabela_treino": "proposicoes_tema_treino",
+    "training_table": "proposicoes_tema_treino",
 
     "regex_func": classify_topic_label,
 
@@ -55,7 +55,7 @@ CONFIG_TEMA = {
 
     "min_margin": TEMA_MIN_MARGIN,
 
-    "thresholds_por_classe": TEMA_THRESHOLDS
+    "class_thresholds": TEMA_THRESHOLDS
 }
 
 
@@ -72,7 +72,7 @@ CONFIG_NATUREZA = {
 
     "target_col": "natureza_juridica",
 
-    "tabela_treino": "proposicoes_natureza_treino",
+    "training_table": "proposicoes_natureza_treino",
 
     "regex_func": classify_legal_nature_label,
 

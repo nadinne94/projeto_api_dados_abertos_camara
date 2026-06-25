@@ -79,7 +79,7 @@ def classify_topic_label(
     )
 
 
-def classificar_natureza_label(
+def classify_legal_nature_label(
     col_ementa
 ):
 

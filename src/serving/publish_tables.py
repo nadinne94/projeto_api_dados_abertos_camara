@@ -1,3 +1,10 @@
+"""
+Publicação das tabelas finais para consumo analítico.
+
+Centraliza a criação de schema, validação de tabelas Delta e publicação
+do modelo Star Schema em uma camada SQL para consumo pelo Power BI.
+"""
+
 from pyspark.sql import SparkSession
 
 from src.config.project_config import (

@@ -15,7 +15,6 @@ from pyspark.sql.column import Column
 from pyspark.sql.functions import (
     lit,
     struct,
-    when
 )
 
 from src.ml.base.preprocessing import (
@@ -43,30 +42,30 @@ def calculate_topic_scores(
     col_ementa: Column
 ) -> dict:
 
-    texto = normalize_text(
+    normalized_text = normalize_text(
         col_ementa
     )
 
     scores = {}
 
-    for tema, regras in TEMA_REGEX_RULES.items():
+    for topic, rules in TEMA_REGEX_RULES.items():
 
         total = lit(0)
 
-        for regex, peso in regras:
+        for regex, weight in rules:
 
             total = total + score_regex(
-                texto,
+                normalized_text,
                 regex,
-                peso
+                weight
             )
 
-        scores[tema] = total
+        scores[topic] = total
 
     return scores
 
 
-def classificar_tema(
+def classify_topic(
     col_ementa: Column
 ):
 
@@ -74,7 +73,7 @@ def classificar_tema(
         col_ementa
     )
 
-    resultado = select_best_score(
+    result = select_best_score(
 
         scores_dict=scores,
 
@@ -84,22 +83,22 @@ def classificar_tema(
 
         fallback=TEMA_FALLBACK,
 
-        thresholds_por_classe=TEMA_THRESHOLDS
+        class_thresholds=TEMA_THRESHOLDS
     )
 
     return struct(
 
-        resultado["classe"].alias(
+        result["classe"].alias(
             "tema"
         ),
 
-        resultado["score_max"],
+        result["score_max"],
 
-        resultado["score_second"],
+        result["score_second"],
 
-        resultado["score_margem"],
+        result["score_margem"],
 
-        resultado["confianca"]
+        result["confianca"]
     )
 
 
@@ -107,6 +106,6 @@ def classify_topic_for_training(
     col_ementa: Column
 ):
 
-    return classificar_tema(
+    return classify_topic(
         col_ementa
     )["tema"]

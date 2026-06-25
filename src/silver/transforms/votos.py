@@ -1,3 +1,10 @@
+"""
+Transformação Silver — Votos.
+
+Centraliza regras de limpeza, padronização, tipagem e deduplicação do
+dataset `votos` antes do enriquecimento analítico na camada Gold.
+"""
+
 from pyspark.sql.functions import col, upper, to_date, to_timestamp, current_timestamp
 
 from pyspark.sql.functions import col, upper, to_date, to_timestamp, current_timestamp
