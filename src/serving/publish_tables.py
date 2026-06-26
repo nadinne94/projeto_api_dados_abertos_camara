@@ -27,11 +27,12 @@ except ImportError:
 def list_star_tables(
     spark: SparkSession
 ):
-
     if DBUtils is None:
         raise RuntimeError(
             "DBUtils não está disponível. A publicação automática das tabelas requer execução no Databricks."
         )
+
+    dbutils = DBUtils(spark)
 
     files = dbutils.fs.ls(
         STORAGE_CONFIG["star"]
