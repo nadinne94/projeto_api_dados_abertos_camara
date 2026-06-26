@@ -18,10 +18,20 @@ from src.utils.storage.delta_io import (
 
 DEFAULT_SCHEMA = "api_dados_abertos.star_schema"
 
+try:
+    from pyspark.dbutils import DBUtils
+except ImportError:
+    DBUtils = None
+
 
 def list_star_tables(
     spark: SparkSession
 ):
+
+    if DBUtils is None:
+        raise RuntimeError(
+            "DBUtils não está disponível. A publicação automática das tabelas requer execução no Databricks."
+        )
 
     files = dbutils.fs.ls(
         STORAGE_CONFIG["star"]
@@ -103,7 +113,7 @@ def publish_star_schema(
         reset=reset_schema
     )
 
-    tables = listar_tabelas_star(
+    tables = list_star_tables(
         spark
     )
 

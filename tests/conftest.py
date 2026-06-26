@@ -14,6 +14,14 @@ import pytest
 from pyspark.sql import SparkSession
 
 
+# ==========================================================
+# Configuração do Python utilizado pelo PySpark
+# ==========================================================
+
+os.environ["PYSPARK_PYTHON"] = sys.executable
+os.environ["PYSPARK_DRIVER_PYTHON"] = sys.executable
+
+
 PROJECT_ROOT = os.path.abspath(
     os.path.join(
         os.path.dirname(__file__),
@@ -44,6 +52,8 @@ def spark():
         .config("spark.sql.shuffle.partitions", "2")
         .config("spark.driver.bindAddress", "127.0.0.1")
         .config("spark.sql.session.timeZone", "America/Sao_Paulo")
+        .config("spark.pyspark.python", sys.executable)
+        .config("spark.pyspark.driver.python", sys.executable)
         .getOrCreate()
     )
 

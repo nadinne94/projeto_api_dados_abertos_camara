@@ -9,8 +9,7 @@ from pyspark.sql.functions import (
     upper,
     trim,
     current_timestamp,
-    when,
-    length
+    when
 )
 
 from src.gold.classification.partidos.functions import (

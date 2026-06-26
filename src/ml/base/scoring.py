@@ -28,11 +28,11 @@ def calculate_confidence(
 
     return (
         when(
-            (max_score >= 8) & (margem >= 4),
+            (max_score >= 8) & (margin >= 4),
             lit("Alta")
         )
         .when(
-            (max_score >= 5) & (margem >= 2),
+            (max_score >= 5) & (margin >= 2),
             lit("Média")
         )
         .otherwise(
@@ -89,7 +89,7 @@ def select_best_score(
         selected_class.alias("classe"),
         max_score.alias("score_max"),
         second_score.alias("score_second"),
-        margin.alias("score_margem"),
+        margin.alias("score_margin"),
         calculate_confidence(
             max_score,
             second_score
