@@ -1,24 +1,30 @@
 # Pipeline Lakehouse de Dados Abertos da Câmara dos Deputados
 
-![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
-![PySpark](https://img.shields.io/badge/PySpark-3.5%2B-orange)
-![Delta Lake](https://img.shields.io/badge/Delta%20Lake-3.0%2B-brightgreen)
+![Python](https://img.shields.io/badge/Python-3.11-blue)
+![PySpark](https://img.shields.io/badge/PySpark-4.1-orange)
+![Delta Lake](https://img.shields.io/badge/Delta%20Lake-Lakehouse-brightgreen)
 ![MLflow](https://img.shields.io/badge/MLflow-MLOps-blueviolet)
 ![Power BI](https://img.shields.io/badge/Power%20BI-Dashboard-yellow)
+![Tests](https://img.shields.io/badge/Tests-Pytest-success)
+![Code Style](https://img.shields.io/badge/Lint-Ruff-success)
+![License](https://img.shields.io/badge/License-MIT-lightgrey)
+![Portfolio](https://img.shields.io/badge/Version-v1.0.0-blue)
 
-Projeto de Engenharia de Dados que transforma dados públicos da Câmara dos Deputados em um produto analítico estruturado para exploração em Power BI.
+Projeto de Engenharia de Dados que implementa um pipeline Lakehouse ponta a ponta utilizando dados públicos da Câmara dos Deputados para disponibilizar uma base analítica consumida por Power BI.
 
-O pipeline cobre ingestão via API, tratamento com PySpark, arquitetura medalhão, armazenamento em Delta Lake, classificação textual com ML/NLP, modelagem dimensional em Star Schema e publicação de tabelas para consumo analítico.
+A solução realiza ingestão via API, processamento distribuído com PySpark, armazenamento em Delta Lake, classificação textual com ML/NLP, modelagem dimensional em Star Schema e publicação de tabelas analíticas consumidas por um dashboard Power BI.
+
+O projeto foi desenvolvido como portfólio para demonstrar boas práticas de Engenharia de Dados em uma arquitetura ponta a ponta.
 
 ---
 
 ## Sumário
 
 - [Visão Geral](#visão-geral)
+- [Resultados do Projeto](#resultados-do-projeto)
 - [Problema de Negócio](#problema-de-negócio)
 - [Arquitetura](#arquitetura)
 - [Tecnologias Utilizadas](#tecnologias-utilizadas)
-- [Resultados do Projeto](#resultados-do-projeto)
 - [Dashboard Power BI](#dashboard-power-bi)
 - [Competências Demonstradas](#competências-demonstradas)
 - [Estrutura do Projeto](#estrutura-do-projeto)
@@ -50,6 +56,23 @@ Principais entregas:
 - validações de qualidade de dados;
 - dashboard Power BI publicado;
 - documentação técnica na pasta `docs/`.
+
+---
+
+## Resultados do Projeto
+
+Ao final da execução do pipeline são entregues:
+
+- Pipeline Lakehouse estruturado em arquitetura Medalhão;
+- Ingestão automatizada da API da Câmara dos Deputados;
+- Armazenamento em Delta Lake;
+- Processamento distribuído com PySpark;
+- Classificação textual utilizando regras, NLP e Machine Learning;
+- Modelo dimensional em Star Schema;
+- Publicação das tabelas para consumo analítico;
+- Dashboard Power BI conectado às tabelas finais;
+- Testes automatizados e validações de qualidade;
+- Documentação técnica completa.
 
 ---
 
@@ -109,7 +132,7 @@ Para detalhes completos, consulte a [documentação de arquitetura](docs/archite
 
 | Categoria | Tecnologia / Conceito |
 |---|---|
-| Linguagem | Python 3.10+ |
+| Linguagem | Python 3.11+ |
 | Processamento | PySpark |
 | Armazenamento | Delta Lake |
 | Arquitetura | Lakehouse, Arquitetura Medalhão |
@@ -124,23 +147,6 @@ Para detalhes completos, consulte a [documentação de arquitetura](docs/archite
 
 ---
 
-## Resultados do Projeto
-
-O projeto entrega uma base analítica organizada a partir de dados públicos legislativos.
-
-Resultados principais:
-
-- pipeline lakehouse estruturado em camadas;
-- dados brutos ingeridos e persistidos em Delta Lake;
-- dados padronizados e tratados na camada Silver;
-- proposições enriquecidas com classificação temática e jurídica;
-- modelo dimensional com dimensões e fatos;
-- tabelas finais publicadas para consumo analítico;
-- dashboard Power BI conectado às tabelas finais;
-- documentação técnica detalhada para apoiar leitura e manutenção do projeto.
-
----
-
 ## Dashboard Power BI
 
 As tabelas finais do Star Schema foram utilizadas em um dashboard Power BI para exploração dos dados legislativos.
@@ -148,6 +154,14 @@ As tabelas finais do Star Schema foram utilizadas em um dashboard Power BI para 
 ![Prévia do Dashboard Power BI](docs/images/dashboard-preview.png)
 
 [Ver dashboard publicado](https://app.powerbi.com/view?r=eyJrIjoiZGIxYTA5MTMtZjIxNy00ZTlkLWJlMjEtMWZmODA1NTlhZWRmIiwidCI6Ijk2NDEzODNiLWQ0N2MtNDQyMy05OTA4LTU5MGYyYTRmNzgwZCJ9)
+
+### Como este projeto se conecta ao Power BI
+
+Após o processamento na arquitetura Lakehouse, as tabelas da camada Star Schema são publicadas na camada Serving para consumo analítico.
+
+Esse modelo permite que o Power BI utilize tabelas fato e dimensão já tratadas, reduzindo transformações na camada de visualização e facilitando a criação de métricas em DAX.
+
+O dashboard demonstra como os dados produzidos pelo pipeline podem ser utilizados para responder perguntas relacionadas à atividade legislativa, como distribuição de proposições, participação parlamentar, votações e tramitações.
 
 Documentação complementar:
 
@@ -159,30 +173,33 @@ Documentação complementar:
 
 ## Competências Demonstradas
 
-Este projeto foi desenvolvido como uma aplicação prática de conceitos de Engenharia de Dados, Analytics Engineering e BI, desde a ingestão de dados públicos até a disponibilização de tabelas analíticas para consumo em Power BI.
+Este projeto demonstra conhecimentos práticos em Engenharia de Dados aplicados a uma solução analítica ponta a ponta.
 
 ### Engenharia de Dados
 
-- Ingestão de dados via API pública com múltiplos endpoints.
-- Organização do pipeline em camadas Bronze, Silver, Gold, Star Schema e Serving.
-- Processamento distribuído com PySpark.
-- Armazenamento em Delta Lake.
-- Separação de responsabilidades com runners, registries, configurações e utilitários reutilizáveis.
-- Validações de qualidade, contratos de dados, logs e rastreabilidade básica.
+- Ingestão de dados via API REST;
+- Processamento distribuído com PySpark;
+- Arquitetura Lakehouse (Bronze, Silver, Gold, Star e Serving);
+- Armazenamento em Delta Lake;
+- Organização modular do pipeline;
+- Configuração por ambiente (.env);
+- Testes automatizados com Pytest;
+- Padronização de código com Ruff;
+- Integração contínua com GitHub Actions.
 
-### Modelagem e Analytics
+### Modelagem Analítica
 
-- Construção de modelo dimensional com tabelas fato e dimensão.
-- Organização de dados para consumo analítico em Power BI.
-- Estruturação de métricas sobre proposições, partidos, parlamentares, votações, tramitações e eventos.
-- Criação de dashboard para exploração dos dados legislativos.
+- Modelagem dimensional (Star Schema);
+- Construção de tabelas fato e dimensão;
+- Publicação para consumo analítico;
+- Dashboard Power BI.
 
-### ML/NLP aplicado a dados
+### Machine Learning
 
-- Classificação textual de proposições legislativas.
-- Uso combinado de regras, regex, dicionários temáticos e modelo supervisionado.
-- Registro e versionamento de modelos com MLflow.
-- Aplicação de fallback para evitar classificações forçadas em textos ambíguos.
+- Classificação textual de proposições;
+- Regex e dicionários temáticos;
+- Modelo supervisionado;
+- Registro de modelos com MLflow.
 
 ---
 
@@ -314,19 +331,16 @@ A documentação detalhada do projeto está disponível na pasta `docs/`.
 
 ## Qualidade de Dados
 
-O projeto possui validações formais para aumentar a confiabilidade das tabelas produzidas.
+O pipeline executa validações para garantir consistência dos dados produzidos, incluindo:
 
-As validações incluem:
-
-- dataset não vazio;
-- colunas obrigatórias;
-- chaves não nulas;
-- unicidade de chaves;
+- datasets não vazios;
+- chaves obrigatórias;
+- unicidade;
 - percentual máximo de nulos;
-- domínio de valores permitidos;
-- contratos de dados por tabela e camada.
+- domínio de valores;
+- contratos de dados.
 
-Mais detalhes em:
+Mais detalhes estão disponíveis na documentação técnica.
 
 - [Qualidade de Dados](docs/data_quality.md)
 - [Contratos de Dados](docs/data_contracts.md)
@@ -335,14 +349,12 @@ Mais detalhes em:
 
 ## Classificação ML/NLP
 
-Um dos diferenciais do projeto é a classificação textual de proposições legislativas.
+A classificação das proposições combina:
 
-A estratégia combina:
-
-- regras regex para padrões explícitos;
+- regras Regex;
 - dicionários temáticos;
 - modelo supervisionado;
-- registro e versionamento com MLflow;
+- versionamento com MLflow;
 - fallback para textos ambíguos.
 
 Mais detalhes em [Classificação ML/NLP](docs/ml_nlp.md).
@@ -366,40 +378,32 @@ Mais detalhes em [Modelo Star Schema](docs/star_schema.md).
 
 ## Evoluções Futuras
 
-As evoluções abaixo não impedem o uso do projeto como portfólio. Elas representam próximos passos possíveis para aproximar a solução de um ambiente produtivo e ampliar sua profundidade técnica.
+Possíveis evoluções para aproximar o projeto de um ambiente produtivo:
 
 ### Engenharia de Dados
 
-- Automatizar a orquestração com Databricks Workflows, Airflow, Prefect ou Dagster.
-- Configurar CI/CD com GitHub Actions.
-- Ampliar testes unitários e de integração.
-- Registrar métricas históricas de Data Quality.
-- Criar monitoramento operacional do pipeline.
-- Padronizar nomes de funções, módulos e variáveis para manter consistência entre português e inglês.
+- Automatizar a orquestração com Databricks Workflows, Airflow, Prefect ou Dagster;
+- Ampliar a cobertura de testes automatizados;
+- Implementar monitoramento operacional do pipeline;
+- Registrar histórico das métricas de qualidade de dados.
 
-### ML/NLP
+### Machine Learning
 
-- Melhorar a classificação de proposições com avaliação por precisão, recall, F1-score e matriz de confusão.
-- Ampliar a base de treino e revisar classes com baixa representatividade.
-- Testar embeddings ou modelos de linguagem para classificação semântica.
-- Documentar critérios de promoção de modelos no MLflow.
+- Avaliar os modelos utilizando métricas como precisão, recall, F1-score e matriz de confusão;
+- Expandir a base de treinamento;
+- Experimentar modelos baseados em embeddings;
+- Definir critérios de promoção de modelos no MLflow.
 
 ### Analytics
 
-Com o modelo analítico, podem ser realizadas análises sobre a atuação do Congresso, como:
+O modelo permite evoluir análises como:
 
-- evolução temporal da quantidade de proposições;
-- temas legislativos mais frequentes por ano ou legislatura;
-- distribuição de proposições por partido, UF e parlamentar;
-- deputados com maior volume de autoria;
-- partidos com maior participação em proposições;
-- análise da tramitação das proposições ao longo do tempo;
-- órgãos com maior concentração de eventos e tramitações;
-- distribuição de votações por período;
-- comportamento dos votos por partido;
-- participação parlamentar em eventos;
-- comparação entre legislaturas;
-- identificação de temas prioritários em diferentes períodos políticos.
+- evolução temporal das proposições;
+- participação parlamentar;
+- comportamento de votação;
+- distribuição por partidos;
+- análise de temas legislativos;
+- comparação entre legislaturas.
 
 O roadmap completo está em [Evolução do Projeto](docs/project_evolution.md).
 
@@ -415,8 +419,18 @@ Este projeto utiliza dados públicos disponibilizados pela Câmara dos Deputados
 
 ## Status do Projeto
 
-Projeto em versão de portfólio, com pipeline ponta a ponta implementado, documentação técnica organizada e dashboard Power BI publicado.
+Projeto em versão de portfólio, com:
+- pipeline ponta a ponta implementado,
+- documentação técnica organizada,
+- testes automatizados,
+- integração contínua com GitHub Actions e
+- dashboard Power BI publicado.
 
-A versão atual demonstra competências práticas em Engenharia de Dados, modelagem analítica, qualidade de dados, ML/NLP aplicado a texto e integração com BI.
+A versão atual demonstra competências práticas em:
+- Engenharia de Dados,
+- modelagem analítica,
+- qualidade de dados,
+- ML/NLP aplicado a texto e
+- integração com BI.
 
 Próximas melhorias estão documentadas em [Evolução do Projeto](docs/project_evolution.md).
